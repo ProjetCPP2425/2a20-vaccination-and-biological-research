@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>0ef43bc7-99f0-43ec-8ab9-fcfcd5ce7fe8.jpeg</file>
+        <file>5b1112d6-b483-42ab-99e9-7d366e3644ae.jpeg</file>
+        <file>476795083_514548728337984_1144380379871755551_n.png</file>
+        <file>doc.png</file>
+        <file>logo.png</file>
+        <file>nom.png</file>
+        <file>stat.png</file>
+        <file>vax.png</file>
+        <file>2afc17cd-edba-480d-9376-c2ef5360da57.jpeg</file>
+        <file>8f091580-f9f5-43fb-89a3-0d4bbe6da779.jpeg</file>
+        <file>698c99ce-a4b1-4073-bda8-6d779a89693d.jpeg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>2afc17cd-edba-480d-9376-c2ef5360da57.jpeg</file>
+        <file>8f091580-f9f5-43fb-89a3-0d4bbe6da779.jpeg</file>
+        <file>698c99ce-a4b1-4073-bda8-6d779a89693d.jpeg</file>
+    </qresource>
+</RCC>
