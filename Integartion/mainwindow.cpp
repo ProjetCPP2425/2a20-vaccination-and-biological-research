@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->setCurrentIndex(6);
     ui->frame->setVisible(false);
 
+
     // Fonction pour gérer l'affichage du sidebar selon la page active
     auto updateSidebarVisibility = [=](int index) {
         if (index == 6) { // Page de connexion
@@ -72,7 +73,12 @@ MainWindow::MainWindow(QWidget *parent)
         ui->tableView->resizeColumnsToContents();
         ui->tableView->setStyleSheet("QTableView::item { padding: 10px; }");
         ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+        MedAnalysis *medApi = new MedAnalysis(this);
+        connect(medApi, &MedAnalysis::dataFetched, this, &MainWindow::updateCovidStats);
+        connect(medApi, &MedAnalysis::errorOccurred, this, &MainWindow::showError);
 
+        // Lancer la récupération des données au démarrage pour un pays (ex: France)
+        medApi->fetchCovidData("France");
     });
 
 
@@ -289,4 +295,26 @@ void MainWindow::verifierVaccinsExpires() {
     } else {
         qDebug() << "✅ Aucun vaccin expiré.";
     }
+}
+void MainWindow::updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate)
+{
+    QString message = QString(
+                          "📊 Données COVID-19 pour %1 :\n\n"
+                          "✅ Cas confirmés : %2\n"
+                          "❌ Décès : %3\n"
+                          "💪 Guérisons : %4\n"
+                          "👥 Population totale : %5\n"
+                          "💉 Taux de vaccination : %6%"
+                          ).arg(country)
+                          .arg(cases)
+                          .arg(deaths)
+                          .arg(recovered)
+                          .arg(population)
+                          .arg(vaccinationRate);
+
+    QMessageBox::information(this, "Données Épidémiologiques", message);
+}
+void MainWindow::showError(QString error)
+{
+    QMessageBox::warning(this, "Erreur API", "Impossible de récupérer les données : " + error);
 }

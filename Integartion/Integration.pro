@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui sql
+QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,16 +26,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-    buttondelegate.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp \
+    medanalysis.cpp \
     vaccin.cpp
 
 HEADERS += \
-    buttondelegate.h \
         mainwindow.h \
     connection.h \
+    medanalysis.h \
     vaccin.h
 
 FORMS += \

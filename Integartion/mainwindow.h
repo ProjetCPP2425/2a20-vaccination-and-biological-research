@@ -13,6 +13,7 @@
 #include <QVector>
 #include <QDate>
 #include <QSystemTrayIcon>
+#include "medanalysis.h"
 class ButtonDelegate;
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,7 +36,8 @@ private slots:
 
     void on_lineEdit_recherche_2_textChanged(const QString &arg1);
     void verifierVaccinsExpires();
-
+    void updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate);
+    void showError(QString error);
 private:
     Ui::MainWindow *ui;
     Vaccin vacc;
