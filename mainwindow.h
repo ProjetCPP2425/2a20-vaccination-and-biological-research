@@ -35,9 +35,15 @@ private slots:
 
     void on_rechercheC_textChanged(const QString &arg1);
 
+    void on_modifierC_clicked();
+
+    void on_btnPredire_clicked();
+
 private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
     QSortFilterProxyModel *proxyModel;
+    int idAModifier = -1;  // ID du carnet à modifier (-1 signifie pas de modification)
+    bool modeModification = false; // Mode modification activé/désactivé
 };
 #endif // MAINWINDOW_H

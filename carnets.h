@@ -55,6 +55,14 @@ public:
     bool ajouter();
     QSqlQueryModel * afficher();
     bool supprimer(int);
+    bool modifier(int id, QString cin, QString nom, QString prenom, int age, QString sexe,
+                  QString num, float poids, QDate date_rdv, QString remarques, QString statut_vaccinal);
+    bool remplirChampsModification(int id, QString &cin, QString &nom, QString &prenom, int &age,
+                                   QString &sexe, QString &num, float &poids, QDate &date_rdv,
+                                   QString &remarques, QString &statut_vaccinal);
+    QString analyserRisque(int id);
+    int getDernierIdAjout();
+
 
 
 };

@@ -306,10 +306,10 @@ public:
     QFrame *frame_21;
     QGroupBox *groupBox_20;
     QLabel *label_172;
-    QLineEdit *lineEdit_70;
-    QPushButton *pushButton_51;
+    QLineEdit *idPredictionInput;
+    QPushButton *btnPredire;
     QLabel *label_173;
-    QTextEdit *textEdit_20;
+    QTextEdit *predictionResult;
     QLabel *label_174;
     QWidget *pagelogin;
     QFrame *frame_5;
@@ -3517,10 +3517,10 @@ public:
 "    font-size: 18px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
-        lineEdit_70 = new QLineEdit(groupBox_20);
-        lineEdit_70->setObjectName("lineEdit_70");
-        lineEdit_70->setGeometry(QRect(370, 40, 221, 41));
-        lineEdit_70->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+        idPredictionInput = new QLineEdit(groupBox_20);
+        idPredictionInput->setObjectName("idPredictionInput");
+        idPredictionInput->setGeometry(QRect(370, 40, 221, 41));
+        idPredictionInput->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir normal */\n"
 "    font-size: 14px;               /* Taille de la police */\n"
@@ -3529,10 +3529,10 @@ public:
 "    padding: 8px;                  /* Espacement interne pour le texte */\n"
 "    border-style: dashed;          /* Style en pointill\303\251s */\n"
 "}"));
-        pushButton_51 = new QPushButton(groupBox_20);
-        pushButton_51->setObjectName("pushButton_51");
-        pushButton_51->setGeometry(QRect(440, 100, 91, 41));
-        pushButton_51->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        btnPredire = new QPushButton(groupBox_20);
+        btnPredire->setObjectName("btnPredire");
+        btnPredire->setGeometry(QRect(440, 100, 91, 41));
+        btnPredire->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #008000;  /* Couleur de fond verte */\n"
 "    color: #FFFFFF;             /* Texte blanc */\n"
 "    font-weight: bold;          /* Texte en gras */\n"
@@ -3561,10 +3561,10 @@ public:
 "    font-size: 18px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
-        textEdit_20 = new QTextEdit(groupBox_20);
-        textEdit_20->setObjectName("textEdit_20");
-        textEdit_20->setGeometry(QRect(110, 210, 791, 271));
-        textEdit_20->setStyleSheet(QString::fromUtf8("QTextEdit {\n"
+        predictionResult = new QTextEdit(groupBox_20);
+        predictionResult->setObjectName("predictionResult");
+        predictionResult->setGeometry(QRect(110, 210, 791, 271));
+        predictionResult->setStyleSheet(QString::fromUtf8("QTextEdit {\n"
 "    background-color: transparent; /* Transparent background */\n"
 "    color: #000000;                /* Black text */\n"
 "    font-weight: normal;           /* Normal text inside */\n"
@@ -3721,12 +3721,12 @@ public:
 
         retranslateUi(MainWindow);
 
-        Affichage->setCurrentIndex(0);
+        Affichage->setCurrentIndex(1);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(1);
+        tabs->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4036,7 +4036,7 @@ public:
         tabs->setTabText(tabs->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());
         label_172->setText(QCoreApplication::translate("MainWindow", "         Nom du patient:", nullptr));
-        pushButton_51->setText(QCoreApplication::translate("MainWindow", "Valider", nullptr));
+        btnPredire->setText(QCoreApplication::translate("MainWindow", "Valider", nullptr));
         label_173->setText(QCoreApplication::translate("MainWindow", "R\303\251sultats:", nullptr));
         label_174->setText(QCoreApplication::translate("MainWindow", "              Pr\303\251diction M\303\251dicale", nullptr));
         tabs->setTabText(tabs->indexOf(Statistique_10), QCoreApplication::translate("MainWindow", "Pr\303\251diction", nullptr));
