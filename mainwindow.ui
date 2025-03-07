@@ -5258,12 +5258,12 @@ QPushButton:pressed {
        <rect>
         <x>0</x>
         <y>70</y>
-        <width>1271</width>
+        <width>1401</width>
         <height>801</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="ajoutct_10">
        <attribute name="title">
@@ -6221,8 +6221,8 @@ border: 2px solid black; </string>
        <widget class="QPushButton" name="modifierC">
         <property name="geometry">
          <rect>
-          <x>1200</x>
-          <y>360</y>
+          <x>1160</x>
+          <y>370</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -6284,7 +6284,7 @@ QPushButton:pressed {
 </string>
         </property>
         <property name="text">
-         <string>Enter le cin à supprimer:</string>
+         <string>Enter le cin du patient:</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="suppid">
@@ -6311,7 +6311,7 @@ QPushButton:pressed {
        <widget class="QPushButton" name="supprimerC">
         <property name="geometry">
          <rect>
-          <x>1110</x>
+          <x>1090</x>
           <y>370</y>
           <width>51</width>
           <height>41</height>

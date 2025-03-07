@@ -3024,7 +3024,7 @@ public:
 ""));
         tabs = new QTabWidget(pageCarnet);
         tabs->setObjectName("tabs");
-        tabs->setGeometry(QRect(0, 70, 1271, 801));
+        tabs->setGeometry(QRect(0, 70, 1401, 801));
         ajoutct_10 = new QWidget();
         ajoutct_10->setObjectName("ajoutct_10");
         frame_20 = new QFrame(ajoutct_10);
@@ -3498,7 +3498,7 @@ public:
         pushButtonDoc_10->setIconSize(QSize(50, 50));
         modifierC = new QPushButton(lirect_10);
         modifierC->setObjectName("modifierC");
-        modifierC->setGeometry(QRect(1200, 360, 51, 41));
+        modifierC->setGeometry(QRect(1160, 370, 51, 41));
         modifierC->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #28A745;  /* Bright green background */\n"
 "    color: white;               /* White text */\n"
@@ -3546,7 +3546,7 @@ public:
 "}"));
         supprimerC = new QPushButton(lirect_10);
         supprimerC->setObjectName("supprimerC");
-        supprimerC->setGeometry(QRect(1110, 370, 51, 41));
+        supprimerC->setGeometry(QRect(1090, 370, 51, 41));
         supprimerC->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #DC3545;  /* Bright red background */\n"
 "    color: white;               /* White text */\n"
@@ -3815,7 +3815,7 @@ public:
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(0);
+        tabs->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4127,7 +4127,7 @@ public:
         pushButtonStat_10->setText(QString());
         pushButtonDoc_10->setText(QString());
         modifierC->setText(QString());
-        nom_2->setText(QCoreApplication::translate("MainWindow", "Enter le cin \303\240 supprimer:", nullptr));
+        nom_2->setText(QCoreApplication::translate("MainWindow", "Enter le cin du patient:", nullptr));
         supprimerC->setText(QString());
         tabs->setTabText(tabs->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());

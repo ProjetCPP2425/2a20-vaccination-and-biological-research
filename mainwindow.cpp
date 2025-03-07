@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(ui->remarques, &QTextEdit::textChanged, this, [=]() {
-        validateTextEdit(ui->remarques, ui->remarquesErrorLabel, QRegularExpression("^.{0,200}$"), "Les remarques ne doivent pas dépasser 200 caractères.");
+        validateTextEdit(ui->remarques, ui->remarquesErrorLabel, QRegularExpression("^.{0,200}$"), "Les remarques doivent contenir au moins 2 mots sans chiffres ni caractères spéciaux .");
     });
 
     connect(ui->annuler, &QPushButton::clicked, this, &MainWindow::on_annuler_clicked);
@@ -177,12 +177,20 @@ void MainWindow::on_ajout_carnet_clicked()
     QString nom = ui->nom_carnet->text().trimmed();
     QString prenom = ui->prenom_carnet->text().trimmed();
     int age = ui->age->text().toInt();
-    QString sexe = ui->G->isChecked() ? "Garçon" : "Femme";
     QString num = ui->num->text().trimmed();
     float poids = ui->poids->text().toFloat();
     QDate date_rdv = ui->date_rdv->date();
     QString remarques = ui->remarques->toPlainText().trimmed();
     QString statut_vaccinal = ui->statut_vaccinal->currentText();
+    QString sexe;
+    if (ui->G->isChecked()) {
+        sexe = "Garçon"; // ✅ "Garçon" devient "G"
+    } else if (ui->F->isChecked()) {
+        sexe = "Femme"; // ✅ "Femme" devient "F"
+    } else {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un sexe !");
+        return;
+    }
 
     if (cin.isEmpty() || nom.isEmpty() || prenom.isEmpty() || num.isEmpty() || age <= 0) {
         QMessageBox::warning(this, "Champs vides", "Veuillez remplir tous les champs obligatoires.");
@@ -451,16 +459,21 @@ void MainWindow::validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegular
 {
     QString text = field->toPlainText().trimmed();  // ✅ Supprime les espaces inutiles
 
-    if (regex.match(text).hasMatch()) {
-        // ✅ Texte valide (aucun changement de bordure, fond transparent)
+    // 🔹 Vérifie que le texte contient au moins 2 mots (séparés par un espace)
+    QRegularExpression wordCheckRegex(R"(^[A-Za-zÀ-ÿ\s,]+$)");
+    QStringList words = text.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+
+    if (regex.match(text).hasMatch() && wordCheckRegex.match(text).hasMatch() && words.size() >= 2) {
+        // ✅ Texte valide (fond transparent)
         errorLabel->setText("✔️ Valide");
         errorLabel->setStyleSheet("color: green; font-weight: bold; background: transparent;");
     } else {
         // ❌ Texte invalide → Affiche un message d'erreur (sans changer la bordure du champ)
-        errorLabel->setText("❌ " + errorMsg);
+        errorLabel->setText("❌ Le texte doit contenir au moins 2 mots, sans chiffres ni caractères spéciaux (sauf `,`).");
         errorLabel->setStyleSheet("color: red; font-weight: bold; background: transparent;");
     }
 }
+
 
 void MainWindow::on_annuler_clicked()
 {
