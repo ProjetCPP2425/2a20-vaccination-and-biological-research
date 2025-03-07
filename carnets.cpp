@@ -67,28 +67,28 @@ bool Carnets::ajouter()
 QSqlQueryModel* Carnets::afficher()
 {
     QSqlQueryModel *model = new QSqlQueryModel();
-    model->setQuery("SELECT ID_CARNET, CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS");
+    model->setQuery("SELECT CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS");
 
     if (model->lastError().isValid()) {
         qDebug() << "Erreur lors de l'affichage des carnets :" << model->lastError().text();
         return nullptr;
     }
 
-    // 🛠️ Ajustement des index pour correspondre à la requête SQL
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("CIN"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Nom"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Prénom"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Âge"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Sexe"));
-    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Téléphone"));
-    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Poids"));
-    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Date RDV"));
-    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Remarques"));
-    model->setHeaderData(10, Qt::Horizontal, QObject::tr("Statut Vaccinal"));
+    // Définir les en-têtes (sans ID)
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("CIN"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Prénom"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Âge"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Sexe"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Téléphone"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Poids"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Date RDV"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Remarques"));
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Statut Vaccinal"));
 
     return model;
 }
+
 
 bool Carnets::supprimer(QString cin)
 {
