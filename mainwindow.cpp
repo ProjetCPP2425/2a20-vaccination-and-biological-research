@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
         validateTextEdit(ui->remarques, ui->remarquesErrorLabel, QRegularExpression("^.{0,200}$"), "Les remarques ne doivent pas dépasser 200 caractères.");
     });
 
+    connect(ui->annuler, &QPushButton::clicked, this, &MainWindow::on_annuler_clicked);
 
 
     ui->stackedWidget->setCurrentIndex(6);
@@ -460,4 +461,40 @@ void MainWindow::validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegular
         errorLabel->setStyleSheet("color: red; font-weight: bold; background: transparent;");
     }
 }
+
+void MainWindow::on_annuler_clicked()
+{
+    if (modeModification) {
+        // 🔹 Si on est en mode modification, remettre les anciennes valeurs
+        QSqlQuery query;
+        query.prepare("SELECT CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS WHERE CIN = :cin");
+        query.bindValue(":cin", idAModifier);
+
+        if (query.exec() && query.next()) {
+            // ✅ Remettre toutes les anciennes valeurs, y compris le CIN
+            ui->cin->setText(query.value("CIN").toString());
+            ui->nom_carnet->setText(query.value("NOM").toString());
+            ui->prenom_carnet->setText(query.value("PRENOM").toString());
+            ui->age->setText(query.value("AGE").toString());
+            ui->G->setChecked(query.value("SEXE").toString() == "Garçon");
+            ui->num->setText(query.value("NUM").toString());
+            ui->poids->setText(query.value("POIDS").toString());
+            ui->date_rdv->setDate(query.value("DATE_RDV").toDate());
+            ui->remarques->setPlainText(query.value("REMARQUES").toString());
+            ui->statut_vaccinal->setCurrentText(query.value("STATUT_VACCINAL").toString());
+        }
+    } else {
+        // 🔹 Si on est en mode ajout, vider les champs
+        ui->cin->clear();
+        ui->nom_carnet->clear();
+        ui->prenom_carnet->clear();
+        ui->age->clear();
+        ui->num->clear();
+        ui->poids->clear();
+        ui->date_rdv->setDate(QDate::currentDate());
+        ui->remarques->clear();
+        ui->statut_vaccinal->setCurrentIndex(0);
+    }
+}
+
 

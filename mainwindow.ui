@@ -5490,7 +5490,7 @@ QPushButton:hover {
            <string>Ajouter</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="annuler_carnet">
+         <widget class="QPushButton" name="annuler">
           <property name="geometry">
            <rect>
             <x>540</x>

@@ -41,6 +41,8 @@ private slots:
 
     void on_btnPredire_clicked();
 
+    void on_annuler_clicked();
+
 private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;

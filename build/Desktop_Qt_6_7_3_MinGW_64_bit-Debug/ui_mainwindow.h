@@ -272,7 +272,7 @@ public:
     QDateEdit *date_rdv;
     QComboBox *statut_vaccinal;
     QPushButton *ajout_carnet;
-    QPushButton *annuler_carnet;
+    QPushButton *annuler;
     QLabel *lakab;
     QLabel *poid;
     QLabel *ages;
@@ -3144,10 +3144,10 @@ public:
 "    border: none;               /* Pas de bordure au survol */\n"
 "}\n"
 ""));
-        annuler_carnet = new QPushButton(groupBox_19);
-        annuler_carnet->setObjectName("annuler_carnet");
-        annuler_carnet->setGeometry(QRect(540, 520, 161, 51));
-        annuler_carnet->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        annuler = new QPushButton(groupBox_19);
+        annuler->setObjectName("annuler");
+        annuler->setGeometry(QRect(540, 520, 161, 51));
+        annuler->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #007FFF;  /* Couleur de fond bleue */\n"
 "    color: #FFFFFF;             /* Texte blanc */\n"
 "    font-size: 18px;            /* Augmentation de la taille de la police */\n"
@@ -4098,7 +4098,7 @@ public:
         statut_vaccinal->setItemText(1, QCoreApplication::translate("MainWindow", "non_vaccine", nullptr));
 
         ajout_carnet->setText(QCoreApplication::translate("MainWindow", "Ajouter", nullptr));
-        annuler_carnet->setText(QCoreApplication::translate("MainWindow", "Annuler", nullptr));
+        annuler->setText(QCoreApplication::translate("MainWindow", "Annuler", nullptr));
         lakab->setText(QCoreApplication::translate("MainWindow", "         Prenom:", nullptr));
         poid->setText(QCoreApplication::translate("MainWindow", "         Poids:", nullptr));
         ages->setText(QCoreApplication::translate("MainWindow", "         Age:", nullptr));
