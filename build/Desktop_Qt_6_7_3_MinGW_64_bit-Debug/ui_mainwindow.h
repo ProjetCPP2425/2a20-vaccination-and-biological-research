@@ -3342,13 +3342,13 @@ public:
 "}"));
         nomErrorLabel = new QLabel(groupBox_19);
         nomErrorLabel->setObjectName("nomErrorLabel");
-        nomErrorLabel->setGeometry(QRect(110, 90, 321, 31));
+        nomErrorLabel->setGeometry(QRect(50, 90, 491, 51));
         nomErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 14px;               /* Taille de police de 18px */\n"
+"    font-size: 12px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
         prenomErrorLabel = new QLabel(groupBox_19);
@@ -3359,7 +3359,7 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 14px;               /* Taille de police de 18px */\n"
+"    font-size: 12px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
         ageErrorLabel = new QLabel(groupBox_19);
@@ -3370,7 +3370,7 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 14px;               /* Taille de police de 18px */\n"
+"    font-size: 12px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 "\n"
@@ -3383,7 +3383,7 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 14px;               /* Taille de police de 18px */\n"
+"    font-size: 12px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 ""));
@@ -3395,7 +3395,7 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 14px;               /* Taille de police de 18px */\n"
+"    font-size: 12px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 ""));
@@ -3407,7 +3407,7 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 14px;               /* Taille de police de 18px */\n"
+"    font-size: 12px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 ""));
@@ -3419,7 +3419,7 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 14px;               /* Taille de police de 18px */\n"
+"    font-size: 12px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
         label_169 = new QLabel(frame_20);

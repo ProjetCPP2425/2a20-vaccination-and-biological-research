@@ -205,7 +205,7 @@ void MainWindow::on_ajout_carnet_clicked()
             ui->tabs->setCurrentIndex(1);  // 🔄 Rediriger vers l'onglet Affichage (Vérifie l'index de ton `QTabWidget`)
 
         } else {
-            QMessageBox::critical(this, "Erreur", "Échec de la modification !");
+            QMessageBox::critical(this, "Erreur", "Le CIN existe déjà ! Impossible de modifier");
             return;
         }
 
@@ -217,7 +217,7 @@ void MainWindow::on_ajout_carnet_clicked()
             ui->tabs->setCurrentIndex(1);  // 🔄 Rediriger vers l'onglet Affichage (Vérifie l'index de ton `QTabWidget`)
 
         } else {
-            QMessageBox::critical(this, "Erreur", "Échec de l'ajout !");
+            QMessageBox::critical(this, "Erreur", "Le CIN existe déjà ! Impossible d'ajouter");
             return;
         }
     }
