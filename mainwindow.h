@@ -52,6 +52,8 @@ private:
     bool modeModification = false; // Mode modification activé/désactivé
     void validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
     void validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
+    bool estValide();
+
 
 
 };

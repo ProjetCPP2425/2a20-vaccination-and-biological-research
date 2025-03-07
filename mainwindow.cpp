@@ -173,6 +173,10 @@ void MainWindow::on_rechercheC_textChanged(const QString &arg1)
 
 void MainWindow::on_ajout_carnet_clicked()
 {
+    if (!estValide()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de valider le carnet.");
+        return; // 🔴 Bloquer l'ajout si les champs ne sont pas valides
+    }
     QString cin = ui->cin->text().trimmed();
     QString nom = ui->nom_carnet->text().trimmed();
     QString prenom = ui->prenom_carnet->text().trimmed();
@@ -204,7 +208,10 @@ void MainWindow::on_ajout_carnet_clicked()
             QMessageBox::warning(this, "Erreur", "Aucun CIN sélectionné pour modification !");
             return;
         }
-
+        if (!estValide()) {
+            QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de modifier le carnet.");
+            return; // 🔴 Bloquer la modification si les champs ne sont pas valides
+        }
         qDebug() << "Modification du carnet avec CIN :" << idAModifier;
 
         carnetTmp.supprimer(idAModifier);
@@ -308,6 +315,7 @@ void MainWindow::on_supprimerC_clicked()
 
 void MainWindow::on_modifierC_clicked()
 {
+
     QString cin = ui->suppid->text().trimmed(); // ✅ Récupérer le CIN depuis l'interface
 
     qDebug() << "🔍 CIN sélectionné pour modification :" << cin;  // 🔍 Vérification de la valeur entrée
@@ -509,5 +517,89 @@ void MainWindow::on_annuler_clicked()
         ui->statut_vaccinal->setCurrentIndex(0);
     }
 }
+bool MainWindow::estValide()
+{
+    bool valide = true;
+    QString styleErreur = "color: red; font-weight: bold; background: transparent;";
+    QString styleValide = "color: green; font-weight: bold; background: transparent;";
 
+    // 🔹 Vérification du nom (lettres uniquement)
+    if (!QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$").match(ui->nom_carnet->text().trimmed()).hasMatch()) {
+        ui->nomErrorLabel->setText("❌ Le nom doit contenir uniquement des lettres.");
+        ui->nomErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->nomErrorLabel->setText("✔️ Valide");
+        ui->nomErrorLabel->setStyleSheet(styleValide);
+    }
 
+    // 🔹 Vérification du prénom
+    if (!QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$").match(ui->prenom_carnet->text().trimmed()).hasMatch()) {
+        ui->prenomErrorLabel->setText("❌ Le prénom doit contenir uniquement des lettres.");
+        ui->prenomErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->prenomErrorLabel->setText("✔️ Valide");
+        ui->prenomErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // 🔹 Vérification de l'âge (entre 1 et 100)
+    if (!QRegularExpression("^[1-9][0-9]?$|^100$").match(ui->age->text().trimmed()).hasMatch()) {
+        ui->ageErrorLabel->setText("❌ L'âge doit être entre 1 et 100.");
+        ui->ageErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->ageErrorLabel->setText("✔️ Valide");
+        ui->ageErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // 🔹 Vérification du CIN (exactement 8 chiffres)
+    if (!QRegularExpression("^[0-9]{8}$").match(ui->cin->text().trimmed()).hasMatch()) {
+        ui->cinErrorLabel->setText("❌ Le CIN doit contenir exactement 8 chiffres.");
+        ui->cinErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->cinErrorLabel->setText("✔️ Valide");
+        ui->cinErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // 🔹 Vérification du numéro de téléphone (exactement 8 chiffres)
+    if (!QRegularExpression("^[0-9]{8}$").match(ui->num->text().trimmed()).hasMatch()) {
+        ui->numErrorLabel->setText("❌ Le numéro doit contenir exactement 8 chiffres.");
+        ui->numErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->numErrorLabel->setText("✔️ Valide");
+        ui->numErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // 🔹 Vérification du poids (nombre valide avec max 2 décimales)
+    if (!QRegularExpression("^[0-9]{1,3}(\\.[0-9]{1,2})?$").match(ui->poids->text().trimmed()).hasMatch()) {
+        ui->poidsErrorLabel->setText("❌ Le poids doit être un nombre valide.");
+        ui->poidsErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->poidsErrorLabel->setText("✔️ Valide");
+        ui->poidsErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // 🔹 Vérification des remarques (min 2 mots, max 200 caractères)
+    QString remarques = ui->remarques->toPlainText().trimmed();
+    QStringList words = remarques.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+    if (remarques.isEmpty() || words.size() < 2 || remarques.length() > 200) {
+        ui->remarquesErrorLabel->setText("❌ Les remarques doivent contenir au moins 2 mots et max 200 caractères.");
+        ui->remarquesErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->remarquesErrorLabel->setText("✔️ Valide");
+        ui->remarquesErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // 🔹 Vérification du sexe (obligatoire)
+    if (!ui->G->isChecked() && !ui->F->isChecked()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un sexe !");
+        valide = false;
+    }
+
+    return valide;
+}
