@@ -176,9 +176,17 @@ void MainWindow::on_rechercheC_textChanged(const QString &arg1)
 void MainWindow::on_ajout_carnet_clicked()
 {
     if (!estValide()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de valider le carnet.");
-        return; // 🔴 Bloquer l'ajout si les champs ne sont pas valides
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Erreur");
+        msgBox.setText("Veuillez corriger les erreurs avant de valider le carnet.");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setButtonText(QMessageBox::Ok, "D'accord"); // ✅ Change "OK" en "D'accord"
+        msgBox.exec();
+        return;
     }
+
+
     QString cin = ui->cin->text().trimmed();
     QString nom = ui->nom_carnet->text().trimmed();
     QString prenom = ui->prenom_carnet->text().trimmed();
@@ -195,6 +203,8 @@ void MainWindow::on_ajout_carnet_clicked()
         sexe = "Femme"; // ✅ "Femme" devient "F"
     } else {
         QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un sexe !");
+
+
         return;
     }
 
@@ -289,9 +299,16 @@ void MainWindow::on_supprimerC_clicked()
 
     int count = checkQuery.value(0).toInt();
     if (count == 0) {
-        QMessageBox::warning(this, "Erreur", "Aucun carnet trouvé avec ce CIN !");
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Erreur");
+        msgBox.setText("Aucun carnet trouvé avec ce CIN !");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setButtonText(QMessageBox::Ok, "D'accord"); // ✅ Change "OK" en "D'accord"
+        msgBox.exec();
         return;
     }
+
 
     // ✅ Boîte de confirmation avec boutons "Oui" et "Non"
     QMessageBox msgBox;
