@@ -166,6 +166,8 @@ void MainWindow::on_rechercheC_textChanged(const QString &arg1)
 
     model->setQuery(query);
     ui->tableView->setModel(model);
+    ui->tableView->hideColumn(0); // 🔹 Masquer la première colonne (ID)
+
 }
 
 
