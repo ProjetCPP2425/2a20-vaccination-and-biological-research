@@ -25,6 +25,22 @@ Carnets::Carnets(int Id_Carnet, QString Cin, QString Nom, QString Prenom, int Ag
 
 bool Carnets::ajouter()
 {
+    // Vérifier si un carnet avec le même CIN existe déjà
+    QSqlQuery checkQuery;
+    checkQuery.prepare("SELECT COUNT(*) FROM CARNETS WHERE CIN = :cin");
+    checkQuery.bindValue(":cin", Cin);
+
+    if (!checkQuery.exec() || !checkQuery.next()) {
+        qDebug() << "Erreur SQL lors de la vérification du CIN :" << checkQuery.lastError().text();
+        return false;
+    }
+
+    if (checkQuery.value(0).toInt() > 0) {
+        qDebug() << "Ajout impossible : Un carnet avec ce CIN existe déjà.";
+        return false;
+    }
+
+    // Ajout du carnet
     QSqlQuery query;
     query.prepare("INSERT INTO CARNETS (CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL) "
                   "VALUES (:cin, :nom, :prenom, :age, :sexe, :num, :poids, :date_rdv, :remarques, :statut)");
@@ -46,6 +62,7 @@ bool Carnets::ajouter()
     }
     return true;
 }
+
 
 QSqlQueryModel* Carnets::afficher()
 {
@@ -73,19 +90,59 @@ QSqlQueryModel* Carnets::afficher()
     return model;
 }
 
-bool Carnets::supprimer(int id) {
+bool Carnets::supprimer(QString cin)
+{
+    // Vérifier si le carnet existe avant suppression
+    QSqlQuery checkQuery;
+    checkQuery.prepare("SELECT COUNT(*) FROM CARNETS WHERE CIN = :cin");
+    checkQuery.bindValue(":cin", cin);
+
+    if (!checkQuery.exec() || !checkQuery.next()) {
+        qDebug() << "Erreur SQL lors de la vérification de l'existence du carnet :" << checkQuery.lastError().text();
+        return false;
+    }
+
+    if (checkQuery.value(0).toInt() == 0) {
+        qDebug() << "Suppression impossible : Aucun carnet trouvé avec ce CIN.";
+        return false;
+    }
+
+    // Suppression du carnet
     QSqlQuery query;
-    query.prepare("DELETE FROM CARNETS WHERE Id_Carnet= :id");
-    query.bindValue(":id", id);
-    return query.exec();  // Retourne true si la suppression réussit
+    query.prepare("DELETE FROM CARNETS WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
+
+    if (!query.exec()) {
+        qDebug() << "Erreur lors de la suppression du carnet :" << query.lastError().text();
+        return false;
+    }
+    return true;
 }
-bool Carnets::modifier(int id, QString cin, QString nom, QString prenom, int age, QString sexe,
+
+
+bool Carnets::modifier(QString cin, QString nom, QString prenom, int age, QString sexe,
                        QString num, float poids, QDate date_rdv, QString remarques, QString statut_vaccinal)
 {
+    // Vérifier si le carnet existe avant de modifier
+    QSqlQuery checkQuery;
+    checkQuery.prepare("SELECT COUNT(*) FROM CARNETS WHERE CIN = :cin");
+    checkQuery.bindValue(":cin", cin);
+
+    if (!checkQuery.exec() || !checkQuery.next()) {
+        qDebug() << "Erreur SQL lors de la vérification du carnet :" << checkQuery.lastError().text();
+        return false;
+    }
+
+    if (checkQuery.value(0).toInt() == 0) {
+        qDebug() << "Modification impossible : Aucun carnet trouvé avec ce CIN.";
+        return false;
+    }
+
+    // Mise à jour du carnet
     QSqlQuery query;
-    query.prepare("UPDATE CARNETS SET CIN = :cin, NOM = :nom, PRENOM = :prenom, AGE = :age, "
+    query.prepare("UPDATE CARNETS SET NOM = :nom, PRENOM = :prenom, AGE = :age, "
                   "SEXE = :sexe, NUM = :num, POIDS = :poids, DATE_RDV = :date_rdv, "
-                  "REMARQUES = :remarques, STATUT_VACCINAL = :statut WHERE Id_Carnet = :id");
+                  "REMARQUES = :remarques, STATUT_VACCINAL = :statut WHERE CIN = :cin");
 
     query.bindValue(":cin", cin);
     query.bindValue(":nom", nom);
@@ -97,7 +154,6 @@ bool Carnets::modifier(int id, QString cin, QString nom, QString prenom, int age
     query.bindValue(":date_rdv", date_rdv);
     query.bindValue(":remarques", remarques);
     query.bindValue(":statut", statut_vaccinal);
-    query.bindValue(":id", id);
 
     if (!query.exec()) {
         qDebug() << "Erreur lors de la modification du carnet :" << query.lastError().text();
@@ -106,40 +162,45 @@ bool Carnets::modifier(int id, QString cin, QString nom, QString prenom, int age
     return true;
 }
 
-bool Carnets::remplirChampsModification(int id, QString &cin, QString &nom, QString &prenom, int &age,
+
+bool Carnets::remplirChampsModification(QString cin, QString &nom, QString &prenom, int &age,
                                         QString &sexe, QString &num, float &poids, QDate &date_rdv,
                                         QString &remarques, QString &statut_vaccinal)
 {
     QSqlQuery query;
-    query.prepare("SELECT CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL "
-                  "FROM CARNETS WHERE Id_Carnet = :id");
-    query.bindValue(":id", id);
+    query.prepare("SELECT NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL "
+                  "FROM CARNETS WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
 
     if (!query.exec()) {
-        qDebug() << "Erreur lors du chargement du carnet :" << query.lastError().text();
+        qDebug() << "❌ Erreur SQL lors du chargement du carnet :" << query.lastError().text();
         return false;
     }
 
     if (query.next()) {
-        cin = query.value(0).toString();
-        nom = query.value(1).toString();
-        prenom = query.value(2).toString();
-        age = query.value(3).toInt();
-        sexe = query.value(4).toString();
-        num = query.value(5).toString();
-        poids = query.value(6).toFloat();
-        date_rdv = query.value(7).toDate();
-        remarques = query.value(8).toString();
-        statut_vaccinal = query.value(9).toString();
+        // ✅ Charger les valeurs récupérées
+        nom = query.value("NOM").toString();
+        prenom = query.value("PRENOM").toString();
+        age = query.value("AGE").toInt();
+        sexe = query.value("SEXE").toString();
+        num = query.value("NUM").toString();
+        poids = query.value("POIDS").toFloat();
+        date_rdv = query.value("DATE_RDV").toDate();
+        remarques = query.value("REMARQUES").toString();
+        statut_vaccinal = query.value("STATUT_VACCINAL").toString();
+
         return true;
+    } else {
+        qDebug() << "⚠️ Aucun carnet trouvé avec CIN :" << cin;
+        return false;
     }
-    return false;
 }
-QString Carnets::analyserRisque(int id)
+
+QString Carnets::analyserRisqueParCIN(QString cin)
 {
     QSqlQuery query;
-    query.prepare("SELECT NOM, PRENOM, AGE, POIDS, REMARQUES, STATUT_VACCINAL FROM CARNETS WHERE Id_Carnet = :id");
-    query.bindValue(":id", id);
+    query.prepare("SELECT NOM, PRENOM, AGE, POIDS, REMARQUES, STATUT_VACCINAL FROM CARNETS WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
 
     if (!query.exec() || !query.next()) {
         return "⚠️ Erreur : Impossible de récupérer les données du patient.";
@@ -187,6 +248,9 @@ QString Carnets::analyserRisque(int id)
                              .arg(statutVaccinal)
                              .arg(scoreRisque)
                              .arg(categorieRisque);
+
+
+
 
     // 🔹 ALERTE MÉDICALE (Recommandations après vaccination)
     QString alerteVaccin = "\n🔔 **Recommandations Post-Vaccinales :**\n\n";

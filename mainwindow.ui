@@ -5263,7 +5263,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="ajoutct_10">
        <attribute name="title">
@@ -5860,6 +5860,172 @@ QPushButton:hover {
 }</string>
           </property>
          </widget>
+         <widget class="QLabel" name="nomErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>90</y>
+            <width>321</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 14px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="prenomErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>180</y>
+            <width>291</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 14px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="ageErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>270</y>
+            <width>361</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 14px;               /* Taille de police de 18px */
+}
+
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="cinErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>360</y>
+            <width>381</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 14px;               /* Taille de police de 18px */
+}
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="remarquesErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>470</y>
+            <width>381</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 14px;               /* Taille de police de 18px */
+}
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="poidsErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>530</x>
+            <y>90</y>
+            <width>281</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 14px;               /* Taille de police de 18px */
+}
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="numErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>640</x>
+            <y>230</y>
+            <width>301</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 14px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </widget>
         <widget class="QLabel" name="label_169">
          <property name="geometry">
@@ -6118,7 +6284,7 @@ QPushButton:pressed {
 </string>
         </property>
         <property name="text">
-         <string>Enter L'id a supprimer:</string>
+         <string>Enter le cin à supprimer:</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="suppid">
@@ -6252,7 +6418,7 @@ QGroupBox::title {
 </string>
           </property>
           <property name="text">
-           <string>         Nom du patient:</string>
+           <string>         Cin du patient:</string>
           </property>
          </widget>
          <widget class="QLineEdit" name="idPredictionInput">

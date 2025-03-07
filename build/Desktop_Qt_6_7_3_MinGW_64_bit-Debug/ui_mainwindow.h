@@ -288,6 +288,13 @@ public:
     QLabel *cinnn;
     QLineEdit *cin;
     QLineEdit *poids;
+    QLabel *nomErrorLabel;
+    QLabel *prenomErrorLabel;
+    QLabel *ageErrorLabel;
+    QLabel *cinErrorLabel;
+    QLabel *remarquesErrorLabel;
+    QLabel *poidsErrorLabel;
+    QLabel *numErrorLabel;
     QLabel *label_169;
     QWidget *lirect_10;
     QComboBox *comboBox_20;
@@ -3333,6 +3340,88 @@ public:
 "    padding: 8px;                  /* Espacement interne pour le texte */\n"
 "    border-style: dashed;          /* Style en pointill\303\251s */\n"
 "}"));
+        nomErrorLabel = new QLabel(groupBox_19);
+        nomErrorLabel->setObjectName("nomErrorLabel");
+        nomErrorLabel->setGeometry(QRect(110, 90, 321, 31));
+        nomErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir */\n"
+"    border: none;                  /* Pas de bordure */\n"
+"    font-weight: bold;             /* Texte en gras */\n"
+"    font-size: 14px;               /* Taille de police de 18px */\n"
+"}\n"
+""));
+        prenomErrorLabel = new QLabel(groupBox_19);
+        prenomErrorLabel->setObjectName("prenomErrorLabel");
+        prenomErrorLabel->setGeometry(QRect(110, 180, 291, 41));
+        prenomErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir */\n"
+"    border: none;                  /* Pas de bordure */\n"
+"    font-weight: bold;             /* Texte en gras */\n"
+"    font-size: 14px;               /* Taille de police de 18px */\n"
+"}\n"
+""));
+        ageErrorLabel = new QLabel(groupBox_19);
+        ageErrorLabel->setObjectName("ageErrorLabel");
+        ageErrorLabel->setGeometry(QRect(90, 270, 361, 41));
+        ageErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir */\n"
+"    border: none;                  /* Pas de bordure */\n"
+"    font-weight: bold;             /* Texte en gras */\n"
+"    font-size: 14px;               /* Taille de police de 18px */\n"
+"}\n"
+"\n"
+"\n"
+""));
+        cinErrorLabel = new QLabel(groupBox_19);
+        cinErrorLabel->setObjectName("cinErrorLabel");
+        cinErrorLabel->setGeometry(QRect(70, 360, 381, 31));
+        cinErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir */\n"
+"    border: none;                  /* Pas de bordure */\n"
+"    font-weight: bold;             /* Texte en gras */\n"
+"    font-size: 14px;               /* Taille de police de 18px */\n"
+"}\n"
+"\n"
+""));
+        remarquesErrorLabel = new QLabel(groupBox_19);
+        remarquesErrorLabel->setObjectName("remarquesErrorLabel");
+        remarquesErrorLabel->setGeometry(QRect(90, 470, 381, 41));
+        remarquesErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir */\n"
+"    border: none;                  /* Pas de bordure */\n"
+"    font-weight: bold;             /* Texte en gras */\n"
+"    font-size: 14px;               /* Taille de police de 18px */\n"
+"}\n"
+"\n"
+""));
+        poidsErrorLabel = new QLabel(groupBox_19);
+        poidsErrorLabel->setObjectName("poidsErrorLabel");
+        poidsErrorLabel->setGeometry(QRect(530, 90, 281, 41));
+        poidsErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir */\n"
+"    border: none;                  /* Pas de bordure */\n"
+"    font-weight: bold;             /* Texte en gras */\n"
+"    font-size: 14px;               /* Taille de police de 18px */\n"
+"}\n"
+"\n"
+""));
+        numErrorLabel = new QLabel(groupBox_19);
+        numErrorLabel->setObjectName("numErrorLabel");
+        numErrorLabel->setGeometry(QRect(640, 230, 301, 41));
+        numErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir */\n"
+"    border: none;                  /* Pas de bordure */\n"
+"    font-weight: bold;             /* Texte en gras */\n"
+"    font-size: 14px;               /* Taille de police de 18px */\n"
+"}\n"
+""));
         label_169 = new QLabel(frame_20);
         label_169->setObjectName("label_169");
         label_169->setGeometry(QRect(30, 10, 291, 51));
@@ -3726,7 +3815,7 @@ public:
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(2);
+        tabs->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4019,6 +4108,13 @@ public:
         stat->setText(QCoreApplication::translate("MainWindow", "Statut Vaccinal:", nullptr));
         remarq->setText(QCoreApplication::translate("MainWindow", "Remarques:", nullptr));
         cinnn->setText(QCoreApplication::translate("MainWindow", "Cin :", nullptr));
+        nomErrorLabel->setText(QString());
+        prenomErrorLabel->setText(QString());
+        ageErrorLabel->setText(QString());
+        cinErrorLabel->setText(QString());
+        remarquesErrorLabel->setText(QString());
+        poidsErrorLabel->setText(QString());
+        numErrorLabel->setText(QString());
         label_169->setText(QCoreApplication::translate("MainWindow", "Ajouter un carnet du vaccination", nullptr));
         tabs->setTabText(tabs->indexOf(ajoutct_10), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
         comboBox_20->setItemText(0, QCoreApplication::translate("MainWindow", "date", nullptr));
@@ -4031,11 +4127,11 @@ public:
         pushButtonStat_10->setText(QString());
         pushButtonDoc_10->setText(QString());
         modifierC->setText(QString());
-        nom_2->setText(QCoreApplication::translate("MainWindow", "Enter L'id a supprimer:", nullptr));
+        nom_2->setText(QCoreApplication::translate("MainWindow", "Enter le cin \303\240 supprimer:", nullptr));
         supprimerC->setText(QString());
         tabs->setTabText(tabs->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());
-        label_172->setText(QCoreApplication::translate("MainWindow", "         Nom du patient:", nullptr));
+        label_172->setText(QCoreApplication::translate("MainWindow", "         Cin du patient:", nullptr));
         btnPredire->setText(QCoreApplication::translate("MainWindow", "Valider", nullptr));
         label_173->setText(QCoreApplication::translate("MainWindow", "R\303\251sultats:", nullptr));
         label_174->setText(QCoreApplication::translate("MainWindow", "              Pr\303\251diction M\303\251dicale", nullptr));

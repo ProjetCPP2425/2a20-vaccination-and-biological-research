@@ -54,13 +54,14 @@ public:
     //CRUD
     bool ajouter();
     QSqlQueryModel * afficher();
-    bool supprimer(int);
-    bool modifier(int id, QString cin, QString nom, QString prenom, int age, QString sexe,
+    bool supprimer(QString cin);
+    bool modifier(QString cin, QString nom, QString prenom, int age, QString sexe,
                   QString num, float poids, QDate date_rdv, QString remarques, QString statut_vaccinal);
-    bool remplirChampsModification(int id, QString &cin, QString &nom, QString &prenom, int &age,
-                                   QString &sexe, QString &num, float &poids, QDate &date_rdv,
-                                   QString &remarques, QString &statut_vaccinal);
-    QString analyserRisque(int id);
+
+    bool remplirChampsModification(QString cin, QString &nom, QString &prenom, int &age,
+                                            QString &sexe, QString &num, float &poids, QDate &date_rdv,
+                                            QString &remarques, QString &statut_vaccinal);
+    QString analyserRisqueParCIN(QString cin);
     int getDernierIdAjout();
 
 

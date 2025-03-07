@@ -9,6 +9,8 @@
 #include <QWidget>      // Pour QWidget
 #include <QDebug>
 #include <QSortFilterProxyModel>
+#include <QLabel>
+#include <QTextEdit>
 
 
 
@@ -43,7 +45,12 @@ private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
     QSortFilterProxyModel *proxyModel;
-    int idAModifier = -1;  // ID du carnet à modifier (-1 signifie pas de modification)
+    QString idAModifier = "";  // ✅ Stocke le CIN à modifier
+
     bool modeModification = false; // Mode modification activé/désactivé
+    void validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
+    void validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
+
+
 };
 #endif // MAINWINDOW_H
