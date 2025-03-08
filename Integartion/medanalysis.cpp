@@ -8,11 +8,27 @@
 
 // 🔹 Constructeur
 MedAnalysis::MedAnalysis(QObject *parent) : QObject(parent) {
+    qDebug() << "✅ Initialisation de MedAnalysis...";
     networkManager = new QNetworkAccessManager(this);
+
+    if (!networkManager) {
+        qDebug() << "❌ Erreur : networkManager n'a pas pu être créé !";
+    }
+
+    connect(networkManager, &QNetworkAccessManager::finished, this, &MedAnalysis::onNetworkReply);
 }
+
 
 // 🔹 Récupérer les données de COVID-19 d'un pays
 void MedAnalysis::fetchCovidData(const QString &country) {
+    qDebug() << "📡 Envoi de la requête à l'API pour :" << country;
+
+    if (country.isEmpty()) {
+        qDebug() << "❌ Erreur : Aucun pays sélectionné.";
+        emit errorOccurred("Aucun pays sélectionné.");
+        return;
+    }
+
     QString url = "https://disease.sh/v3/covid-19/countries/" + country;
     QNetworkRequest request = QNetworkRequest(QUrl(url));
 
@@ -22,7 +38,10 @@ void MedAnalysis::fetchCovidData(const QString &country) {
 
     // 🔹 Envoyer la requête GET via QNetworkAccessManager
     QNetworkReply *reply = networkManager->get(request);
-
+    if (!reply) {
+        qDebug() << "❌ ERREUR : L'API n'a pas répondu, annulation de la requête !";
+        return;
+    }
     // 🔹 Connecter la réponse pour traiter les données quand elles arrivent
     connect(reply, &QNetworkReply::finished, this, [=]() { onNetworkReply(reply); });
 }
@@ -31,8 +50,16 @@ void MedAnalysis::fetchCovidData(const QString &country) {
 void MedAnalysis::onNetworkReply(QNetworkReply *reply) {
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray responseData = reply->readAll();
+        qDebug() << "✅ Réponse de l'API :" << responseData;  // 🔍 Vérifier la réponse brute
+
         QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
         QJsonObject jsonObj = jsonDoc.object();
+
+        if (jsonObj.isEmpty()) {
+            qDebug() << "❌ JSON vide, mais on ignore l'erreur.";
+            return;
+        }
+
 
         QString country = jsonObj["country"].toString();
         int cases = jsonObj["cases"].toInt();
@@ -40,20 +67,16 @@ void MedAnalysis::onNetworkReply(QNetworkReply *reply) {
         int recovered = jsonObj["recovered"].toInt();
         int population = jsonObj["population"].toInt();
         double vaccinationRate = jsonObj["vaccinationRate"].toDouble();
-        // 🔹 Vérification et affichage des données
-        qDebug() << "📊 Données reçues pour" << country;
-        qDebug() << "Cas :" << cases << "| Décès :" << deaths << "| Guérisons :" << recovered;
-        qDebug() << "Population :" << population;
 
-        // 🔹 Emettre un signal avec les données
+        qDebug() << "📊 Pays :" << country << "| Cas :" << cases << "| Décès :" << deaths
+                 << "| Guérisons :" << recovered << "| Population :" << population
+                 << "| Vaccination :" << vaccinationRate;
+
         emit dataFetched(country, cases, deaths, recovered, population, vaccinationRate);
-
     } else {
-        // 🔹 Gestion avancée des erreurs
-        qDebug() << "❌ Erreur de requête : " << reply->errorString();
         emit errorOccurred(reply->errorString());
     }
 
-    // 🔹 Nettoyage
     reply->deleteLater();
 }
+

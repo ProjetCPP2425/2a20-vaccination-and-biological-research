@@ -1285,7 +1285,9 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		C:/Qt/6.7.3/mingw_64/include/QtWidgets/qdialog.h \
 		C:/Qt/6.7.3/mingw_64/include/QtWidgets/qdialogbuttonbox.h \
 		C:/Qt/6.7.3/mingw_64/include/QtSql/QSqlError \
-		C:/Qt/6.7.3/mingw_64/include/QtSql/qsqlerror.h
+		C:/Qt/6.7.3/mingw_64/include/QtSql/qsqlerror.h \
+		C:/Qt/6.7.3/mingw_64/include/QtWidgets/QApplication \
+		C:/Qt/6.7.3/mingw_64/include/QtWidgets/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o ..\..\mainwindow.cpp
 
 debug/connection.o: ../../connection.cpp ../../connection.h \

@@ -183,7 +183,7 @@ public:
     QLabel *label_113;
     QLabel *label_114;
     QWidget *pageVacc;
-    QTabWidget *Affichage_4;
+    QTabWidget *tab;
     QWidget *ajoutct_8;
     QFrame *frame_16;
     QGroupBox *groupBox_15;
@@ -201,6 +201,9 @@ public:
     QLineEdit *lineEdit_typev_2;
     QDateEdit *dateEdit_creation_2;
     QLineEdit *lineEdit_certification_2;
+    QLineEdit *labelErrorNom;
+    QLineEdit *labelErrorType;
+    QLineEdit *labelErrorCertification;
     QLabel *label_1;
     QWidget *lirect_8;
     QComboBox *comboBox_tri_2;
@@ -216,6 +219,10 @@ public:
     QLineEdit *lineEdit;
     QPushButton *pushButton_suppv;
     QWidget *Statistique_8;
+    QWidget *Prediction;
+    QLabel *predictionLabel;
+    QComboBox *comboBoxPays;
+    QPushButton *btnPredire;
     QWidget *widget_12;
     QLabel *label_124;
     QWidget *pageComp;
@@ -323,6 +330,9 @@ public:
     QLabel *label_9;
     QLabel *label_5;
     QWidget *pagecnx;
+    QLabel *label_11;
+    QLabel *label_12;
+    QLabel *label_14;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -2104,10 +2114,11 @@ public:
         stackedWidget->addWidget(pageLabo);
         pageVacc = new QWidget();
         pageVacc->setObjectName("pageVacc");
-        Affichage_4 = new QTabWidget(pageVacc);
-        Affichage_4->setObjectName("Affichage_4");
-        Affichage_4->setGeometry(QRect(0, 70, 1361, 861));
-        Affichage_4->setIconSize(QSize(50, 60));
+        tab = new QTabWidget(pageVacc);
+        tab->setObjectName("tab");
+        tab->setGeometry(QRect(0, 70, 1361, 861));
+        tab->setIconSize(QSize(50, 60));
+        tab->setTabBarAutoHide(true);
         ajoutct_8 = new QWidget();
         ajoutct_8->setObjectName("ajoutct_8");
         frame_16 = new QFrame(ajoutct_8);
@@ -2295,6 +2306,18 @@ public:
 "    padding: 8px;                  /* Espacement interne pour le texte */\n"
 "    border-style: dashed;          /* Style en pointill\303\251s */\n"
 "}"));
+        labelErrorNom = new QLineEdit(groupBox_15);
+        labelErrorNom->setObjectName("labelErrorNom");
+        labelErrorNom->setGeometry(QRect(110, 100, 261, 20));
+        labelErrorNom->setStyleSheet(QString::fromUtf8(""));
+        labelErrorType = new QLineEdit(groupBox_15);
+        labelErrorType->setObjectName("labelErrorType");
+        labelErrorType->setGeometry(QRect(110, 200, 311, 20));
+        labelErrorType->setStyleSheet(QString::fromUtf8(""));
+        labelErrorCertification = new QLineEdit(groupBox_15);
+        labelErrorCertification->setObjectName("labelErrorCertification");
+        labelErrorCertification->setGeometry(QRect(630, 100, 261, 20));
+        labelErrorCertification->setStyleSheet(QString::fromUtf8(""));
         label_1 = new QLabel(frame_16);
         label_1->setObjectName("label_1");
         label_1->setGeometry(QRect(30, 10, 291, 51));
@@ -2308,7 +2331,7 @@ public:
 "    text-align: center;         /* Centrage du texte */\n"
 "}\n"
 ""));
-        Affichage_4->addTab(ajoutct_8, QString());
+        tab->addTab(ajoutct_8, QString());
         lirect_8 = new QWidget();
         lirect_8->setObjectName("lirect_8");
         comboBox_tri_2 = new QComboBox(lirect_8);
@@ -2374,7 +2397,7 @@ public:
         tableView->setGeometry(QRect(130, 270, 781, 431));
         label_10 = new QLabel(lirect_8);
         label_10->setObjectName("label_10");
-        label_10->setGeometry(QRect(930, 300, 111, 21));
+        label_10->setGeometry(QRect(930, 300, 181, 21));
         pushButton_modifier_2 = new QPushButton(lirect_8);
         pushButton_modifier_2->setObjectName("pushButton_modifier_2");
         pushButton_modifier_2->setGeometry(QRect(1110, 330, 51, 41));
@@ -2422,10 +2445,22 @@ public:
 "}\n"
 ""));
         pushButton_suppv->setIcon(icon5);
-        Affichage_4->addTab(lirect_8, QString());
+        tab->addTab(lirect_8, QString());
         Statistique_8 = new QWidget();
         Statistique_8->setObjectName("Statistique_8");
-        Affichage_4->addTab(Statistique_8, QString());
+        tab->addTab(Statistique_8, QString());
+        Prediction = new QWidget();
+        Prediction->setObjectName("Prediction");
+        predictionLabel = new QLabel(Prediction);
+        predictionLabel->setObjectName("predictionLabel");
+        predictionLabel->setGeometry(QRect(30, 20, 1081, 511));
+        comboBoxPays = new QComboBox(Prediction);
+        comboBoxPays->setObjectName("comboBoxPays");
+        comboBoxPays->setGeometry(QRect(30, 60, 261, 31));
+        btnPredire = new QPushButton(Prediction);
+        btnPredire->setObjectName("btnPredire");
+        btnPredire->setGeometry(QRect(320, 60, 93, 29));
+        tab->addTab(Prediction, QString());
         widget_12 = new QWidget(pageVacc);
         widget_12->setObjectName("widget_12");
         widget_12->setGeometry(QRect(200, 0, 901, 71));
@@ -3663,6 +3698,15 @@ public:
         pagecnx = new QWidget();
         pagecnx->setObjectName("pagecnx");
         stackedWidget->addWidget(pagecnx);
+        label_11 = new QLabel(centralwidget);
+        label_11->setObjectName("label_11");
+        label_11->setGeometry(QRect(1240, 940, 63, 20));
+        label_12 = new QLabel(centralwidget);
+        label_12->setObjectName("label_12");
+        label_12->setGeometry(QRect(1250, 950, 63, 20));
+        label_14 = new QLabel(centralwidget);
+        label_14->setObjectName("label_14");
+        label_14->setGeometry(QRect(1280, 940, 63, 20));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -3677,7 +3721,7 @@ public:
         Affichage->setCurrentIndex(0);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
-        Affichage_4->setCurrentIndex(1);
+        tab->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
         Affichage_5->setCurrentIndex(0);
 
@@ -3875,7 +3919,7 @@ public:
         label_cration_2->setText(QCoreApplication::translate("MainWindow", "            Date_creation:", nullptr));
         label_status_3->setText(QCoreApplication::translate("MainWindow", "               Statut:", nullptr));
         label_1->setText(QCoreApplication::translate("MainWindow", "Ajouter un vaccin :", nullptr));
-        Affichage_4->setTabText(Affichage_4->indexOf(ajoutct_8), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
+        tab->setTabText(tab->indexOf(ajoutct_8), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
         comboBox_tri_2->setItemText(0, QCoreApplication::translate("MainWindow", "Date_creation", nullptr));
         comboBox_tri_2->setItemText(1, QCoreApplication::translate("MainWindow", "Date_expiration", nullptr));
         comboBox_tri_2->setItemText(2, QCoreApplication::translate("MainWindow", "statut", nullptr));
@@ -3884,11 +3928,14 @@ public:
         label_recherche_2->setText(QCoreApplication::translate("MainWindow", "Recherche:", nullptr));
         pushButtonStat_18->setText(QString());
         pushButton_pdf_2->setText(QString());
-        label_10->setText(QCoreApplication::translate("MainWindow", "entrez l'Id:", nullptr));
+        label_10->setText(QCoreApplication::translate("MainWindow", "entrez le nom du vaccin:", nullptr));
         pushButton_modifier_2->setText(QString());
         pushButton_suppv->setText(QString());
-        Affichage_4->setTabText(Affichage_4->indexOf(lirect_8), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
-        Affichage_4->setTabText(Affichage_4->indexOf(Statistique_8), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
+        tab->setTabText(tab->indexOf(lirect_8), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
+        tab->setTabText(tab->indexOf(Statistique_8), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
+        predictionLabel->setText(QString());
+        btnPredire->setText(QCoreApplication::translate("MainWindow", "valider", nullptr));
+        tab->setTabText(tab->indexOf(Prediction), QCoreApplication::translate("MainWindow", "Prediction", nullptr));
         label_124->setText(QCoreApplication::translate("MainWindow", "Bienvenue dans la section de gestion de vaccination", nullptr));
         label_226->setText(QCoreApplication::translate("MainWindow", "Bienvenue dans la section de gestion de Compagnes de vaccination", nullptr));
         groupBox_27->setTitle(QString());
@@ -4002,6 +4049,9 @@ public:
         label_8->setText(QString());
         label_9->setText(QString());
         label_5->setText(QString());
+        label_11->setText(QString());
+        label_12->setText(QString());
+        label_14->setText(QString());
     } // retranslateUi
 
 };

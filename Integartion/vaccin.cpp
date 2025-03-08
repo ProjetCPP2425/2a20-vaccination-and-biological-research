@@ -74,19 +74,19 @@ QSqlQueryModel* Vaccin::afficher()
 
     return model;
 }
-bool Vaccin::supprimer(int id) {
+bool Vaccin::supprimer(QString nomv) {
     QSqlQuery query;
-    query.prepare("DELETE FROM VACCIN WHERE id_vaccination= :id");
-    query.bindValue(":id", id);
+    query.prepare("DELETE FROM VACCIN WHERE nom= :nomv");
+    query.bindValue(":nomv", nomv);
     return query.exec();  // Retourne true si la suppression réussit
 }
-bool Vaccin::remplirChampsModification(int id, QString &nom, QString &type, QDate &date_creation, QDate &date_expiration, QString &statut, QString &certification) {
+bool Vaccin::remplirChampsModification(QString nomv, QString &nom, QString &type, QDate &date_creation, QDate &date_expiration, QString &statut, QString &certification) {
     QSqlQuery query;
-    query.prepare("SELECT NOM, \"TYPE\", DATE_CREATION, DATE_EXPIRATION, STATUT, CERTIFICATION_VACCIN FROM SMARTVACC.VACCIN WHERE id_vaccination = :id");
-    query.bindValue(":id", id);
+    query.prepare("SELECT NOM, \"TYPE\", DATE_CREATION, DATE_EXPIRATION, STATUT, CERTIFICATION_VACCIN FROM SMARTVACC.VACCIN WHERE LOWER(NOM) = LOWER(:nomv)");
+    query.bindValue(":nomv", nomv);
 
     if (!query.exec()) {
-        qDebug() << "Erreur SQL :" << query.lastError().text();
+        qDebug() << "❌ Erreur SQL lors de la récupération des données :" << query.lastError().text();
         return false;
     }
 
@@ -98,27 +98,55 @@ bool Vaccin::remplirChampsModification(int id, QString &nom, QString &type, QDat
         statut = query.value(4).toString();
         certification = query.value(5).toString();
 
-        qDebug() << "Données chargées pour l'ID :" << id;
+        qDebug() << "✅ Données récupérées pour le vaccin : " << nomv;
+        qDebug() << "Nom:" << nom << "| Type:" << type << "| Date Création:" << date_creation
+                 << "| Date Expiration:" << date_expiration << "| Statut:" << statut
+                 << "| Certification:" << certification;
+
         return true;
     } else {
-        qDebug() << "Aucun vaccin trouvé pour l'ID :" << id;
+        qDebug() << "⚠️ Aucun vaccin trouvé pour le nom :" << nomv;
         return false;
     }
 }
-bool Vaccin::modifier(int id) {
-    QSqlQuery query;
-    query.prepare("UPDATE SMARTVACC.VACCIN SET NOM = :nom, \"TYPE\" = :type, DATE_CREATION = :date_creation, DATE_EXPIRATION = :date_expiration, STATUT = :statut, CERTIFICATION_VACCIN = :certification WHERE id_vaccination = :id");
 
+bool Vaccin::modifier(QString nomv) {
+    QSqlQuery query;
+
+    // Vérifier si le nouveau nom existe déjà (sauf s'il est identique à l'ancien)
+    query.prepare("SELECT COUNT(*) FROM SMARTVACC.VACCIN WHERE LOWER(NOM) = LOWER(:nom) AND LOWER(NOM) != LOWER(:nomv)");
     query.bindValue(":nom", nom);
+    query.bindValue(":nomv", nomv);
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL lors de la vérification du nom : " << query.lastError().text();
+        return false;
+    }
+
+    query.next();
+    int count = query.value(0).toInt();
+    if (count > 0) {
+        qDebug() << "⚠️ Le nom " << nom << " existe déjà !";
+        return false;  // Empêche la modification si le nom existe déjà
+    }
+
+    query.prepare("UPDATE SMARTVACC.VACCIN SET \"TYPE\" = :type, DATE_CREATION = :date_creation, DATE_EXPIRATION = :date_expiration, STATUT = :statut, CERTIFICATION_VACCIN = :certification WHERE LOWER(NOM) = LOWER(:nomv)");
     query.bindValue(":type", type);
     query.bindValue(":date_creation", date_creation);
     query.bindValue(":date_expiration", date_expiration);
     query.bindValue(":statut", statut);
     query.bindValue(":certification", certification_vaccin);
-    query.bindValue(":id", id);
+    query.bindValue(":nomv", nomv);
 
-    return query.exec();
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur lors de la modification :" << query.lastError().text();
+        return false;
+    }
+
+    qDebug() << "✅ Vaccin " << nomv << " modifié avec succès.";
+    return true;
 }
+
 
 
 

@@ -32,17 +32,27 @@ private slots:
     void on_pushButton_ajouter_v_clicked();
     void on_pushButton_suppv_clicked();
     void on_pushButton_modifier_2_clicked();
-    void remplirChampsModification(int id);
+    void remplirChampsModification(QString nomv);
 
     void on_lineEdit_recherche_2_textChanged(const QString &arg1);
     void verifierVaccinsExpires();
     void updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate);
     void showError(QString error);
+    void updatePrediction(const QString &predictionResult);
+    void lancerPrediction();
+    void verifierNom();
+    bool nomExisteDeja(const QString &nom);
+    void verifierTypeVaccin() ;
+    void verifierCertificationVaccin();
+    //void on_pushButton_annuler_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     Vaccin vacc;
     bool modeModification = false;
-    int idAModifier = -1;
+    QString nomAModifier ;
+    QString haya ;
+    MedAnalysis *medApi;  // ✅ Ajout de l'attribut pour gérer l'API
 
 };
 #endif // MAINWINDOW_H

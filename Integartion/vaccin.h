@@ -48,10 +48,10 @@ public:
     // CRUD
     bool ajouter();
     QSqlQueryModel * afficher();
-    bool supprimer(int);
+    bool supprimer(QString);
     bool modifier(int, QString,QString, QDate, QDate,QString, QString);
-    bool remplirChampsModification(int id, QString &nom, QString &type, QDate &date_creation, QDate &date_expiration, QString &statut, QString &certification);
-    bool modifier(int id);
+    bool remplirChampsModification(QString nomv, QString &nom, QString &type, QDate &date_creation, QDate &date_expiration, QString &statut, QString &certification);
+    bool modifier(QString nomv);
     QSqlQueryModel * notificationsExpiration();
 
     // Tri
