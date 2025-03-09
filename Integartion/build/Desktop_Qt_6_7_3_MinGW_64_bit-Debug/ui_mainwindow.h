@@ -2342,7 +2342,7 @@ public:
         comboBox_tri_2->setGeometry(QRect(160, 195, 351, 41));
         label_tri_2 = new QLabel(lirect_8);
         label_tri_2->setObjectName("label_tri_2");
-        label_tri_2->setGeometry(QRect(90, 210, 191, 21));
+        label_tri_2->setGeometry(QRect(90, 210, 71, 21));
         label_tri_2->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -3721,7 +3721,7 @@ public:
         Affichage->setCurrentIndex(0);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
-        tab->setCurrentIndex(0);
+        tab->setCurrentIndex(1);
         Affichage_6->setCurrentIndex(0);
         Affichage_5->setCurrentIndex(0);
 

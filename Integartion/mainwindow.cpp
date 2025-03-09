@@ -11,7 +11,12 @@
 #include <QApplication>
 #include <QDate>
 #include <QSqlQuery>
-
+#include <QTimer>
+#include <QTextDocument>
+#include <QFileDialog>
+#include <QtPrintSupport/QPrinter>
+#include <QTextDocument>  // ✅ Correct
+#include <QDate>
 // Constructeur de MainWindow
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -257,19 +262,39 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
 
     qDebug() << "🔍 Avant modification, nomAModifier =" << nomAModifier;
 
-    // 🔴 Désactiver la vérification du nom pendant la modification
-    disconnect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
+    // ✅ Désactiver la vérification si on est en mode modification
+    if (!modeModification && (!ui->labelErrorNom->text().isEmpty() ||
+                              !ui->labelErrorType->text().isEmpty() ||
+                              !ui->labelErrorCertification->text().isEmpty())) {
+        QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de continuer !");
+        return;
+    }
+
+    // 🔴 Vérification que le statut est valide
+    if (statut != "effectuer" && statut != "en cour") {
+        QMessageBox::warning(this, "Erreur", "Veuillez choisir un statut valide !");
+        return;
+    }
+
+    // Vérifier que la date d'expiration est après la date de création
+    if (date_expiration <= date_creation) {
+        QMessageBox::warning(this, "Date invalide", "La date d'expiration doit être après la date de création !");
+        return;
+    }
 
     Vaccin v(0, nom, type, date_creation, date_expiration, statut, certification);
 
     if (modeModification) {
+
         if (nomAModifier.isEmpty()) {
             qDebug() << "❌ ERREUR: nomAModifier est vide lors de la modification !";
         }
         // 🔹 Mode Modification : Mettre à jour l'enregistrement existant
         if (v.modifier(nomAModifier)) {
             QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
-            modeModification = false;  // Désactiver le mode modification
+            modeModification = false;  // Désactiver le mode modification après enregistrement
+            connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom); // Réactiver la vérification
+
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de la modification !");
             return;
@@ -277,6 +302,7 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
     } else {
         // 🔹 Mode Ajout : Ajouter un nouveau vaccin
         qDebug() << "Mode Ajout - Nouveau vaccin";
+
         if (v.ajouter()) {
             QMessageBox::information(this, "Succès", "Vaccin ajouté avec succès !");
         } else {
@@ -284,9 +310,6 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
             return;
         }
     }
-
-    // 🔵 Réactiver la validation après modification
-    connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
 
     // 🔄 Mise à jour de la table après ajout/modification
     ui->tableView->setModel(v.afficher());
@@ -300,73 +323,141 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
 }
 
 
+
 void MainWindow::on_pushButton_suppv_clicked() {
+    QString nomv = ui->lineEdit->text().trimmed();
 
-
-    QString nomv = ui->lineEdit->text();
-
-    if (nomv=="") {
-        QMessageBox::warning(this, "nom invalide", "Veuillez entrer un nom valide !");
+    if (nomv.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer un NOM valide !");
         return;
     }
 
-    // Demander confirmation avant de supprimer
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Confirmation", "Voulez-vous vraiment supprimer ce vaccin ?",
-                                  QMessageBox::Yes | QMessageBox::No);
+    // 🔍 Vérifier si le vaccin existe avant de tenter de le supprimer
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM VACCIN WHERE NOM = :nom");
+    query.bindValue(":nom", nomv);
 
-    if (reply == QMessageBox::Yes) {
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL lors de la vérification de l'existence du vaccin :" << query.lastError().text();
+        QMessageBox::critical(this, "Erreur", "Erreur lors de la vérification de l'existence du vaccin !");
+        return;
+    }
+
+    query.next();
+    int count = query.value(0).toInt();
+
+    if (count == 0) {
+        QMessageBox::warning(this, "Nom inexistant", "⚠️ Le vaccin avec ce nom n'existe pas !");
+        return;
+    }
+
+    // 🗑️ Demander confirmation avec "Oui" et "Non"
+    QMessageBox confirmationBox;
+    confirmationBox.setWindowTitle("Confirmation");
+    confirmationBox.setText("Voulez-vous vraiment supprimer ce vaccin ?");
+    QPushButton *ouiButton = confirmationBox.addButton("Oui", QMessageBox::YesRole);
+    QPushButton *nonButton = confirmationBox.addButton("Non", QMessageBox::NoRole);
+    confirmationBox.exec();
+
+    if (confirmationBox.clickedButton() == ouiButton) {
         Vaccin v;
-        if (v.supprimer(nomv)) {  // Appel de la fonction dans `vaccin.cpp`
+        if (v.supprimer(nomv)) {  // ✅ Suppression si le vaccin existe
             QMessageBox::information(this, "Succès", "Vaccin supprimé avec succès !");
-            ui->tableView->setModel(v.afficher());  // Mettre à jour l'affichage
+            ui->tableView->setModel(v.afficher());  // 🔄 Mettre à jour l'affichage
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de la suppression du vaccin !");
         }
     }
 }
-void MainWindow::on_pushButton_modifier_2_clicked() {
-    QString nomv = ui->lineEdit->text();
 
-    if (nomv=="") {
-        QMessageBox::warning(this, "Erreur", "Veuillez entrer un NOM valide !");
-        return;
+    void MainWindow::on_pushButton_modifier_2_clicked() {
+        QString nomv = ui->lineEdit->text().trimmed();
+
+        if (nomv.isEmpty()) {
+            QMessageBox::warning(this, "Erreur", "Veuillez entrer un NOM valide !");
+            return;
+        }
+
+        // 🔍 Vérifier si le vaccin existe avant de permettre la modification
+        QSqlQuery query;
+        query.prepare("SELECT COUNT(*) FROM VACCIN WHERE NOM = :nom");
+        query.bindValue(":nom", nomv);
+
+        if (!query.exec()) {
+            qDebug() << "❌ Erreur SQL lors de la vérification de l'existence du vaccin :" << query.lastError().text();
+            QMessageBox::critical(this, "Erreur", "Erreur lors de la vérification du vaccin !");
+            return;
+        }
+
+        query.next();
+        int count = query.value(0).toInt();
+
+        if (count == 0) {
+            QMessageBox::warning(this, "Nom inexistant", "⚠️ Le vaccin avec ce nom n'existe pas !");
+            return;
+        }
+
+        // 📌 Si le vaccin existe, on remplit les champs pour modification
+        qDebug() << "📢 Tentative de modification pour le vaccin :" << nomv;
+        remplirChampsModification(nomv);
+
+        // 🔄 Redirection vers la page d'ajout/modification
+        ui->stackedWidget->setCurrentIndex(3);
     }
-    qDebug() << "📢 Tentative de modification pour le vaccin :" << nomv;
-    // Appel de la fonction pour remplir les champs
-    remplirChampsModification(nomv);
 
-    // Rediriger vers la page d'ajout
-    ui->stackedWidget->setCurrentIndex(3);
-}
 
-void MainWindow::remplirChampsModification(QString nomv) {
-    QString nom, type, statut, certification;
-    QDate date_creation, date_expiration;
 
-    qDebug() << "🔍 Avant récupération, nomAModifier =" << nomAModifier;
-    Vaccin v;
-    if (v.remplirChampsModification(nomv,nom, type, date_creation, date_expiration, statut, certification)) {
-           disconnect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
-        // Remplir les champs
-        ui->lineEdit_nom_2->setText(nom);
-        ui->lineEdit_typev_2->setText(type);
-        ui->dateEdit_creation_2->setDate(date_creation);
-        ui->dateEdit_expiration_2->setDate(date_expiration);
-        ui->comboBox_status_2->setCurrentText(statut);
-        ui->lineEdit_certification_2->setText(certification);
-        ui->lineEdit_nom_2->setDisabled(true);
-        haya=nom;
-        nomAModifier = nom;
-        modeModification = true;
-qDebug() << "✅ Après récupération, nomAModifier =" << nomAModifier;
-        connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
-        QMessageBox::information(this, "Modification", "Données chargées, vous pouvez modifier !");
-    } else {
-        QMessageBox::critical(this, "Erreur", "Impossible de charger les données du vaccin !");
+
+
+    void MainWindow::remplirChampsModification(QString nomv) {
+        QString nom, type, statut, certification;
+        QDate date_creation, date_expiration;
+
+        qDebug() << "🔍 Avant récupération, nomAModifier =" << nomAModifier;
+        Vaccin v;
+        if (v.remplirChampsModification(nomv, nom, type, date_creation, date_expiration, statut, certification)) {
+            disconnect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
+
+            // Remplir les champs
+            ui->lineEdit_nom_2->setText(nom);
+            ui->lineEdit_typev_2->setText(type);
+            ui->dateEdit_creation_2->setDate(date_creation);
+            ui->dateEdit_expiration_2->setDate(date_expiration);
+            ui->comboBox_status_2->setCurrentText(statut);
+            ui->lineEdit_certification_2->setText(certification);
+            ui->lineEdit_nom_2->setDisabled(true);
+            ancienType = type;
+            ancienneDateCreation = date_creation;
+            ancienneDateExpiration = date_expiration;
+            ancienStatut = statut;
+            ancienneCertification = certification;
+
+            nomAModifier = nom;
+            modeModification = true;
+
+            qDebug() << "✅ Après récupération, nomAModifier =" << nomAModifier;
+
+            // ✅ Affichage du message d'information
+            QMessageBox::information(this, "Modification", "Données chargées, vous pouvez modifier !");
+
+            // ✅ Redirection forcée avec QMetaObject::invokeMethod
+            QMetaObject::invokeMethod(this, [=]() {
+                qDebug() << "🔄 Forçage de la redirection vers la page d'ajout";
+                ui->stackedWidget->setCurrentIndex(3);
+                ui->tab->setCurrentIndex(0); // 0 correspond à l'onglet "Ajout"
+
+                QApplication::processEvents(); // ✅ Force l'UI à traiter les événements
+                qDebug() << "📌 Vérification après redirection : Page active =" << ui->stackedWidget->currentIndex();
+
+            }, Qt::QueuedConnection);
+
+
+        } else {
+            QMessageBox::critical(this, "Erreur", "Impossible de charger les données du vaccin !");
+        }
     }
-    qDebug() << "hedhy variable li zedtha ama f fct lfou9 =" << haya;
-}
+
+
 
 
 void MainWindow::on_lineEdit_recherche_2_textChanged(const QString &arg1)
@@ -509,29 +600,32 @@ void MainWindow::verifierNom() {
     qDebug() << "🔍 Vérification du nom :" << nom;
     qDebug() << "📌 Valeur actuelle de nomAModifier :" << nomAModifier;
 
-    // ✅ Si on est en mode modification et que le nom n'a pas changé, ne rien faire
+    // ✅ Désactiver la vérification si on est en mode modification
     if (modeModification) {
         qDebug() << "✅ Mode modification actif, validation du nom ignorée.";
-        return;
+        ui->labelErrorNom->clear();
+        ui->labelErrorNom->setStyleSheet("color: transparent; background-color: transparent; border: none;");
+        return;  // ⛔ Quitter immédiatement la fonction
     }
 
     if (nom.isEmpty()) {
         ui->labelErrorNom->setText("⚠ Le nom ne peut pas être vide !");
-        ui->labelErrorNom->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
+        ui->labelErrorNom->setStyleSheet("color: red; background-color: transparent; border: none;");
     }
     else if (nom.length() < 3) {
         ui->labelErrorNom->setText("⚠ Le nom doit contenir au moins 3 caractères !");
-        ui->labelErrorNom->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
+        ui->labelErrorNom->setStyleSheet("color: red; background-color: transparent; border: none;");
     }
     else if (nomExisteDeja(nom)) {
         ui->labelErrorNom->setText("⚠ Ce nom de vaccin existe déjà !");
-        ui->labelErrorNom->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
+        ui->labelErrorNom->setStyleSheet("color: red; background-color: transparent; border: none;");
     }
     else {
         ui->labelErrorNom->clear();
-        ui->labelErrorNom->setStyleSheet("color: transparent; background-color: transparent; border: none; font-weight: normal;");
+        ui->labelErrorNom->setStyleSheet("color: transparent; background-color: transparent; border: none;");
     }
 }
+
 
 
 
@@ -599,36 +693,140 @@ void MainWindow::verifierCertificationVaccin() {
     }
 }
 
-
-/*void MainWindow::on_pushButton_annuler_2_clicked()
+void MainWindow::on_pushButton_annuler_2_clicked()
 {
-        if (modeModification) {
-            // 🔹 Si on est en mode modification, remettre les anciennes valeurs
-            QSqlQuery query;
-            query.prepare("SELECT CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS WHERE CIN = :cin");
-            query.bindValue(":nomAModifier", nomAModifier);
+    if (modeModification) {
+        qDebug() << "🔄 Annulation en mode modification - Restauration des anciennes valeurs.";
 
-            if (query.exec() && query.next()) {
-                // ✅ Remettre toutes les anciennes valeurs, y compris le CIN
-                ui->lineEdit_nom_2->setText(nom);
-                ui->lineEdit_typev_2->setText(type);
-                ui->dateEdit_creation_2->setDate(date_creation);
-                ui->dateEdit_expiration_2->setDate(date_expiration);
-                ui->comboBox_status_2->setCurrentText(statut);
-                ui->lineEdit_certification_2->setText(certification);
-            }
-        } else {
-            // 🔹 Si on est en mode ajout, vider les champs
-            ui->cin->clear();
-            ui->nom_carnet->clear();
-            ui->prenom_carnet->clear();
-            ui->age->clear();
-            ui->num->clear();
-            ui->poids->clear();
-            ui->date_rdv->setDate(QDate::currentDate());
-            ui->remarques->clear();
-            ui->statut_vaccinal->setCurrentIndex(0);
-        }
+        // 🔹 Remettre les anciennes valeurs
+        ui->lineEdit_nom_2->setText(nomAModifier);
+        ui->lineEdit_typev_2->setText(ancienType);
+        ui->dateEdit_creation_2->setDate(ancienneDateCreation);
+        ui->dateEdit_expiration_2->setDate(ancienneDateExpiration);
+        ui->comboBox_status_2->setCurrentText(ancienStatut);
+        ui->lineEdit_certification_2->setText(ancienneCertification);
 
+        QMessageBox::information(this, "Annulation", "Les valeurs avant modification ont été restaurées.");
+    } else {
+        qDebug() << "🧹 Annulation en mode ajout - Effacement des champs.";
+
+        // 🔹 Vider tous les champs
+        ui->lineEdit_nom_2->clear();
+        ui->lineEdit_typev_2->clear();
+        ui->comboBox_status_2->setCurrentIndex(0);
+        ui->dateEdit_creation_2->setDate(QDate::currentDate());
+        ui->dateEdit_expiration_2->setDate(QDate::currentDate());
+        ui->lineEdit_certification_2->clear();
+
+        QMessageBox::information(this, "Annulation", "Les champs ont été effacés.");
+    }
 }
-*/
+
+
+
+
+void MainWindow::on_pushButton_pdf_2_clicked() {
+    QString nomVaccin = ui->lineEdit->text().trimmed();
+
+    if (nomVaccin.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer un NOM valide pour le vaccin !");
+        return;
+    }
+
+    // 🔍 Rechercher les détails du vaccin dans la base de données
+    QSqlQuery query;
+    query.prepare("SELECT NOM, TYPE, DATE_CREATION, DATE_EXPIRATION, CERTIFICATION_VACCIN, STATUT "
+                  "FROM SMARTVACC.VACCIN WHERE NOM = :nom");
+    query.bindValue(":nom", nomVaccin);
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL lors de la récupération du vaccin :" << query.lastError().text();
+        QMessageBox::critical(this, "Erreur", "Impossible de récupérer les informations du vaccin !");
+        return;
+    }
+
+    if (!query.next()) {
+        QMessageBox::warning(this, "Erreur", "Le vaccin avec ce nom n'existe pas !");
+        return;
+    }
+
+    // ✅ Récupérer les informations
+    QString type = query.value("TYPE").toString();
+    QDate dateCreation = query.value("DATE_CREATION").toDate();
+    QDate dateExpiration = query.value("DATE_EXPIRATION").toDate();
+    QString certification = query.value("CERTIFICATION_VACCIN").toString();
+    QString statut = query.value("STATUT").toString();
+
+    // 🏥 Définition du statut du vaccin
+    QString etatVaccin;
+    QString colorVaccin;
+    if (dateExpiration < QDate::currentDate()) {
+        etatVaccin = "⚠ Expiré ❌";
+        colorVaccin = "red";
+    } else if (dateExpiration <= QDate::currentDate().addMonths(3)) {
+        etatVaccin = "⚠ Expiration Proche";
+        colorVaccin = "orange";
+    } else {
+        etatVaccin = "✅ Valide";
+        colorVaccin = "green";
+    }
+
+    // 📌 Définition du statut de la certification
+    QString etatCertification = certification.isEmpty() ? "Non certifié ❌" : "Certifié ✅";
+    QString colorCertification = certification.isEmpty() ? "red" : "green";
+
+    // 📂 Demander où enregistrer le fichier PDF
+    QString filePath = QFileDialog::getSaveFileName(this, "Enregistrer le fichier PDF",
+                                                    nomVaccin + "_certification.pdf",
+                                                    "Fichiers PDF (*.pdf)");
+
+    if (filePath.isEmpty()) {
+        return; // L'utilisateur a annulé
+    }
+
+    // 🖨️ Configuration de l'impression vers PDF
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(filePath);
+    printer.setPageSize(QPageSize(QPageSize::A4));
+
+    // 📝 Création du document PDF
+    QTextDocument document;
+    QString html = QString(
+                       "<h1 style='color:#B22222; text-align:center;'>🩺 Rapport de Certification du Vaccin</h1>"
+                       "<hr style='border:1px solid #B22222;'>"
+                       "<h2 style='color:#333;'>📌 Détails du Vaccin</h2>"
+                       "<p><b>🆔 Nom :</b> %1</p>"
+                       "<p><b>🧬 Type :</b> %2</p>"
+                       "<p><b>📅 Date de Création :</b> %3</p>"
+                       "<p><b>⏳ Date d'Expiration :</b> %4</p>"
+                       "<p><b>🩹 Statut :</b> %5</p>"
+                       "<h2 style='color:#333;'>🏥 Certification</h2>"
+                       "<p><b>📜 Nom du Certificat :</b> %6</p>"
+                       "<p style='color:%7;'><b>🔍 État de la Certification :</b> %8</p>"
+                       "<h2 style='color:#333;'>🔎 Analyse de l'État du Vaccin</h2>"
+                       "<p style='color:%9;'><b>⚠ Statut :</b> %10</p>"
+                       "<h2 style='color:#333;'>📊 Recommandations et Avis Médical</h2>"
+                       "<p>🔵 Ce vaccin est recommandé pour une utilisation jusqu'à sa date d'expiration.</p>"
+                       "<p>⚠ Si le vaccin est expiré, ne pas utiliser et éliminer selon les règles sanitaires.</p>"
+                       "<p>🩺 Consultez un professionnel de santé pour toute question sur ce vaccin.</p>"
+                       "<hr style='border:1px solid #B22222;'>"
+                       "<p style='text-align:center;'>📅 Rapport généré le %11</p>"
+                       ).arg(nomVaccin)
+                       .arg(type)
+                       .arg(dateCreation.toString("dd/MM/yyyy"))
+                       .arg(dateExpiration.toString("dd/MM/yyyy"))
+                       .arg(statut)
+                       .arg(certification.isEmpty() ? "Non disponible" : certification)
+                       .arg(colorCertification)
+                       .arg(etatCertification)
+                       .arg(colorVaccin)
+                       .arg(etatVaccin)
+                       .arg(QDate::currentDate().toString("dd/MM/yyyy"));
+
+    document.setHtml(html);
+    document.print(&printer);
+
+    // 🔔 Message de succès
+    QMessageBox::information(this, "Succès", "Le rapport de certification a été généré avec succès !");
+}

@@ -44,7 +44,10 @@ private slots:
     bool nomExisteDeja(const QString &nom);
     void verifierTypeVaccin() ;
     void verifierCertificationVaccin();
-    //void on_pushButton_annuler_2_clicked();
+
+    void on_pushButton_annuler_2_clicked();
+
+    void on_pushButton_pdf_2_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -53,6 +56,11 @@ private:
     QString nomAModifier ;
     QString haya ;
     MedAnalysis *medApi;  // ✅ Ajout de l'attribut pour gérer l'API
+    QString ancienType;
+    QDate ancienneDateCreation;
+    QDate ancienneDateExpiration;
+    QString ancienStatut;
+    QString ancienneCertification;
 
 };
 #endif // MAINWINDOW_H
