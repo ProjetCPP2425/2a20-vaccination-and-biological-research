@@ -3,6 +3,13 @@
 
 #include <QString>
 #include <QDate>
+#include <QSqlQuery>
+#include <QSqlQueryModel>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QCategoryAxis>
 
 class Employe {
 private:
@@ -51,9 +58,17 @@ public:
     void setTypeAbsences(const QString &typeAbsences);
 
     // Méthodes pour interaction avec la base de données (déclarées mais pas implémentées ici)
-    //bool ajouter();
-    //bool modifier();
-    //bool supprimer(int id);
+    bool ajouter();
+   bool modifier(int id_employe);
+    bool supprimerParCIN(QString cin);
+
+    QSqlQueryModel* afficher();
+private:
+    QString lastError;
+public:
+    QString getLastError() const { return lastError; }
+
+
 };
 
 #endif // EMPLOYE_H
