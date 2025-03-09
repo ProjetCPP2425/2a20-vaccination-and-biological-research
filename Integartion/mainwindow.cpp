@@ -305,6 +305,16 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
 
         if (v.ajouter()) {
             QMessageBox::information(this, "Succès", "Vaccin ajouté avec succès !");
+            // ✅ Redirection forcée avec QMetaObject::invokeMethod
+            QMetaObject::invokeMethod(this, [=]() {
+                qDebug() << "🔄 Forçage de la redirection vers la page d'ajout";
+                ui->stackedWidget->setCurrentIndex(3);
+                ui->tab->setCurrentIndex(1); // 0 correspond à l'onglet "Ajout"
+
+                QApplication::processEvents(); // ✅ Force l'UI à traiter les événements
+                qDebug() << "📌 Vérification après redirection : Page active =" << ui->stackedWidget->currentIndex();
+
+            }, Qt::QueuedConnection);
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de l'ajout !");
             return;
