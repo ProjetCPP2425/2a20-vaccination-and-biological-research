@@ -3342,24 +3342,24 @@ public:
 "}"));
         nomErrorLabel = new QLabel(groupBox_19);
         nomErrorLabel->setObjectName("nomErrorLabel");
-        nomErrorLabel->setGeometry(QRect(50, 90, 491, 51));
+        nomErrorLabel->setGeometry(QRect(40, 80, 401, 51));
         nomErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 12px;               /* Taille de police de 18px */\n"
+"    font-size: 10px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
         prenomErrorLabel = new QLabel(groupBox_19);
         prenomErrorLabel->setObjectName("prenomErrorLabel");
-        prenomErrorLabel->setGeometry(QRect(110, 180, 291, 41));
+        prenomErrorLabel->setGeometry(QRect(50, 180, 351, 41));
         prenomErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 12px;               /* Taille de police de 18px */\n"
+"    font-size: 10px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
         ageErrorLabel = new QLabel(groupBox_19);
@@ -3370,7 +3370,7 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 12px;               /* Taille de police de 18px */\n"
+"    font-size: 10px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 "\n"
@@ -3383,43 +3383,43 @@ public:
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 12px;               /* Taille de police de 18px */\n"
+"    font-size: 10px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 ""));
         remarquesErrorLabel = new QLabel(groupBox_19);
         remarquesErrorLabel->setObjectName("remarquesErrorLabel");
-        remarquesErrorLabel->setGeometry(QRect(90, 470, 381, 41));
+        remarquesErrorLabel->setGeometry(QRect(50, 470, 421, 41));
         remarquesErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 12px;               /* Taille de police de 18px */\n"
+"    font-size: 8px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 ""));
         poidsErrorLabel = new QLabel(groupBox_19);
         poidsErrorLabel->setObjectName("poidsErrorLabel");
-        poidsErrorLabel->setGeometry(QRect(530, 90, 281, 41));
+        poidsErrorLabel->setGeometry(QRect(510, 90, 281, 41));
         poidsErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 12px;               /* Taille de police de 18px */\n"
+"    font-size: 10px;               /* Taille de police de 18px */\n"
 "}\n"
 "\n"
 ""));
         numErrorLabel = new QLabel(groupBox_19);
         numErrorLabel->setObjectName("numErrorLabel");
-        numErrorLabel->setGeometry(QRect(640, 230, 301, 41));
+        numErrorLabel->setGeometry(QRect(510, 230, 391, 41));
         numErrorLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
 "    border: none;                  /* Pas de bordure */\n"
 "    font-weight: bold;             /* Texte en gras */\n"
-"    font-size: 12px;               /* Taille de police de 18px */\n"
+"    font-size: 10px;               /* Taille de police de 18px */\n"
 "}\n"
 ""));
         label_169 = new QLabel(frame_20);
@@ -3815,7 +3815,7 @@ public:
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(1);
+        tabs->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4127,7 +4127,7 @@ public:
         pushButtonStat_10->setText(QString());
         pushButtonDoc_10->setText(QString());
         modifierC->setText(QString());
-        nom_2->setText(QCoreApplication::translate("MainWindow", "Enter le cin du patient:", nullptr));
+        nom_2->setText(QCoreApplication::translate("MainWindow", "Enter le CIN du patient:", nullptr));
         supprimerC->setText(QString());
         tabs->setTabText(tabs->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());

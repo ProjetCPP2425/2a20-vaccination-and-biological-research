@@ -472,7 +472,7 @@ void MainWindow::validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExp
         field->setStyleSheet("border: 2px solid red; padding: 5px; background: white;");
 
         if (field == ui->nom_carnet || field == ui->prenom_carnet) {
-            errorLabel->setText("❌ Ne doit contenir que des lettres et espaces (pas de chiffres ni caractères spéciaux).");
+            errorLabel->setText("❌ Ne doit contenir que des lettres et espaces .");
         } else {
             errorLabel->setText("❌ " + errorMsg);
         }
@@ -496,7 +496,7 @@ void MainWindow::validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegular
         errorLabel->setStyleSheet("color: green; font-weight: bold; background: transparent;");
     } else {
         // ❌ Texte invalide → Affiche un message d'erreur (sans changer la bordure du champ)
-        errorLabel->setText("❌ Le texte doit contenir au moins 2 mots, sans chiffres ni caractères spéciaux (sauf `,`).");
+        errorLabel->setText("❌ Le texte doit contenir au moins 2 mots, sans chiffres .");
         errorLabel->setStyleSheet("color: red; font-weight: bold; background: transparent;");
     }
 }
