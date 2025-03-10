@@ -164,6 +164,10 @@ public:
     QDoubleSpinBox *doubleSpinBox_7;
     QSpinBox *spinBox_NbProjets_2;
     QSpinBox *spinBox_NbProjets_3;
+    QLabel *label_NomError;
+    QLabel *label_AdresseError;
+    QLabel *label_ResponsableError;
+    QLabel *label_TypeError;
     QLabel *label_110;
     QWidget *lirect_7;
     QComboBox *comboBox_Tri;
@@ -1701,7 +1705,7 @@ public:
 ""));
         lineEdit_Adresse = new QLineEdit(groupBox_13);
         lineEdit_Adresse->setObjectName("lineEdit_Adresse");
-        lineEdit_Adresse->setGeometry(QRect(230, 140, 251, 51));
+        lineEdit_Adresse->setGeometry(QRect(230, 150, 251, 51));
         lineEdit_Adresse->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir normal */\n"
@@ -1732,7 +1736,7 @@ public:
 "}"));
         label_Adresse = new QLabel(groupBox_13);
         label_Adresse->setObjectName("label_Adresse");
-        label_Adresse->setGeometry(QRect(-10, 140, 161, 51));
+        label_Adresse->setGeometry(QRect(-10, 150, 161, 51));
         label_Adresse->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; \n"
 "    color: #000000;          \n"
@@ -1856,6 +1860,50 @@ public:
 "}\n"
 "\n"
 ""));
+        label_NomError = new QLabel(groupBox_13);
+        label_NomError->setObjectName("label_NomError");
+        label_NomError->setGeometry(QRect(240, 110, 181, 41));
+        label_NomError->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; \n"
+"    color: #000000;          \n"
+"    border: none;                 \n"
+"    font-weight: bold;          \n"
+"    font-size: 15px;             \n"
+"}\n"
+""));
+        label_AdresseError = new QLabel(groupBox_13);
+        label_AdresseError->setObjectName("label_AdresseError");
+        label_AdresseError->setGeometry(QRect(240, 190, 181, 41));
+        label_AdresseError->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; \n"
+"    color: #000000;          \n"
+"    border: none;                 \n"
+"    font-weight: bold;          \n"
+"    font-size: 15px;             \n"
+"}\n"
+""));
+        label_ResponsableError = new QLabel(groupBox_13);
+        label_ResponsableError->setObjectName("label_ResponsableError");
+        label_ResponsableError->setGeometry(QRect(240, 270, 181, 41));
+        label_ResponsableError->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; \n"
+"    color: #000000;          \n"
+"    border: none;                 \n"
+"    font-weight: bold;          \n"
+"    font-size: 15px;             \n"
+"}\n"
+""));
+        label_TypeError = new QLabel(groupBox_13);
+        label_TypeError->setObjectName("label_TypeError");
+        label_TypeError->setGeometry(QRect(240, 350, 181, 41));
+        label_TypeError->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    background-color: transparent; \n"
+"    color: #000000;          \n"
+"    border: none;                 \n"
+"    font-weight: bold;          \n"
+"    font-size: 15px;             \n"
+"}\n"
+""));
         label_110 = new QLabel(frame_14);
         label_110->setObjectName("label_110");
         label_110->setGeometry(QRect(30, 10, 291, 51));
@@ -1955,7 +2003,7 @@ public:
         pushButton_34->setIcon(icon4);
         pushButton_37 = new QPushButton(lirect_7);
         pushButton_37->setObjectName("pushButton_37");
-        pushButton_37->setGeometry(QRect(1180, 400, 51, 41));
+        pushButton_37->setGeometry(QRect(1190, 400, 51, 41));
         pushButton_37->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #DC3545;  /* Bright red background */\n"
 "    color: white;               /* White text */\n"
@@ -1977,13 +2025,14 @@ public:
         pushButton_37->setIcon(icon5);
         tableView = new QTableView(lirect_7);
         tableView->setObjectName("tableView");
-        tableView->setGeometry(QRect(10, 260, 1081, 421));
+        tableView->setGeometry(QRect(0, 260, 1081, 421));
+        tableView->setStyleSheet(QString::fromUtf8(""));
         lineEdit_44 = new QLineEdit(lirect_7);
         lineEdit_44->setObjectName("lineEdit_44");
-        lineEdit_44->setGeometry(QRect(1110, 340, 131, 41));
+        lineEdit_44->setGeometry(QRect(1100, 340, 151, 41));
         label_115 = new QLabel(lirect_7);
         label_115->setObjectName("label_115");
-        label_115->setGeometry(QRect(1120, 290, 101, 31));
+        label_115->setGeometry(QRect(1090, 290, 171, 31));
         label_115->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -3731,7 +3780,7 @@ public:
 
         Affichage->setCurrentIndex(0);
         Affichage_2->setCurrentIndex(0);
-        Affichage_3->setCurrentIndex(1);
+        Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
         Affichage_5->setCurrentIndex(0);
@@ -3878,6 +3927,10 @@ public:
         label_Personnel->setText(QCoreApplication::translate("MainWindow", "         Personnel:", nullptr));
         label_Dpense->setText(QCoreApplication::translate("MainWindow", "         D\303\251pense:", nullptr));
         label_Statut->setText(QCoreApplication::translate("MainWindow", "         Statut:", nullptr));
+        label_NomError->setText(QString());
+        label_AdresseError->setText(QString());
+        label_ResponsableError->setText(QString());
+        label_TypeError->setText(QString());
         label_110->setText(QCoreApplication::translate("MainWindow", "Ajouter un laboratoire", nullptr));
         Affichage_3->setTabText(Affichage_3->indexOf(ajoutct_7), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
         comboBox_Tri->setItemText(0, QCoreApplication::translate("MainWindow", "Donner le type du Laboratoire:", nullptr));
@@ -3891,7 +3944,7 @@ public:
         pushButton_pdf_4->setText(QString());
         pushButton_34->setText(QString());
         pushButton_37->setText(QString());
-        label_115->setText(QCoreApplication::translate("MainWindow", "Inserer l'id :", nullptr));
+        label_115->setText(QCoreApplication::translate("MainWindow", "Donner le nom du lab: :", nullptr));
         Affichage_3->setTabText(Affichage_3->indexOf(lirect_7), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         Affichage_3->setTabText(Affichage_3->indexOf(Statistique_7), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
         groupBox_14->setTitle(QString());

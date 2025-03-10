@@ -26,7 +26,7 @@ Laboratoire::Laboratoire(int id, QString nom, QString adresse, QString type, QSt
 
 bool Laboratoire::ajouter()
 {
-    // Prepare query
+
     QSqlQuery query;
     query.prepare("INSERT INTO SMARTVACC.LABORATOIRES (NOM_LAB, ADRESSE, RESPONSABLE, TYPE, STATUT, "
                   "NB_PROJETS, MATRIELS, PERSONNEL, DEPONSE, DATE_CREATION) "
@@ -43,10 +43,9 @@ bool Laboratoire::ajouter()
     query.bindValue(":depense", getDepense());
     query.bindValue(":date_creation", getDateCreation());
 
-    // Execute and check
     if(!query.exec())
     {
-        qDebug() << "Error adding laboratoire: " << query.lastError().text();
+        qDebug() << "Error de l'ajout d'un laboratoire : " << query.lastError().text();
         return false;
     }
     return true;
@@ -55,7 +54,7 @@ QSqlQueryModel* Laboratoire::afficher()
 {
     QSqlQueryModel *model = new QSqlQueryModel();
 
-    model->setQuery("SELECT ID_LABORATOIRE,NOM_LAB, ADRESSE, RESPONSABLE, TYPE, STATUT, "
+    model->setQuery("SELECT NOM_LAB, ADRESSE, RESPONSABLE, TYPE, STATUT, "
                     "NB_PROJETS, MATRIELS, PERSONNEL, DEPONSE, DATE_CREATION "
                     "FROM SMARTVACC.LABORATOIRES");
 
@@ -63,46 +62,43 @@ QSqlQueryModel* Laboratoire::afficher()
         qDebug() << "Error fetching laboratories: " << model->lastError().text();
         return nullptr;
     }
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID_LABORATOIRE"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Adresse"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Responsable"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Type"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Statut"));
-    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Nb Projets"));
-    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Matériels"));
-    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Personnel"));
-    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Dépense"));
-    model->setHeaderData(10, Qt::Horizontal, QObject::tr("Date de création"));
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Adresse"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Responsable"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Type"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Statut"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Nb Projets"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Matériels"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Personnel"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Dépense"));
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Date de création"));
 
     return model;
 }
-bool Laboratoire::supprimer(int id)
+bool Laboratoire::supprimer(const QString nom)
 {
     QSqlQuery query;
-    query.prepare("DELETE FROM SMARTVACC.LABORATOIRES WHERE ID_LABORATOIRE = :id");
-    query.bindValue(":id", id);
+    query.prepare("DELETE FROM SMARTVACC.LABORATOIRES WHERE NOM_LAB = :nom ");
+    query.bindValue(":nom", nom);
 
-    // Debug: Check the ID being passed
-    qDebug() << "Deleting laboratoire with ID:" << id;
+    qDebug() << "Deleting laboratoire with NOM_LAB:" << nom;
 
     if (!query.exec()) {
-        qDebug() << "Error deleting laboratoire: " << query.lastError().text();
+        qDebug() << "Error a la supression du laboratoire : " << query.lastError().text();
         return false;
     }
     return true;
 }
 
-bool Laboratoire::modifier(int id)
+bool Laboratoire::modifier(const QString nom)
 {
     QSqlQuery query;
-    query.prepare("UPDATE SMARTVACC.LABORATOIRES SET NOM_LAB = :nom, ADRESSE = :adresse, RESPONSABLE = :responsable, "
+    query.prepare("UPDATE SMARTVACC.LABORATOIRES SET ADRESSE = :adresse, RESPONSABLE = :responsable, "
                   "TYPE = :type, STATUT = :statut, NB_PROJETS = :nb_projets, MATRIELS = :matriels, "
                   "PERSONNEL = :personnel, DEPONSE = :depense, DATE_CREATION = :date_creation "
-                  "WHERE ID_LABORATOIRE = :id");
+                  "WHERE NOM_LAB = :nom");
 
-    query.bindValue(":id", id);
-    query.bindValue(":nom", getNomLab());
+    query.bindValue(":nom",nom);
     query.bindValue(":adresse", getAdresse());
     query.bindValue(":responsable", getResponsable());
     query.bindValue(":type", getType());

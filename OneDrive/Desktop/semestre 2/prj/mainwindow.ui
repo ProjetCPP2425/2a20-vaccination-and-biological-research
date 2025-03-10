@@ -2380,7 +2380,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="ajoutct_7">
        <attribute name="title">
@@ -2659,7 +2659,7 @@ QPushButton:hover {
           <property name="geometry">
            <rect>
             <x>230</x>
-            <y>140</y>
+            <y>150</y>
             <width>251</width>
             <height>51</height>
            </rect>
@@ -2720,7 +2720,7 @@ QPushButton:hover {
           <property name="geometry">
            <rect>
             <x>-10</x>
-            <y>140</y>
+            <y>150</y>
             <width>161</width>
             <height>51</height>
            </rect>
@@ -2971,6 +2971,98 @@ QPushButton:hover {
 </string>
           </property>
          </widget>
+         <widget class="QLabel" name="label_NomError">
+          <property name="geometry">
+           <rect>
+            <x>240</x>
+            <y>110</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; 
+    color: #000000;          
+    border: none;                 
+    font-weight: bold;          
+    font-size: 15px;             
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_AdresseError">
+          <property name="geometry">
+           <rect>
+            <x>240</x>
+            <y>190</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; 
+    color: #000000;          
+    border: none;                 
+    font-weight: bold;          
+    font-size: 15px;             
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ResponsableError">
+          <property name="geometry">
+           <rect>
+            <x>240</x>
+            <y>270</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; 
+    color: #000000;          
+    border: none;                 
+    font-weight: bold;          
+    font-size: 15px;             
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_TypeError">
+          <property name="geometry">
+           <rect>
+            <x>240</x>
+            <y>350</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; 
+    color: #000000;          
+    border: none;                 
+    font-weight: bold;          
+    font-size: 15px;             
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </widget>
         <widget class="QLabel" name="label_110">
          <property name="geometry">
@@ -3204,7 +3296,7 @@ QPushButton:pressed {
        <widget class="QPushButton" name="pushButton_37">
         <property name="geometry">
          <rect>
-          <x>1180</x>
+          <x>1190</x>
           <y>400</y>
           <width>51</width>
           <height>41</height>
@@ -3240,19 +3332,24 @@ QPushButton:pressed {
        <widget class="QTableView" name="tableView">
         <property name="geometry">
          <rect>
-          <x>10</x>
+          <x>0</x>
           <y>260</y>
           <width>1081</width>
           <height>421</height>
          </rect>
         </property>
+        <property name="styleSheet">
+         <string notr="true">
+
+</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="lineEdit_44">
         <property name="geometry">
          <rect>
-          <x>1110</x>
+          <x>1100</x>
           <y>340</y>
-          <width>131</width>
+          <width>151</width>
           <height>41</height>
          </rect>
         </property>
@@ -3260,9 +3357,9 @@ QPushButton:pressed {
        <widget class="QLabel" name="label_115">
         <property name="geometry">
          <rect>
-          <x>1120</x>
+          <x>1090</x>
           <y>290</y>
-          <width>101</width>
+          <width>171</width>
           <height>31</height>
          </rect>
         </property>
@@ -3275,7 +3372,7 @@ QPushButton:pressed {
 </string>
         </property>
         <property name="text">
-         <string>Inserer l'id :</string>
+         <string>Donner le nom du lab: :</string>
         </property>
        </widget>
        <zorder>tableView</zorder>
