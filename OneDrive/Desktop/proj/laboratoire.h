@@ -53,8 +53,8 @@ public:
     //CRUD
     bool ajouter();
     QSqlQueryModel * afficher();
-    bool supprimer(int id);
-    bool modifier(int id);
+    bool supprimer(const QString nom);
+    bool modifier(const QString nom);
 
 };
 #endif // LABORATOIRE_H

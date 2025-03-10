@@ -4,6 +4,7 @@
 #include "laboratoire.h"
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QRegularExpression>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,9 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(6);
     ui->frame->setVisible(false);
-
-    connect(ui->pushButton_37, &QPushButton::clicked, this, &MainWindow::on_pushButton_37_clicked);
-   // connect(ui->comboBox_Tri, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboBox_Tri_currentIndexChanged);
 
 
     // Function to handle page changes and toggle sidebar
@@ -26,7 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
         }
     };
 
+/*
+    connect(ui->lineEdit_NomLab, &QLineEdit::textChanged, this, &MainWindow::validateFields);
+    connect(ui->lineEdit_Adresse, &QLineEdit::textChanged, this, &MainWindow::validateFields);
+    connect(ui->lineEdit_Responsable, &QLineEdit::textChanged, this, &MainWindow::validateFields);
+    connect(ui->lineEdit_Type, &QLineEdit::textChanged, this, &MainWindow::validateFields);
 
+*/
     // Back to login button
     connect(ui->pushButton_3, &QPushButton::clicked, this, [=](){
         ui->stackedWidget->setCurrentIndex(6);
@@ -39,8 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(ui->pushButton_3, &QPushButton::clicked, this, [=](){
 
-         ui->stackedWidget->setCurrentIndex(0);
-         ui->frame->setVisible(true);
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->frame->setVisible(true);
 
     });
     // Bouton "Employé" -> Page 0 (pageEmp)
@@ -79,6 +83,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(true);
     });
 
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -89,7 +96,6 @@ MainWindow::~MainWindow()
 // Ajouter Laboratoire
 void MainWindow::on_pushButton_32_clicked()
 {
-    int id = ui->lineEdit_44->text().toInt(); // ID from modification input
     QString nom = ui->lineEdit_NomLab->text();
     QString adresse = ui->lineEdit_Adresse->text();
     QString responsable = ui->lineEdit_Responsable->text();
@@ -106,27 +112,39 @@ void MainWindow::on_pushButton_32_clicked()
         return;
     }
 
-    // Check if it's an update
-    if (id != 0) {
-        Laboratoire lab(id, nom, adresse, type, responsable, depense, nb_projets, statut, matriels, personnel, date_creation);
-        if (lab.modifier(id)) {
+    // Check if the laboratory with this name exists
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM SMARTVACC.LABORATOIRES WHERE NOM_LAB = :nom");
+    query.bindValue(":nom", nom);
+    if (!query.exec()) {
+        QMessageBox::critical(this, "Erreur", "Erreur lors de la vérification du laboratoire.");
+        return;
+    }
+
+    query.next();
+    int count = query.value(0).toInt();
+
+    // Create the Laboratoire object
+    Laboratoire lab(0, nom, adresse, type, responsable, depense, nb_projets, statut, matriels, personnel, date_creation);
+
+    if (count > 0) {
+        if (lab.modifier(nom)) {
             QMessageBox::information(this, "Succès", "Laboratoire modifié avec succès.");
-            ui->tableView->setModel(labTmp.afficher());
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de la modification.");
         }
     } else {
-        // Normal Add
-        Laboratoire lab(0, nom, adresse, type, responsable, depense, nb_projets, statut, matriels, personnel, date_creation);
         if (lab.ajouter()) {
             QMessageBox::information(this, "Succès", "Laboratoire ajouté avec succès.");
-            ui->tableView->setModel(labTmp.afficher());
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de l'ajout.");
         }
     }
 
-    // Clear fields
+    // Update the table view
+    ui->tableView->setModel(labTmp.afficher());
+
+    // Clear input fields
     ui->lineEdit_NomLab->clear();
     ui->lineEdit_Adresse->clear();
     ui->lineEdit_Responsable->clear();
@@ -139,6 +157,8 @@ void MainWindow::on_pushButton_32_clicked()
     ui->dateEdit_7->setDate(QDate::currentDate());
 }
 
+
+
 void MainWindow::displayLaboratoires()
 {
     QSqlQueryModel *model = labTmp.afficher();
@@ -147,42 +167,84 @@ void MainWindow::displayLaboratoires()
         ui->tableView->setModel(model);
         ui->tableView->resizeColumnsToContents();
         ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+        ui->tableView->setStyleSheet(
+            "QHeaderView::section {"
+            "   background-color: #B00000; "
+            "   color: white; "
+            "   font-weight: bold; "
+            "   padding: 5px; "
+            "   border: 1px solid black;"
+            "}"
+            );
+
     } else {
         QMessageBox::warning(this, "Erreur", "Échec du chargement des laboratoires.");
     }
 }
-//supprimer un labo
 
+
+// Supprimer un labo
 void MainWindow::on_pushButton_37_clicked()
 {
-    // Convert the input text to an integer
-    int id = ui->lineEdit_44->text().toInt();
+    QString nom = ui->lineEdit_44->text(); // Get the Nom_Lab from input field
 
-    // Debug: Check the ID
-    qDebug() << "ID entered for deletion:" << id;
+    if (nom.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer le nom du laboratoire à supprimer.");
+        return;
+    }
 
-    // Call supprimer() from Etmp
-    bool test = labTmp.supprimer(id);
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM SMARTVACC.LABORATOIRES WHERE NOM_LAB = :nom");
+    query.bindValue(":nom", nom);
 
-    if (test) {
-        QMessageBox::information(nullptr, QObject::tr("OK"),QObject::tr("Suppression effectuée\n" "Click Cancel to exit."),QMessageBox::Cancel);
-        ui->lineEdit_44->clear();
-        // Refresh table view
+    if (!query.exec()) {
+        QMessageBox::critical(this, "Erreur", "Erreur lors de la vérification du laboratoire.");
+        return;
+    }
+
+    // Ensure we have a valid query result before calling next()
+    if (!query.next()) {
+        QMessageBox::critical(this, "Erreur", "Erreur lors de la récupération des données.");
+        return;
+    }
+
+    int count = query.value(0).toInt();
+
+    if (count == 0) {
+        QMessageBox::warning(this, "Erreur", "Laboratoire non trouvable pour le supprimer.");
+        return;
+    }
+
+    // If found, proceed with deletion
+    bool success = labTmp.supprimer(nom);
+
+    if (success) {
+        QMessageBox::information(this, "Succès", "Laboratoire supprimé avec succès.");
         ui->tableView->setModel(labTmp.afficher());
+        ui->lineEdit_44->clear();
     } else {
-        QMessageBox::critical(nullptr, QObject::tr("Not OK"), QObject::tr("Suppression non effectuée.\n" "Click Cancel to exit."), QMessageBox::Cancel);
+        QMessageBox::critical(this, "Erreur", "Échec de la suppression.");
     }
 }
+
+
+
 
 
 
 //modifier un labo
 void MainWindow::on_pushButton_34_clicked()
 {
-    int id = ui->lineEdit_44->text().toInt();
+    QString nom = ui->lineEdit_44->text();
+    if (nom.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer le nom du laboratoire à modifier.");
+        return;
+    }
+
     QSqlQuery query;
-    query.prepare("SELECT * FROM SMARTVACC.LABORATOIRES WHERE ID_LABORATOIRE = :id");
-    query.bindValue(":id", id);
+    query.prepare("SELECT * FROM SMARTVACC.LABORATOIRES WHERE NOM_LAB = :nom");
+    query.bindValue(":nom", nom);
 
     if (query.exec() && query.next()) {
         // Fill the form with existing data
@@ -194,22 +256,73 @@ void MainWindow::on_pushButton_34_clicked()
         ui->spinBox_NbProjets->setValue(query.value("NB_PROJETS").toInt());
         ui->spinBox_NbProjets_2->setValue(query.value("MATRIELS").toInt());
         ui->spinBox_NbProjets_3->setValue(query.value("PERSONNEL").toInt());
-        ui->doubleSpinBox_7->setValue(query.value("DEPONSE").toFloat());
+        ui->doubleSpinBox_7->setValue(query.value("DEPENSE").toFloat());
         ui->dateEdit_7->setDate(query.value("DATE_CREATION").toDate());
 
 
-        QMessageBox::information(this, "Modification", "Tu peux modifier maintenant !");
-        // Switch to the "Ajouter" tab
-        ui->stackedWidget->setCurrentIndex(2);
-        ui->tableView->setModel(labTmp.afficher());
 
+        ui->stackedWidget->setCurrentWidget(ui->pageLabo);
+        ui->Affichage_3->setCurrentWidget(ui->ajoutct_7);
+
+        QMessageBox::information(this, "Modification", "Tu peux modifier maintenant !");
 
     } else {
         QMessageBox::warning(this, "Erreur", "Laboratoire introuvable.");
     }
 }
 
-void MainWindow::on_rechercherLabo_textChanged(const QString &arg1)
+/*
+void MainWindow::validateFields()
+{
+    // Initially clear all error messages and set the borders to default (green or none)
+    ui->label_NomError->clear();
+    ui->label_AdresseError->clear();
+    ui->label_ResponsableError->clear();
+    ui->label_TypeError->clear();
+
+    ui->lineEdit_NomLab->setStyleSheet("border: 2px solid green;");
+    ui->lineEdit_Adresse->setStyleSheet("border: 2px solid green;");
+    ui->lineEdit_Responsable->setStyleSheet("border: 2px solid green;");
+    ui->lineEdit_Type->setStyleSheet("border: 2px solid green;");
+
+    // Validate Nom
+    QString nomText = ui->lineEdit_NomLab->text();
+    QRegularExpression nomRegex("^[A-Za-zÀ-ÿ]+$");  // Only letters (no numbers or special characters)
+    if (!nomRegex.match(nomText).hasMatch()) {
+        ui->label_NomError->setText("Erreur: Le nom ne doit contenir que des lettres.");
+        ui->lineEdit_NomLab->setStyleSheet("border: 2px solid red; border-radius: 5px; background-color: transparent; box-shadow: 0px 0px 10px red;");
+        return;  // Exit after first error to show only one
+    }
+
+    // Validate Adresse (should not be empty)
+    QString adresseText = ui->lineEdit_Adresse->text();
+    if (adresseText.isEmpty()) {
+        ui->label_AdresseError->setText("Erreur: L'adresse ne peut pas être vide.");
+        ui->lineEdit_Adresse->setStyleSheet("border: 2px solid red; border-radius: 5px; background-color: transparent; box-shadow: 0px 0px 10px red;");
+        return;  // Exit after first error to show only one
+    }
+
+    // Validate Responsable (should only contain letters)
+    QString responsableText = ui->lineEdit_Responsable->text();
+    QRegularExpression responsableRegex("^[A-Za-zÀ-ÿ]+$");  // Only letters
+    if (!responsableRegex.match(responsableText).hasMatch()) {
+        ui->label_ResponsableError->setText("Erreur: Le responsable ne doit contenir que des lettres.");
+        ui->lineEdit_Responsable->setStyleSheet("border: 2px solid red; border-radius: 5px; background-color: transparent; box-shadow: 0px 0px 10px red;");
+        return;  // Exit after first error to show only one
+    }
+
+    // Validate Type (should not be empty)
+    QString typeText = ui->lineEdit_Type->text();
+    if (typeText.isEmpty()) {
+        ui->label_TypeError->setText("Erreur: Le type ne peut pas être vide.");
+        ui->lineEdit_Type->setStyleSheet("border: 2px solid red; border-radius: 5px; background-color: transparent; box-shadow: 0px 0px 10px red;");
+        return;  // Exit after first error to show only one
+    }
+}
+*/
+
+/*
+void MainWindow::on_rechercherLabo_textChanged(QString &arg1)
 {
     qDebug() << "Recherche en cours... Texte saisi :" << arg1; // Debug
 
@@ -218,26 +331,26 @@ void MainWindow::on_rechercherLabo_textChanged(const QString &arg1)
     QString searchText = arg1.trimmed(); // Remove leading/trailing spaces
 
     if (searchText.isEmpty()) {
-            query.prepare("SELECT * FROM SMARTVACC.LABORATOIRES");
-        }
-        else {
-            query.prepare("SELECT * FROM SMARTVACC.LABORATOIRES WHERE "
-                          "LOWER(NOM_LAB) LIKE LOWER(:val) OR "
-                          "LOWER(RESPONSABLE) LIKE LOWER(:val) OR "
-                          "LOWER(STATUT) LIKE LOWER(:val)");
-            query.bindValue(":val", "%" + searchText + "%");
-        }
+        query.prepare("SELECT * FROM SMARTVACC.LABORATOIRES");
+    }
+    else {
+        query.prepare("SELECT * FROM SMARTVACC.LABORATOIRES WHERE "
+                      "LOWER(NOM_LAB) LIKE LOWER(:val) OR "
+                      "LOWER(RESPONSABLE) LIKE LOWER(:val) OR "
+                      "LOWER(STATUT) LIKE LOWER(:val)");
+        query.bindValue(":val", "%" + searchText + "%");
+    }
 
-        if (!query.exec()) {
-            qDebug() << "Erreur SQL :" << query.lastError().text(); // Debug erreur
-            return;
-        }
-        model->clear();
-        model->setQuery(query);
-        ui->tableView->setModel(model);
+    if (!query.exec()) {
+        qDebug() << "Erreur SQL :" << query.lastError().text(); // Debug erreur
+        return;
+    }
+    model->clear();
+    model->setQuery(query);
+    ui->tableView->setModel(model);
 }
 
-/*
+
 void MainWindow::on_comboBox_Tri_currentIndexChanged(int index)
 {
     QString orderBy;

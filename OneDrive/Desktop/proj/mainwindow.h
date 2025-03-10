@@ -22,8 +22,8 @@ private slots:
     void displayLaboratoires();
     void on_pushButton_37_clicked();
     void on_pushButton_34_clicked();
-    void on_rechercherLabo_textChanged(const QString &arg1);
-
+   // void validateFields();
+  //  void on_rechercherLabo_textChanged( QString &arg1);
   // void on_comboBox_Tri_currentIndexChanged(int index);
 
    private:
