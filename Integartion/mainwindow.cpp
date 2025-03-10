@@ -162,7 +162,6 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(true);
     });
 
-    // 🔹 Connecter le bouton "Ajouter" pour insérer un vaccin
     connect(ui->pushButton_ajouter_2, &QPushButton::clicked, this, &MainWindow::on_pushButton_ajouter_v_clicked);
 
 
@@ -170,88 +169,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-// Destructeur
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-// Bouton "Ajouter" pour insérer un vaccin
-/*void MainWindow::on_pushButton_ajouter_v_clicked() {
-    // Récupérer les valeurs saisies dans l'interface
-    QString nom = ui->lineEdit_nom_2->text();
-    QString type = ui->lineEdit_typev_2->text();
-    QDate date_creation = ui->dateEdit_creation_2->date();
-    QDate date_expiration = ui->dateEdit_expiration_2->date();
-    QString statut = ui->comboBox_status_2->currentText();
-    QString certification = ui->lineEdit_certification_2->text();
-
-    // Afficher les valeurs saisies dans la console
-    qDebug() << "Nom:" << nom << "| Type:" << type << "| Date Création:" << date_creation
-             << "| Date Expiration:" << date_expiration << "| Statut:" << statut
-             << "| Certification:" << certification;
-
-    if (!ui->labelErrorNom->text().isEmpty() ||
-        !ui->labelErrorType->text().isEmpty() ||
-        !ui->labelErrorCertification->text().isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de continuer !");
-        return;
-    }
-
-
-    // Vérifier que la date d'expiration est après la date de création
-    if (date_expiration <= date_creation) {
-        QMessageBox::warning(this, "Date invalide", "La date d'expiration doit être après la date de création !");
-        return;
-    }
-
-    // Créer un objet Vaccin
-    Vaccin v(0,nom, type, date_creation, date_expiration, statut, certification);
-    qDebug() << "🔍 Avant modification, nomAModifier =" << nomAModifier;
-    if (modeModification) {
-
-        if (nomAModifier.isEmpty()) {
-            qDebug() << "❌ ERREUR: nomAModifier est vide lors de la modification !";
-        }
-        // 🔹 Mode Modification : Mettre à jour l'enregistrement existant
-        if (v.modifier(nomAModifier)) {
-            QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
-            modeModification = false;  // Désactiver le mode modification
-            //nomAModifier ="";
-        } else {
-            QMessageBox::critical(this, "Erreur", "Échec de la modification !");
-            return;
-        }
-        qDebug() << "🔍 Après modification, nomAModifier =" << nomAModifier;
-    } else {
-        // 🔹 Mode Ajout : Ajouter un nouveau vaccin
-        qDebug() << "Mode Ajout - Nouveau vaccin";
-
-        if (v.ajouter()) {
-            QMessageBox::information(this, "Succès", "Vaccin ajouté avec succès !");
-        } else {
-            QMessageBox::critical(this, "Erreur", "Échec de l'ajout !");
-            return;
-        }
-    }
-
-    // 🔄 Mise à jour de la table après ajout/modification
-    ui->tableView->setModel(v.afficher());
-    ui->tableView->verticalHeader()->setDefaultSectionSize(35);
-    ui->tableView->horizontalHeader()->setDefaultSectionSize(150);
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->setStyleSheet("QTableView::item { padding: 10px; }");
-    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-   ui->lineEdit_nom_2->setDisabled(false);
-    // 🧹 Effacer les champs après ajout/modification
-    ui->lineEdit_nom_2->clear();
-    ui->lineEdit_typev_2->clear();
-    ui->comboBox_status_2->setCurrentIndex(0);
-    ui->dateEdit_creation_2->setDate(QDate::currentDate());
-    ui->dateEdit_expiration_2->setDate(QDate::currentDate());
-    ui->lineEdit_certification_2->clear();
-}
-*/
 void MainWindow::on_pushButton_ajouter_v_clicked() {
     QString nom = ui->lineEdit_nom_2->text();
     QString type = ui->lineEdit_typev_2->text();

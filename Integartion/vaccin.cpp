@@ -54,7 +54,7 @@ QSqlQueryModel* Vaccin::afficher()
     QSqlQueryModel *model = new QSqlQueryModel();
 
     // 🔹 Exécuter la requête SQL pour récupérer tous les vaccins
-    model->setQuery("SELECT ID_VACCINATION, NOM, \"TYPE\", DATE_CREATION, DATE_EXPIRATION, STATUT, CERTIFICATION_VACCIN "
+    model->setQuery("SELECT  NOM, \"TYPE\", DATE_CREATION, DATE_EXPIRATION, STATUT, CERTIFICATION_VACCIN "
                     "FROM SMARTVACC.VACCIN");
 
     // 🔹 Vérifier s'il y a une erreur dans l'exécution de la requête
@@ -64,7 +64,7 @@ QSqlQueryModel* Vaccin::afficher()
     }
 
     // 🔹 Définir les en-têtes des colonnes pour l'affichage
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID Vaccination"));
+   // model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID Vaccination"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("Type"));
     model->setHeaderData(3, Qt::Horizontal, QObject::tr("Date de Création"));
