@@ -21,35 +21,41 @@ private:
 public:
     // Constructeurs
     Compagne();
-    Compagne(int Id_Campagne, QString Nom_Campagne, QDate Date_Debut, QDate Date_Fin,
-             QString Zone_Geographique, int Objectif_Doses, int Doses_Administrees,
-             QString Vaccins_Utilises, QString Statut);
+    Compagne(int Id_Campagne, QString Nom_Campagne, QDate Date_Debut, QDate Date_Fin, QString Zone_Geographique,
+             int Objectif_Doses, int Doses_Administrees, QString Vaccins_Utilises, QString Statut);
 
     // Getters
-    int GetId_Campagne();
-    QString GetNom_Campagne();
-    QDate GetDate_Debut();
-    QDate GetDate_Fin();
-    QString GetZone_Geographique();
-    int GetObjectif_Doses();
-    int GetDoses_Administrees();
-    QString GetVaccins_Utilises();
-    QString GetStatut();
+    int getIdCampagne() const;
+    QString getNomCampagne() const;
+    QDate getDateDebut() const;
+    QDate getDateFin() const;
+    QString getZoneGeographique() const;
+    int getObjectifDoses() const;
+    int getDosesAdministrees() const;
+    QString getVaccinsUtilises() const;
+    QString getStatut() const;
 
     // Setters
-    void SetId_Campagne(int Id_Campagne);
-    void SetNom_Campagne(QString Nom_Campagne);
-    void SetDate_Debut(QDate Date_Debut);
-    void SetDate_Fin(QDate Date_Fin);
-    void SetZone_Geographique(QString Zone_Geographique);
-    void SetObjectif_Doses(int Objectif_Doses);
-    void SetDoses_Administrees(int Doses_Administrees);
-    void SetVaccins_Utilises(QString Vaccins_Utilises);
-    void SetStatut(QString Statut);
+    void setIdCampagne(int id);
+    void setNomCampagne(const QString &nom);
+    void setDateDebut(const QDate &dateDebut);
+    void setDateFin(const QDate &dateFin);
+    void setZoneGeographique(const QString &zone);
+    void setObjectifDoses(int objectif);
+    void setDosesAdministrees(int doses);
+    void setVaccinsUtilises(const QString &vaccins);
+    void setStatut(const QString &statut);
 
     // CRUD
     bool ajouter();
     QSqlQueryModel * afficher();
+
+    bool modifier(QString nom);
+    bool chargerCampagne(QString nom);  // ✅ Charge les données d’une campagne avant modification
+
+
+    bool supprimer(QString nom);
+
 };
 
 #endif // COMPAGNE_H
