@@ -3815,7 +3815,7 @@ public:
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(0);
+        tabs->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4127,7 +4127,7 @@ public:
         pushButtonStat_10->setText(QString());
         pushButtonDoc_10->setText(QString());
         modifierC->setText(QString());
-        nom_2->setText(QCoreApplication::translate("MainWindow", "Enter le CIN du patient:", nullptr));
+        nom_2->setText(QCoreApplication::translate("MainWindow", "Entrer le CIN du patient:", nullptr));
         supprimerC->setText(QString());
         tabs->setTabText(tabs->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());

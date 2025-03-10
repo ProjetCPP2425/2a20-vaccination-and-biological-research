@@ -47,7 +47,7 @@ private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
     QSortFilterProxyModel *proxyModel;
-    QString idAModifier = "";  // ✅ Stocke le CIN à modifier
+    QString idAModifier = "";
 
     bool modeModification = false; // Mode modification activé/désactivé
     void validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);

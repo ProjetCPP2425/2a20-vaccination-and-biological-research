@@ -7,7 +7,7 @@
 #include <QSqlQuery>
 #include <QSqlError> // Pour afficher les erreurs SQL
 #include <QDebug>    // Pour le débogage
-#include <QRegularExpression>  // ✅ Ajoute cette ligne au début de mainwindow.cpp
+#include <QRegularExpression>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -52,12 +52,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->setCurrentIndex(6);
     ui->frame->setVisible(false);
     connect(ui->carnet, &QPushButton::clicked, this, [=](){
-        ui->stackedWidget->setCurrentIndex(2); // Switch to lab page
-        ui->frame->setVisible(true);           // Show sidebar
-        displayCarnet();                 // Refresh lab list
+        ui->stackedWidget->setCurrentIndex(2);
+        ui->frame->setVisible(true);
+        displayCarnet();
     });
 
-    // Function to handle page changes and toggle sidebar
+    // Function to handle page changes
     auto updateSidebarVisibility = [=](int index) {
         if (index == 6) { //
             ui->frame->setVisible(false);
@@ -181,7 +181,7 @@ void MainWindow::on_ajout_carnet_clicked()
         msgBox.setText("Veuillez corriger les erreurs avant de valider le carnet.");
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setButtonText(QMessageBox::Ok, "D'accord"); // ✅ Change "OK" en "D'accord"
+        msgBox.setButtonText(QMessageBox::Ok, "D'accord");
         msgBox.exec();
         return;
     }
@@ -198,9 +198,9 @@ void MainWindow::on_ajout_carnet_clicked()
     QString statut_vaccinal = ui->statut_vaccinal->currentText();
     QString sexe;
     if (ui->G->isChecked()) {
-        sexe = "Garçon"; // ✅ "Garçon" devient "G"
+        sexe = "Garçon";
     } else if (ui->F->isChecked()) {
-        sexe = "Femme"; // ✅ "Femme" devient "F"
+        sexe = "Femme";
     } else {
         QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un sexe !");
 
@@ -222,7 +222,7 @@ void MainWindow::on_ajout_carnet_clicked()
         }
         if (!estValide()) {
             QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de modifier le carnet.");
-            return; // 🔴 Bloquer la modification si les champs ne sont pas valides
+            return; //  Bloquer la modification si les champs ne sont pas valides
         }
         qDebug() << "Modification du carnet avec CIN :" << idAModifier;
 
@@ -230,7 +230,7 @@ void MainWindow::on_ajout_carnet_clicked()
 
         if (carnet.ajouter()) {
             QMessageBox::information(this, "Succès", "Carnet modifié avec succès !");
-            ui->tabs->setCurrentIndex(1);  // 🔄 Rediriger vers l'onglet Affichage (Vérifie l'index de ton `QTabWidget`)
+            ui->tabs->setCurrentIndex(1);  // Rediriger vers l'onglet Affichage
 
         } else {
             QMessageBox::critical(this, "Erreur", "Le CIN existe déjà ! Impossible de modifier");
@@ -242,7 +242,7 @@ void MainWindow::on_ajout_carnet_clicked()
     } else {
         if (carnet.ajouter()) {
             QMessageBox::information(this, "Succès", "Carnet ajouté avec succès !");
-            ui->tabs->setCurrentIndex(1);  // 🔄 Rediriger vers l'onglet Affichage (Vérifie l'index de ton `QTabWidget`)
+            ui->tabs->setCurrentIndex(1);  // Rediriger vers l'onglet Affichage
 
         } else {
             QMessageBox::critical(this, "Erreur", "Le CIN existe déjà ! Impossible d'ajouter");
@@ -277,9 +277,9 @@ void MainWindow::displayCarnet()
 
 void MainWindow::on_supprimerC_clicked()
 {
-    QString cin = ui->suppid->text().trimmed(); // ✅ Récupérer le CIN depuis l'interface
+    QString cin = ui->suppid->text().trimmed(); // Récupérer le CIN
 
-    qDebug() << "🔍 CIN saisi pour suppression :" << cin;  // 🔍 Vérification du CIN
+    qDebug() << "🔍 CIN saisi pour suppression :" << cin;  //  Vérification du CIN
 
     if (cin.isEmpty()) {
         QMessageBox::warning(this, "Erreur", "Veuillez entrer un CIN valide !");
@@ -304,13 +304,13 @@ void MainWindow::on_supprimerC_clicked()
         msgBox.setText("Aucun carnet trouvé avec ce CIN !");
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setButtonText(QMessageBox::Ok, "D'accord"); // ✅ Change "OK" en "D'accord"
+        msgBox.setButtonText(QMessageBox::Ok, "D'accord");
         msgBox.exec();
         return;
     }
 
 
-    // ✅ Boîte de confirmation avec boutons "Oui" et "Non"
+    // confirmation avec boutons "Oui" et "Non"
     QMessageBox msgBox;
     msgBox.setWindowTitle("Confirmation");
     msgBox.setText("Voulez-vous vraiment supprimer ce carnet ?");
@@ -319,7 +319,7 @@ void MainWindow::on_supprimerC_clicked()
     msgBox.setIcon(QMessageBox::Question);
     msgBox.exec();
 
-    // ✅ Vérifier quel bouton a été cliqué
+    // Vérifier quel bouton a été cliqué
     if (msgBox.clickedButton() == btnOui) {
         if (carnetTmp.supprimer(cin)) {
             QMessageBox::information(this, "Succès", "Carnet supprimé avec succès !");
@@ -335,17 +335,17 @@ void MainWindow::on_supprimerC_clicked()
 void MainWindow::on_modifierC_clicked()
 {
 
-    QString cin = ui->suppid->text().trimmed(); // ✅ Récupérer le CIN depuis l'interface
+    QString cin = ui->suppid->text().trimmed();
 
     qDebug() << "🔍 CIN sélectionné pour modification :" << cin;  // 🔍 Vérification de la valeur entrée
 
-    // 🔴 Vérifier si le champ CIN est vide
+    //  Vérifier si le champ CIN est vide
     if (cin.isEmpty()) {
         QMessageBox::warning(this, "Erreur", "Veuillez entrer un CIN valide !");
         return;
     }
 
-    // 🔴 Vérifier si le CIN existe dans la base de données avant modification
+    //  Vérifier si le CIN existe dans la base de données avant modification
     QSqlQuery checkQuery;
     checkQuery.prepare("SELECT COUNT(*) FROM CARNETS WHERE CIN = :cin");
     checkQuery.bindValue(":cin", cin);
@@ -362,13 +362,13 @@ void MainWindow::on_modifierC_clicked()
         return;
     }
 
-    // ✅ Charger les informations du carnet si le CIN existe
+    //  Charger les informations du carnet si le CIN existe
     QSqlQuery query;
     query.prepare("SELECT CIN,NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS WHERE CIN = :cin");
     query.bindValue(":cin", cin);
 
     if (query.exec() && query.next()) {
-        // ✅ Remplir les champs avec les valeurs existantes
+        //  Remplir les champs avec les valeurs existantes
 
         ui->cin->setText(query.value("CIN").toString());
 
@@ -382,7 +382,7 @@ void MainWindow::on_modifierC_clicked()
         ui->remarques->setPlainText(query.value("REMARQUES").toString());
         ui->statut_vaccinal->setCurrentText(query.value("STATUT_VACCINAL").toString());
 
-        // ✅ Activer le mode modification
+        //  Activer le mode modification
         idAModifier = cin;
         modeModification = true;
 
@@ -495,7 +495,7 @@ void MainWindow::validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegular
         errorLabel->setText("✔️ Valide");
         errorLabel->setStyleSheet("color: green; font-weight: bold; background: transparent;");
     } else {
-        // ❌ Texte invalide → Affiche un message d'erreur (sans changer la bordure du champ)
+        // ❌ Texte invalide → Affiche un message d'erreur
         errorLabel->setText("❌ Le texte doit contenir au moins 2 mots, sans chiffres .");
         errorLabel->setStyleSheet("color: red; font-weight: bold; background: transparent;");
     }

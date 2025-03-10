@@ -74,7 +74,7 @@ QSqlQueryModel* Carnets::afficher()
         return nullptr;
     }
 
-    // Définir les en-têtes (sans ID)
+    // Définir les en-têtes
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("CIN"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("Prénom"));
@@ -178,7 +178,7 @@ bool Carnets::remplirChampsModification(QString cin, QString &nom, QString &pren
     }
 
     if (query.next()) {
-        // ✅ Charger les valeurs récupérées
+        //Charger les valeurs
         nom = query.value("NOM").toString();
         prenom = query.value("PRENOM").toString();
         age = query.value("AGE").toInt();

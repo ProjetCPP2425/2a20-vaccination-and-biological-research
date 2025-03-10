@@ -51,7 +51,6 @@ public:
     void SetStatut_Vaccinal(QString Statut_Vaccinal);
 
 
-    //CRUD
     bool ajouter();
     QSqlQueryModel * afficher();
     bool supprimer(QString cin);
