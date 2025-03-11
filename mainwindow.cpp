@@ -8,6 +8,12 @@
 #include <QSqlError> // Pour afficher les erreurs SQL
 #include <QDebug>    // Pour le débogage
 #include <QRegularExpression>
+#include <QPainter>
+#include <QPdfWriter>
+#include <QFileDialog>
+
+#include <QDateTime>
+#include <QMessageBox>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -47,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(ui->annuler, &QPushButton::clicked, this, &MainWindow::on_annuler_clicked);
+    connect(ui->btnGeneratePDF, &QPushButton::clicked, this, &MainWindow::on_btnGeneratePDF_clicked);
 
 
     ui->stackedWidget->setCurrentIndex(6);
@@ -621,4 +628,136 @@ bool MainWindow::estValide()
     }
 
     return valide;
+}
+
+void MainWindow::on_btnGeneratePDF_clicked()
+{
+    // 🔹 Récupérer le CIN depuis `suppid`
+    QString cin = ui->suppid->text().trimmed();
+    if (cin.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer un CIN valide !");
+        return;
+    }
+
+    // 🔹 Récupération des informations du patient depuis la base de données
+    QSqlQuery query;
+    query.prepare("SELECT NOM, PRENOM, AGE, SEXE, NUM, POIDS, STATUT_VACCINAL, REMARQUES FROM CARNETS WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
+
+    if (!query.exec() || !query.next()) {
+        QMessageBox::warning(this, "Erreur", "Aucun patient trouvé avec ce CIN !");
+        return;
+    }
+
+    // 📌 Récupération des données
+    QString nom = query.value("NOM").toString();
+    QString prenom = query.value("PRENOM").toString();
+    QString age = query.value("AGE").toString();
+    QString sexe = query.value("SEXE").toString();
+    QString num = query.value("NUM").toString();
+    QString poids = query.value("POIDS").toString();
+    QString statutVaccinal = query.value("STATUT_VACCINAL").toString();
+    QString remarques = query.value("REMARQUES").toString();
+
+    // 📂 Boîte de dialogue pour enregistrer le fichier
+    QString filePath = QFileDialog::getSaveFileName(this, "Enregistrer le carnet", "", "PDF Files (*.pdf)");
+    if (filePath.isEmpty()) return;
+
+    // 📄 Création du PDF
+    QPdfWriter pdfWriter(filePath);
+    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
+    pdfWriter.setPageOrientation(QPageLayout::Landscape);
+    pdfWriter.setResolution(300);
+
+    QPainter painter(&pdfWriter);
+    if (!painter.isActive()) {
+        qDebug() << "Erreur : Impossible d'initialiser le QPainter.";
+        return;
+    }
+
+    // 🎨 Définition des polices et couleurs
+    QFont titleFont("Arial", 26, QFont::Bold);
+    QFont headerFont("Arial", 16, QFont::Bold);
+    QFont normalFont("Arial", 12);
+    QPen bluePen(Qt::darkBlue);
+    QPen blackPen(Qt::black);
+
+    // 📌 Position et dimensions ajustées
+    int leftMargin = 60;
+    int topMargin = 150;
+    int tableWidth = (pdfWriter.width() / 2) - 120;
+    int tableHeight = pdfWriter.height() - 400;  // 🔹 Taille du tableau réduite
+
+    // 🎯 Titre principal (corrigé)
+    painter.setFont(titleFont);
+    painter.setPen(bluePen);
+    painter.drawText(QRect(0, 80, pdfWriter.width(), 60), Qt::AlignCenter, "🔹 CARNET DE SUIVI MÉDICAL 🔹");
+
+    // 🏥 Encadrement des sections
+    painter.setFont(headerFont);
+    painter.setPen(blackPen);
+
+    // 🔹 Tableau 1 : Informations Patient
+    painter.drawRect(leftMargin, topMargin, tableWidth, tableHeight);
+    painter.drawText(leftMargin + 20, topMargin - 10, "📌 INFORMATIONS DU PATIENT");
+
+    painter.setFont(normalFont);
+    int textY = topMargin + 40;
+    int textSpacing = 40;  // 🔹 Espacement optimisé entre chaque ligne
+
+    painter.drawText(leftMargin + 20, textY, "🆔 CIN : " + cin);
+    painter.drawText(leftMargin + 20, textY += textSpacing, "👤 Nom : " + nom);
+    painter.drawText(leftMargin + 20, textY += textSpacing, "🧑 Prénom : " + prenom);
+    painter.drawText(leftMargin + 20, textY += textSpacing, "🎂 Âge : " + age + " ans");
+    painter.drawText(leftMargin + 20, textY += textSpacing, "⚧ Sexe : " + sexe);
+    painter.drawText(leftMargin + 20, textY += textSpacing, "📞 Téléphone : " + num);
+    painter.drawText(leftMargin + 20, textY += textSpacing, "⚖️ Poids : " + poids + " kg");
+    painter.drawText(leftMargin + 20, textY += textSpacing, "💉 Statut Vaccinal : " + statutVaccinal);
+    painter.drawText(leftMargin + 20, textY += textSpacing, "📝 Remarques : " + remarques);
+
+    // 🔹 Tableau 2 : Historique des Rendez-vous
+    int rightMargin = leftMargin + tableWidth + 80;
+    painter.drawRect(rightMargin, topMargin, tableWidth, tableHeight);
+    painter.drawText(rightMargin + 20, topMargin - 10, "📅 HISTORIQUE DES RENDEZ-VOUS");
+
+    painter.setFont(normalFont);
+    int rowY = topMargin + 40;
+
+    // 📌 Récupération des rendez-vous
+    QSqlQuery queryRDV;
+    queryRDV.prepare("SELECT DATE_RDV FROM CARNETS WHERE CIN = :cin");
+    queryRDV.bindValue(":cin", cin);
+
+    if (queryRDV.exec()) {
+        int rowCount = 0;
+        while (queryRDV.next() && rowCount < 10) {
+            QDateTime dateRDV = queryRDV.value("DATE_RDV").toDateTime();
+
+            // 🔹 Affichage de la date RDV à gauche du texte "Date RDV"
+            painter.drawText(rightMargin + 20, rowY, dateRDV.toString("dd/MM/yyyy") + "  📆 Date RDV");
+            rowY += textSpacing;
+            rowCount++;
+        }
+    } else {
+        qDebug() << "Erreur SQL : " << queryRDV.lastError().text();
+    }
+
+    // 📌 Section Cachet & Signature (réduite et repositionnée)
+    int cachetX = pdfWriter.width() - 280;
+    int cachetY = pdfWriter.height() - 100;
+    painter.setFont(headerFont);
+    painter.drawText(cachetX, cachetY, "🔹 Cachet & Signature :");
+    painter.drawRect(cachetX, cachetY + 30, 220, 70);
+
+    // 📌 Fin du rendu
+    painter.end();
+
+    // 📌 Confirmation de la génération du PDF
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("✅ PDF généré");
+    msgBox.setText("📄 Le carnet du patient a été enregistré avec succès !");
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setButtonText(QMessageBox::Ok, "D'accord");
+    msgBox.exec();
 }

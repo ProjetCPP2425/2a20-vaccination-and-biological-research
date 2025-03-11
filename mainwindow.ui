@@ -6188,7 +6188,7 @@ border: 2px solid black; </string>
           </size>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButtonDoc_10">
+        <widget class="QPushButton" name="btnGeneratePDF">
          <property name="geometry">
           <rect>
            <x>220</x>

@@ -303,7 +303,7 @@ public:
     QLineEdit *rechercheC;
     QWidget *widget_15;
     QPushButton *pushButtonStat_10;
-    QPushButton *pushButtonDoc_10;
+    QPushButton *btnGeneratePDF;
     QPushButton *modifierC;
     QTableView *tableView;
     QLabel *nom_2;
@@ -3487,15 +3487,15 @@ public:
 "}"));
         pushButtonStat_10->setIcon(icon2);
         pushButtonStat_10->setIconSize(QSize(50, 50));
-        pushButtonDoc_10 = new QPushButton(widget_15);
-        pushButtonDoc_10->setObjectName("pushButtonDoc_10");
-        pushButtonDoc_10->setGeometry(QRect(220, 10, 81, 71));
-        pushButtonDoc_10->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        btnGeneratePDF = new QPushButton(widget_15);
+        btnGeneratePDF->setObjectName("btnGeneratePDF");
+        btnGeneratePDF->setGeometry(QRect(220, 10, 81, 71));
+        btnGeneratePDF->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background: transparent;\n"
 "    border: none;\n"
 "}"));
-        pushButtonDoc_10->setIcon(icon3);
-        pushButtonDoc_10->setIconSize(QSize(50, 50));
+        btnGeneratePDF->setIcon(icon3);
+        btnGeneratePDF->setIconSize(QSize(50, 50));
         modifierC = new QPushButton(lirect_10);
         modifierC->setObjectName("modifierC");
         modifierC->setGeometry(QRect(1160, 370, 51, 41));
@@ -4125,7 +4125,7 @@ public:
         label_171->setText(QCoreApplication::translate("MainWindow", "Recherche:", nullptr));
         rechercheC->setText(QString());
         pushButtonStat_10->setText(QString());
-        pushButtonDoc_10->setText(QString());
+        btnGeneratePDF->setText(QString());
         modifierC->setText(QString());
         nom_2->setText(QCoreApplication::translate("MainWindow", "Entrer le CIN du patient:", nullptr));
         supprimerC->setText(QString());
