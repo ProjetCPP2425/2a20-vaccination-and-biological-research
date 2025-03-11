@@ -24,29 +24,35 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnPredire, &QPushButton::clicked, this, &MainWindow::on_btnPredire_clicked);
 
     connect(ui->nom_carnet, &QLineEdit::textChanged, this, [=]() {
-        validateInput(ui->nom_carnet, ui->nomErrorLabel, QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$"), "Le nom doit contenir au moins 3 lettres, sans chiffres ni caractères spéciaux.");
+        validateInput(ui->nom_carnet, ui->nomErrorLabel, QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$"),
+                      "Le nom ne doit contenir que des lettres et espaces.", false, false, -1, -1);
     });
 
     connect(ui->prenom_carnet, &QLineEdit::textChanged, this, [=]() {
-        validateInput(ui->prenom_carnet, ui->prenomErrorLabel, QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$"), "Le prénom doit contenir au moins 3 lettres, sans chiffres ni caractères spéciaux.");
-    });
-
-
-    connect(ui->age, &QLineEdit::textChanged, this, [=]() {
-        validateInput(ui->age, ui->ageErrorLabel, QRegularExpression("^[1-9][0-9]?$|^100$"), "L'âge doit être entre 1 et 100.");
+        validateInput(ui->prenom_carnet, ui->prenomErrorLabel, QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$"),
+                      "Le prénom ne doit contenir que des lettres et espaces.", false, false, -1, -1);
     });
 
     connect(ui->cin, &QLineEdit::textChanged, this, [=]() {
-        validateInput(ui->cin, ui->cinErrorLabel, QRegularExpression("^[0-9]{8}$"), "Le CIN doit contenir exactement 8 chiffres.");
+        validateInput(ui->cin, ui->cinErrorLabel, QRegularExpression("^[0-9]{8}$"),
+                      "Le CIN doit contenir exactement 8 chiffres.", true, true, -1, -1);
     });
 
     connect(ui->num, &QLineEdit::textChanged, this, [=]() {
-        validateInput(ui->num, ui->numErrorLabel, QRegularExpression("^[0-9]{8}$"), "Le numéro doit contenir exactement 8 chiffres.");
+        validateInput(ui->num, ui->numErrorLabel, QRegularExpression("^[0-9]{8}$"),
+                      "Le numéro doit contenir exactement 8 chiffres.", true, true, -1, -1);
     });
 
     connect(ui->poids, &QLineEdit::textChanged, this, [=]() {
-        validateInput(ui->poids, ui->poidsErrorLabel, QRegularExpression("^[0-9]{1,3}(\\.[0-9]{1,2})?$"), "Le poids doit être un nombre valide.");
+        validateInput(ui->poids, ui->poidsErrorLabel, QRegularExpression("^[0-9]{1,3}(\\.[0-9]{1,2})?$"),
+                      "Le poids doit être un nombre valide.", false, true, -1, -1);
     });
+
+    connect(ui->age, &QLineEdit::textChanged, this, [=]() {
+        validateInput(ui->age, ui->ageErrorLabel, QRegularExpression("^[0-9]{1,2}$"),
+                      "L'âge doit être entre 1 et 100.", false, true, 1, 100);
+    });
+
 
     connect(ui->remarques, &QTextEdit::textChanged, this, [=]() {
         validateTextEdit(ui->remarques, ui->remarquesErrorLabel, QRegularExpression("^.{0,200}$"), "Les remarques doivent contenir au moins 2 mots sans chiffres ni caractères spéciaux .");
@@ -465,28 +471,57 @@ void MainWindow::on_btnPredire_clicked()
                                  "✅ Vous n’avez pas de problème de santé majeur.\n\n" + alerteVaccin);
     }
 }
-void MainWindow::validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg)
+void MainWindow::validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex,
+                               const QString &errorMsg, bool checkZeros, bool allowOnlyNumbers, int minValue, int maxValue)
 {
-    QString text = field->text().trimmed();  // Supprime les espaces inutiles
+    QString text = field->text().trimmed();
 
+    // 🔴 Blocage immédiat des lettres pour CIN, Numéro, Poids et Âge
+    if (allowOnlyNumbers && text.contains(QRegularExpression("[A-Za-z]"))) {
+        text.chop(1); // Supprime le dernier caractère saisi
+        field->setText(text);
+        return;
+    }
+
+    // 🔴 Blocage immédiat des chiffres pour Nom et Prénom
+    if (!allowOnlyNumbers && text.contains(QRegularExpression("\\d"))) {
+        text.chop(1); // Supprime le dernier caractère saisi
+        field->setText(text);
+        return;
+    }
+
+    // 🔴 Vérifie si le champ contient uniquement des "0" (CIN et Numéro)
+    if (checkZeros && text == "00000000") {
+        field->setStyleSheet("border: 2px solid red; padding: 5px; background: white;");
+        errorLabel->setText("❌ Tous les chiffres ne peuvent pas être 0 !");
+        errorLabel->setStyleSheet("color: red; font-weight: bold; background: transparent;");
+        return;
+    }
+
+    // 🔹 Vérifie les valeurs minimales et maximales (ex: Âge)
+    if (minValue >= 0 && maxValue > 0) {
+        bool isNumber;
+        int value = text.toInt(&isNumber);
+        if (!isNumber || value < minValue || value > maxValue) {
+            field->setStyleSheet("border: 2px solid red; padding: 5px; background: white;");
+            errorLabel->setText("❌ " + errorMsg);
+            errorLabel->setStyleSheet("color: red; font-weight: bold; background: transparent;");
+            return;
+        }
+    }
+
+    // ✅ Vérification du format via l'expression régulière
     if (regex.match(text).hasMatch()) {
-        // ✅ Champ valide → Bordure verte + Message OK (fond transparent)
         field->setStyleSheet("border: 2px solid green; padding: 5px; background: white;");
         errorLabel->setText("✔️ Valide");
         errorLabel->setStyleSheet("color: green; font-weight: bold; background: transparent;");
     } else {
-        // ❌ Champ invalide → Bordure rouge + Message d'erreur
         field->setStyleSheet("border: 2px solid red; padding: 5px; background: white;");
-
-        if (field == ui->nom_carnet || field == ui->prenom_carnet) {
-            errorLabel->setText("❌ Ne doit contenir que des lettres et espaces .");
-        } else {
-            errorLabel->setText("❌ " + errorMsg);
-        }
-
+        errorLabel->setText("❌ " + errorMsg);
         errorLabel->setStyleSheet("color: red; font-weight: bold; background: transparent;");
     }
 }
+
 
 
 void MainWindow::validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg)
