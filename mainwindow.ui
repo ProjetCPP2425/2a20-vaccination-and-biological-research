@@ -380,7 +380,7 @@ QPushButton:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -418,8 +418,8 @@ QPushButton:hover {
         <widget class="QGroupBox" name="groupBox">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>60</y>
+           <x>10</x>
+           <y>70</y>
            <width>991</width>
            <height>601</height>
           </rect>
@@ -518,7 +518,7 @@ QPushButton:hover {
            <string>Ajouter</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="annuler_employe">
+         <widget class="QPushButton" name="annuler">
           <property name="geometry">
            <rect>
             <x>530</x>
@@ -640,35 +640,11 @@ QPushButton:hover {
 }</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineedit_prenom_employe">
-          <property name="geometry">
-           <rect>
-            <x>160</x>
-            <y>280</y>
-            <width>221</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLineEdit {
-    background-color: transparent; /* Fond transparent */
-    color: #000000;                /* Texte noir normal */
-    font-size: 14px;               /* Taille de la police */
-    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
-    border-radius: 5px;            /* Coins légèrement arrondis */
-    padding: 8px;                  /* Espacement interne pour le texte */
-    border-style: dashed;          /* Style en pointillés */
-}</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
          <widget class="QLabel" name="label_typev_4">
           <property name="geometry">
            <rect>
-            <x>50</x>
-            <y>280</y>
+            <x>40</x>
+            <y>300</y>
             <width>101</width>
             <height>51</height>
            </rect>
@@ -784,8 +760,8 @@ QPushButton:hover {
          <widget class="QLineEdit" name="lineeditcontact">
           <property name="geometry">
            <rect>
-            <x>570</x>
-            <y>210</y>
+            <x>590</x>
+            <y>220</y>
             <width>221</width>
             <height>41</height>
            </rect>
@@ -808,7 +784,7 @@ QPushButton:hover {
          <widget class="QLabel" name="label_typev_8">
           <property name="geometry">
            <rect>
-            <x>430</x>
+            <x>450</x>
             <y>210</y>
             <width>101</width>
             <height>51</height>
@@ -867,8 +843,8 @@ QPushButton:hover {
          <widget class="QLineEdit" name="lineeditdisponibilite">
           <property name="geometry">
            <rect>
-            <x>570</x>
-            <y>270</y>
+            <x>600</x>
+            <y>310</y>
             <width>221</width>
             <height>41</height>
            </rect>
@@ -891,8 +867,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_typev_9">
           <property name="geometry">
            <rect>
-            <x>420</x>
-            <y>270</y>
+            <x>430</x>
+            <y>300</y>
             <width>141</width>
             <height>51</height>
            </rect>
@@ -914,8 +890,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_typev_10">
           <property name="geometry">
            <rect>
-            <x>410</x>
-            <y>350</y>
+            <x>400</x>
+            <y>400</y>
             <width>161</width>
             <height>51</height>
            </rect>
@@ -938,7 +914,7 @@ QPushButton:hover {
           <property name="geometry">
            <rect>
             <x>570</x>
-            <y>360</y>
+            <y>400</y>
             <width>211</width>
             <height>41</height>
            </rect>
@@ -1042,6 +1018,261 @@ QCheckBox::indicator:checked {
           </property>
           <property name="text">
            <string>♀</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="idErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>90</y>
+            <width>371</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="cinErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>170</y>
+            <width>371</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="nomErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>260</y>
+            <width>391</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineedit_prenom_employe">
+          <property name="geometry">
+           <rect>
+            <x>160</x>
+            <y>300</y>
+            <width>221</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir normal */
+    font-size: 14px;               /* Taille de la police */
+    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
+    border-radius: 5px;            /* Coins légèrement arrondis */
+    padding: 8px;                  /* Espacement interne pour le texte */
+    border-style: dashed;          /* Style en pointillés */
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="prenomErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>350</y>
+            <width>371</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="sexeErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>480</y>
+            <width>131</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 10px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="dateErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>640</x>
+            <y>0</y>
+            <width>131</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="posteErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>430</x>
+            <y>170</y>
+            <width>231</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="salaireErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>710</x>
+            <y>160</y>
+            <width>251</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="contactErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>260</y>
+            <width>451</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="disponibiliteErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>470</x>
+            <y>350</y>
+            <width>351</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="abscenceErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>430</x>
+            <y>460</y>
+            <width>371</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    border: none;                  /* Pas de bordure */
+    font-size: 5px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </widget>

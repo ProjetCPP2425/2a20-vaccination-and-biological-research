@@ -59,10 +59,17 @@ public:
 
     // Méthodes pour interaction avec la base de données (déclarées mais pas implémentées ici)
     bool ajouter();
-   bool modifier(int id_employe);
     bool supprimerParCIN(QString cin);
 
     QSqlQueryModel* afficher();
+
+
+
+
+    bool modifier(QString cin);
+    bool chargerEmploye(QString cin);
+
+
 private:
     QString lastError;
 public:
@@ -72,3 +79,16 @@ public:
 };
 
 #endif // EMPLOYE_H
+
+
+
+
+
+
+
+
+
+
+
+
+

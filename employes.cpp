@@ -1,3 +1,4 @@
+
 #include "employes.h"
 #include <QSqlQuery>
 #include <QSqlError>
@@ -23,6 +24,33 @@ Employe::Employe(QString cin, int id, QString nom, QString prenom, QString poste
     this->DISPONIBILITE = disponibilite;
     this->TYPE_ABSENCES = type_absences;
 }
+
+
+// 🔹 Getters
+QString Employe::getCIN() const { return CIN; }
+int Employe::getIdEmploye() const { return ID_EMPLOYE; }
+QString Employe::getNom() const { return NOM; }
+QString Employe::getPrenom() const { return PRENOM; }
+QString Employe::getPoste() const { return POSTE; }
+QString Employe::getSexe() const { return SEXE; }
+float Employe::getSalaire() const { return SALAIRE; }
+QString Employe::getContact() const { return CONTACT; }
+QDate Employe::getDateEmbauche() const { return DATE_EMBAUCHE; }
+int Employe::getDisponibilite() const { return DISPONIBILITE; }
+QString Employe::getTypeAbsences() const { return TYPE_ABSENCES; }
+
+// 🔹 Setters
+void Employe::setCIN(const QString &cin) { CIN = cin; }
+void Employe::setIdEmploye(int id) { ID_EMPLOYE = id; }
+void Employe::setNom(const QString &nom) { NOM = nom; }
+void Employe::setPrenom(const QString &prenom) { PRENOM = prenom; }
+void Employe::setPoste(const QString &poste) { POSTE = poste; }
+void Employe::setSexe(const QString &sexe) { SEXE = sexe; }
+void Employe::setSalaire(float salaire) { SALAIRE = salaire; }
+void Employe::setContact(const QString &contact) { CONTACT = contact; }
+void Employe::setDateEmbauche(const QDate &date) { DATE_EMBAUCHE = date; }
+void Employe::setDisponibilite(int disponibilite) { DISPONIBILITE = disponibilite; }
+void Employe::setTypeAbsences(const QString &typeAbsences) { TYPE_ABSENCES = typeAbsences; }
 
 // 🔹 Ajouter un employé
 bool Employe::ajouter() {
@@ -83,48 +111,7 @@ QSqlQueryModel* Employe::afficher() {
 
 
 
-bool Employe::modifier(int id_employe) {
-    // 🔹 Vérification de la connexion
-    QSqlDatabase db = QSqlDatabase::database();
-    if (!db.isOpen()) {
-        qDebug() << "❌ Erreur : La base de données n'est pas connectée.";
-        return false;
-    }
 
-    // 🔹 Préparation de la requête SQL
-    QSqlQuery query;
-    query.prepare("UPDATE SMARTVACC.EMPLOYES SET "
-                  "CIN = :cin, NOM = :nom, PRENOM = :prenom, POSTE = :poste, "
-                  "SEXE = :sexe, SALAIRE = :salaire, CONTACT = :contact, "
-                  "DATE_EMBAUCHE = TO_DATE(:date_embauche, 'YYYY-MM-DD'), "
-                  "DISPONIBILITE = :disponibilite, TYPE_ABSENCES = :type_absences "
-                  "WHERE ID_EMPLOYE = :id_employe");
-
-    // 🔹 Binding des valeurs avec les variables de la classe
-    query.bindValue(":cin", this->CIN);
-    query.bindValue(":id_employe", id_employe);
-    query.bindValue(":nom", this->NOM);
-    query.bindValue(":prenom", this->PRENOM);
-    query.bindValue(":poste", this->POSTE);
-    query.bindValue(":sexe", this->SEXE);
-    query.bindValue(":salaire", this->SALAIRE);
-    query.bindValue(":contact", this->CONTACT);
-    query.bindValue(":date_embauche", this->DATE_EMBAUCHE.toString("yyyy-MM-dd"));
-    query.bindValue(":disponibilite", this->DISPONIBILITE);
-    query.bindValue(":type_absences", this->TYPE_ABSENCES);
-
-    // 🔹 Exécution de la requête et gestion des erreurs
-    if (!query.exec()) {
-        qDebug() << "❌ ERREUR SQL : " << query.lastError().text();
-        QMessageBox::critical(nullptr, "Erreur SQL", "Échec de la modification : " + query.lastError().text());
-        return false;
-    }
-
-    // ✅ Succès
-    qDebug() << "✅ Employé modifié avec succès.";
-    QMessageBox::information(nullptr, "Succès", "Les informations de l'employé ont été mises à jour !");
-    return true;
-}
 
 
 bool Employe::supprimerParCIN(QString cin) {
@@ -138,3 +125,121 @@ bool Employe::supprimerParCIN(QString cin) {
     }
     return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 🔹 Charger un employé pour modification
+bool Employe::chargerEmploye(QString cin)
+{
+    QSqlQuery query;
+    query.prepare("SELECT CIN, ID_EMPLOYE, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
+
+    if (!query.exec()) {
+        qDebug() << "❌ ERREUR SQL (chargerEmploye) :" << query.lastError().text();
+        return false;
+    }
+
+    if (!query.next()) {
+        qDebug() << "❌ Aucun employé trouvé avec CIN :" << cin;
+        return false;
+    }
+
+    // Charger les valeurs depuis la base de données
+    CIN = query.value("CIN").toString();  // 🔹 Correction
+    ID_EMPLOYE = query.value("ID_EMPLOYE").toInt();  // 🔹 Correction
+    NOM = query.value("NOM").toString();
+    PRENOM = query.value("PRENOM").toString();
+    POSTE = query.value("POSTE").toString();
+    SEXE = query.value("SEXE").toString();
+    SALAIRE = query.value("SALAIRE").toFloat();
+    CONTACT = query.value("CONTACT").toString();
+    DATE_EMBAUCHE = query.value("DATE_EMBAUCHE").toDate();
+    DISPONIBILITE = query.value("DISPONIBILITE").toInt();
+    TYPE_ABSENCES = query.value("TYPE_ABSENCES").toString();
+
+    qDebug() << "✅ Employé chargé :" << CIN << " | ID: " << ID_EMPLOYE;
+    return true;
+}
+
+
+
+
+
+
+
+
+// 🔹 Modifier un employé
+bool Employe::modifier(QString cin)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE SMARTVACC.EMPLOYES SET "
+                  "NOM = :nom, PRENOM = :prenom, POSTE = :poste, SEXE = :sexe, "
+                  "SALAIRE = :salaire, CONTACT = :contact, DATE_EMBAUCHE = TO_DATE(:date_embauche, 'YYYY-MM-DD'), "
+                  "DISPONIBILITE = :disponibilite, TYPE_ABSENCES = :type_absences "
+                  "WHERE CIN = :old_cin");
+
+    query.bindValue(":old_cin", cin);
+    query.bindValue(":nom", NOM);
+    query.bindValue(":prenom", PRENOM);
+    query.bindValue(":poste", POSTE);
+    query.bindValue(":sexe", SEXE);
+    query.bindValue(":salaire", SALAIRE);
+    query.bindValue(":contact", CONTACT);
+    query.bindValue(":date_embauche", DATE_EMBAUCHE.toString("yyyy-MM-dd"));
+    query.bindValue(":disponibilite", DISPONIBILITE);
+    query.bindValue(":type_absences", TYPE_ABSENCES);
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL lors de la modification de l'employé :" << query.lastError().text();
+        return false;
+    }
+
+    qDebug() << "✅ Modification réussie pour l'employé :" << cin;
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
