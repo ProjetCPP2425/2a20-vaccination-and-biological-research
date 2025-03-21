@@ -17,9 +17,9 @@ public:
 
 private:
     QNetworkAccessManager *networkManager;
-    const QString ACCOUNT_SID = "AC9c4ee10389c67b5bf54bca9f154e3fdd";  // 🔹 Remplace par ton SID Twilio
-    const QString AUTH_TOKEN = "0262f62d4b4657385ec1b88e40ba76fd";    // 🔹 Remplace par ton Auth Token
-    const QString TWILIO_PHONE = "+16575345402";   // 🔹 Ton numéro Twilio
+    const QString ACCOUNT_SID = "";  // 🔹 Remplace par ton SID Twilio
+    const QString AUTH_TOKEN = "";    // 🔹 Remplace par ton Auth Token
+    const QString TWILIO_PHONE = "+";   // 🔹 Ton numéro Twilio
 };
 
 #endif // SMSNOTIF_H
