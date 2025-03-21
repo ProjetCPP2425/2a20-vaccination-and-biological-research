@@ -12,6 +12,10 @@
 #include <QLabel>
 #include <QTextEdit>
 
+#include <QTimer>
+#include "SmsNotif.h"
+#include <QDate>
+#include <QTimer>
 
 
 QT_BEGIN_NAMESPACE
@@ -56,9 +60,10 @@ private:
                        const QString &errorMsg, bool checkZeros, bool allowOnlyNumbers, int minValue, int maxValue);
         void validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
     bool estValide();
+        void envoyerRappelSMS();
 
 
-
+        void testSMS();
 
 };
 #endif // MAINWINDOW_H

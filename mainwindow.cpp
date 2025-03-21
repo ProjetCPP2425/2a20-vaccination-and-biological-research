@@ -21,6 +21,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+   // envoyerRappelSMS();
+
+
+
     connect(ui->btnPredire, &QPushButton::clicked, this, &MainWindow::on_btnPredire_clicked);
 
     connect(ui->nom_carnet, &QLineEdit::textChanged, this, [=]() {
@@ -130,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(4);
         ui->frame->setVisible(true);
     });
+    //testSMS();
 
 }
 
@@ -142,6 +147,47 @@ MainWindow::~MainWindow()
 
 
 
+void MainWindow::envoyerRappelSMS()
+{
+    if (!QSqlDatabase::database().isOpen()) {
+        qDebug() << "❌ Base de données non ouverte!";
+        return;  // Retourne sans faire la requête
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT NUM, DATE_RDV FROM CARNETS");
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL lors de la récupération des RDV :" << query.lastError().text();
+        return;
+    }
+
+    SmsNotif sms;
+    QDateTime maintenant = QDateTime::currentDateTime();
+    QDateTime limite = maintenant.addSecs(48 * 3600); // 🔔 48 heures
+
+    while (query.next()) {
+        QString brut = query.value(0).toString(); // ce qui vient de la base
+        QDateTime dateRdv = query.value(1).toDateTime();
+
+        if (dateRdv > maintenant && dateRdv <= limite) {
+            QString numero = brut;
+
+            if (!numero.startsWith("+216")) {
+                numero = "+216" + numero;
+            }
+
+            qDebug() << "📲 Numéro original :" << brut;
+            qDebug() << "📲 Numéro final pour Twilio :" << numero;
+
+            QString message = "📅 Rappel : Votre RDV est prévu le " + dateRdv.toString("dd/MM/yyyy à HH:mm") + ".";
+            sms.sendSMS(numero, message);
+
+            qDebug() << "📩 SMS de rappel envoyé à :" << numero;
+        }
+    }
+
+}
 
 
 
@@ -795,4 +841,18 @@ void MainWindow::on_btnGeneratePDF_clicked()
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setButtonText(QMessageBox::Ok, "D'accord");
     msgBox.exec();
+}
+void MainWindow::testSMS()
+{
+    SmsNotif sms;
+    QString numero = "+21654430709";
+    QString message = "📅 Rappel : Votre RDV est prévu dans les prochaines 48 heures. Merci de confirmer la réception.";
+
+    bool sent = sms.sendSMS(numero, message);
+
+    if (sent) {
+        QMessageBox::information(this, "SMS ", "📩 Votre Message a été envoyé avec succes.");
+    } else {
+        QMessageBox::critical(this, "Erreur SMS", "❌ La requête n'a pas pu être envoyée.");
+    }
 }
