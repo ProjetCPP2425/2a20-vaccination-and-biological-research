@@ -3466,7 +3466,7 @@ QGroupBox::title {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -3794,27 +3794,6 @@ QPushButton:hover {
 }</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_typev_2">
-          <property name="geometry">
-           <rect>
-            <x>160</x>
-            <y>150</y>
-            <width>221</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLineEdit {
-    background-color: transparent; /* Fond transparent */
-    color: #000000;                /* Texte noir normal */
-    font-size: 14px;               /* Taille de la police */
-    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
-    border-radius: 5px;            /* Coins légèrement arrondis */
-    padding: 8px;                  /* Espacement interne pour le texte */
-    border-style: dashed;          /* Style en pointillés */
-}</string>
-          </property>
-         </widget>
          <widget class="QDateEdit" name="dateEdit_creation_2">
           <property name="geometry">
            <rect>
@@ -3826,27 +3805,6 @@ QPushButton:hover {
           </property>
           <property name="calendarPopup">
            <bool>true</bool>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="lineEdit_certification_2">
-          <property name="geometry">
-           <rect>
-            <x>650</x>
-            <y>50</y>
-            <width>221</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLineEdit {
-    background-color: transparent; /* Fond transparent */
-    color: #000000;                /* Texte noir normal */
-    font-size: 14px;               /* Taille de la police */
-    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
-    border-radius: 5px;            /* Coins légèrement arrondis */
-    padding: 8px;                  /* Espacement interne pour le texte */
-    border-style: dashed;          /* Style en pointillés */
-}</string>
           </property>
          </widget>
          <widget class="QLineEdit" name="labelErrorNom">
@@ -3887,6 +3845,46 @@ QPushButton:hover {
           <property name="styleSheet">
            <string notr="true"/>
           </property>
+         </widget>
+         <widget class="QComboBox" name="lineEdit_typev_2">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>160</y>
+            <width>261</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>corona</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>grippe</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="lineEdit_certification_2">
+          <property name="geometry">
+           <rect>
+            <x>640</x>
+            <y>60</y>
+            <width>261</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>oms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>sante</string>
+           </property>
+          </item>
          </widget>
         </widget>
         <widget class="QLabel" name="label_1">

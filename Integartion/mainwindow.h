@@ -42,8 +42,8 @@ private slots:
     void lancerPrediction();
     void verifierNom();
     bool nomExisteDeja(const QString &nom);
-    void verifierTypeVaccin() ;
-    void verifierCertificationVaccin();
+   // void verifierTypeVaccin() ;
+    //void verifierCertificationVaccin();
 
     void on_pushButton_annuler_2_clicked();
 

@@ -198,12 +198,12 @@ public:
     QLabel *label_cration_2;
     QLabel *label_status_3;
     QLineEdit *lineEdit_nom_2;
-    QLineEdit *lineEdit_typev_2;
     QDateEdit *dateEdit_creation_2;
-    QLineEdit *lineEdit_certification_2;
     QLineEdit *labelErrorNom;
     QLineEdit *labelErrorType;
     QLineEdit *labelErrorCertification;
+    QComboBox *lineEdit_typev_2;
+    QComboBox *lineEdit_certification_2;
     QLabel *label_1;
     QWidget *lirect_8;
     QComboBox *comboBox_tri_2;
@@ -2278,34 +2278,10 @@ public:
 "    padding: 8px;                  /* Espacement interne pour le texte */\n"
 "    border-style: dashed;          /* Style en pointill\303\251s */\n"
 "}"));
-        lineEdit_typev_2 = new QLineEdit(groupBox_15);
-        lineEdit_typev_2->setObjectName("lineEdit_typev_2");
-        lineEdit_typev_2->setGeometry(QRect(160, 150, 221, 41));
-        lineEdit_typev_2->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    background-color: transparent; /* Fond transparent */\n"
-"    color: #000000;                /* Texte noir normal */\n"
-"    font-size: 14px;               /* Taille de la police */\n"
-"    border: 2px dashed #000000;    /* Bordure en pointill\303\251s \303\251paisse */\n"
-"    border-radius: 5px;            /* Coins l\303\251g\303\250rement arrondis */\n"
-"    padding: 8px;                  /* Espacement interne pour le texte */\n"
-"    border-style: dashed;          /* Style en pointill\303\251s */\n"
-"}"));
         dateEdit_creation_2 = new QDateEdit(groupBox_15);
         dateEdit_creation_2->setObjectName("dateEdit_creation_2");
         dateEdit_creation_2->setGeometry(QRect(190, 270, 261, 31));
         dateEdit_creation_2->setCalendarPopup(true);
-        lineEdit_certification_2 = new QLineEdit(groupBox_15);
-        lineEdit_certification_2->setObjectName("lineEdit_certification_2");
-        lineEdit_certification_2->setGeometry(QRect(650, 50, 221, 41));
-        lineEdit_certification_2->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    background-color: transparent; /* Fond transparent */\n"
-"    color: #000000;                /* Texte noir normal */\n"
-"    font-size: 14px;               /* Taille de la police */\n"
-"    border: 2px dashed #000000;    /* Bordure en pointill\303\251s \303\251paisse */\n"
-"    border-radius: 5px;            /* Coins l\303\251g\303\250rement arrondis */\n"
-"    padding: 8px;                  /* Espacement interne pour le texte */\n"
-"    border-style: dashed;          /* Style en pointill\303\251s */\n"
-"}"));
         labelErrorNom = new QLineEdit(groupBox_15);
         labelErrorNom->setObjectName("labelErrorNom");
         labelErrorNom->setGeometry(QRect(110, 100, 261, 20));
@@ -2318,6 +2294,16 @@ public:
         labelErrorCertification->setObjectName("labelErrorCertification");
         labelErrorCertification->setGeometry(QRect(630, 100, 261, 20));
         labelErrorCertification->setStyleSheet(QString::fromUtf8(""));
+        lineEdit_typev_2 = new QComboBox(groupBox_15);
+        lineEdit_typev_2->addItem(QString());
+        lineEdit_typev_2->addItem(QString());
+        lineEdit_typev_2->setObjectName("lineEdit_typev_2");
+        lineEdit_typev_2->setGeometry(QRect(140, 160, 261, 26));
+        lineEdit_certification_2 = new QComboBox(groupBox_15);
+        lineEdit_certification_2->addItem(QString());
+        lineEdit_certification_2->addItem(QString());
+        lineEdit_certification_2->setObjectName("lineEdit_certification_2");
+        lineEdit_certification_2->setGeometry(QRect(640, 60, 261, 26));
         label_1 = new QLabel(frame_16);
         label_1->setObjectName("label_1");
         label_1->setGeometry(QRect(30, 10, 291, 51));
@@ -3721,7 +3707,7 @@ public:
         Affichage->setCurrentIndex(0);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
-        tab->setCurrentIndex(1);
+        tab->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
         Affichage_5->setCurrentIndex(0);
 
@@ -3918,6 +3904,12 @@ public:
         label_expiration_2->setText(QCoreApplication::translate("MainWindow", "Date_expiration:", nullptr));
         label_cration_2->setText(QCoreApplication::translate("MainWindow", "            Date_creation:", nullptr));
         label_status_3->setText(QCoreApplication::translate("MainWindow", "               Statut:", nullptr));
+        lineEdit_typev_2->setItemText(0, QCoreApplication::translate("MainWindow", "corona", nullptr));
+        lineEdit_typev_2->setItemText(1, QCoreApplication::translate("MainWindow", "grippe", nullptr));
+
+        lineEdit_certification_2->setItemText(0, QCoreApplication::translate("MainWindow", "oms", nullptr));
+        lineEdit_certification_2->setItemText(1, QCoreApplication::translate("MainWindow", "sante", nullptr));
+
         label_1->setText(QCoreApplication::translate("MainWindow", "Ajouter un vaccin :", nullptr));
         tab->setTabText(tab->indexOf(ajoutct_8), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
         comboBox_tri_2->setItemText(0, QCoreApplication::translate("MainWindow", "Date_creation", nullptr));

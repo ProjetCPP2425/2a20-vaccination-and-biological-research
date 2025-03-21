@@ -15,7 +15,7 @@
 #include <QTextDocument>
 #include <QFileDialog>
 #include <QtPrintSupport/QPrinter>
-#include <QTextDocument>  // ✅ Correct
+#include <QTextDocument>
 #include <QDate>
 // Constructeur de MainWindow
 MainWindow::MainWindow(QWidget *parent)
@@ -35,8 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Connexion des champs à la vérification en temps réel
      connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
-    connect(ui->lineEdit_typev_2, &QLineEdit::textChanged, this, &MainWindow::verifierTypeVaccin);
-    connect(ui->lineEdit_certification_2, &QLineEdit::textChanged, this, &MainWindow::verifierCertificationVaccin);
+   // connect(ui->lineEdit_typev_2, &QLineEdit::textChanged, this, &MainWindow::verifierTypeVaccin);
+    //connect(ui->lineEdit_certification_2, &QLineEdit::textChanged, this, &MainWindow::verifierCertificationVaccin);
 
     // 🔹 Initialiser medApi ici pour éviter un accès à un nullptr
     medApi = new MedAnalysis(this);
@@ -174,13 +174,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_ajouter_v_clicked() {
+/*void MainWindow::on_pushButton_ajouter_v_clicked() {
     QString nom = ui->lineEdit_nom_2->text();
-    QString type = ui->lineEdit_typev_2->text();
+    QString type = ui->lineEdit_typev_2->currentText();
     QDate date_creation = ui->dateEdit_creation_2->date();
     QDate date_expiration = ui->dateEdit_expiration_2->date();
     QString statut = ui->comboBox_status_2->currentText();
-    QString certification = ui->lineEdit_certification_2->text();
+    QString certification = ui->lineEdit_certification_2->currentText();
 
     qDebug() << "🔍 Avant modification, nomAModifier =" << nomAModifier;
 
@@ -242,7 +242,14 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
             return;
         }
     }
+    // ✅ Mise à jour des `QComboBox`
+    ui->lineEdit_typev_2->setCurrentIndex(0);
+    ui->comboBox_status_2->setCurrentIndex(0);
+    ui->lineEdit_certification_2->setCurrentIndex(0);
 
+    // ✅ Réactiver les `QComboBox`
+    ui->lineEdit_typev_2->setEnabled(true);
+    ui->lineEdit_certification_2->setEnabled(true);
     // 🔄 Mise à jour de la table après ajout/modification
     ui->tableView->setModel(v.afficher());
     ui->lineEdit_nom_2->setDisabled(false);
@@ -253,7 +260,135 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
     ui->dateEdit_expiration_2->setDate(QDate::currentDate());
     ui->lineEdit_certification_2->clear();
 }
+*/
+void MainWindow::on_pushButton_ajouter_v_clicked() {
+    QString nom = ui->lineEdit_nom_2->text();
+    QString type = ui->lineEdit_typev_2->currentText();
+    QDate date_creation = ui->dateEdit_creation_2->date();
+    QDate date_expiration = ui->dateEdit_expiration_2->date();
+    QString statut = ui->comboBox_status_2->currentText();
+    QString certification = ui->lineEdit_certification_2->currentText();
 
+    qDebug() << "🔍 Avant modification, nomAModifier =" << nomAModifier;
+
+    // ✅ Vérification des erreurs avant validation
+    if (!modeModification && (!ui->labelErrorNom->text().isEmpty() ||
+                              !ui->labelErrorType->text().isEmpty() ||
+                              !ui->labelErrorCertification->text().isEmpty())) {
+        QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de continuer !");
+        return;
+    }
+
+    // 🔴 Vérification du statut
+    if (statut != "effectuer" && statut != "en cour") {
+        QMessageBox::warning(this, "Erreur", "Veuillez choisir un statut valide !");
+        return;
+    }
+
+    // Vérifier que la date d'expiration est après la date de création
+    if (date_expiration <= date_creation) {
+        QMessageBox::warning(this, "Date invalide", "La date d'expiration doit être après la date de création !");
+        return;
+    }
+
+    Vaccin v(0, nom, type, date_creation, date_expiration, statut, certification);
+
+    if (modeModification) {
+        if (nomAModifier.isEmpty()) {
+            qDebug() << "❌ ERREUR: nomAModifier est vide lors de la modification !";
+        }
+        // 🔹 Mode Modification : Mise à jour du vaccin
+        if (v.modifier(nomAModifier)) {
+            QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
+            modeModification = false;  // Désactiver le mode modification
+            connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
+        } else {
+            QMessageBox::critical(this, "Erreur", "Échec de la modification !");
+            return;
+        }
+    } else {
+        // 🔹 Mode Ajout : Ajout d'un nouveau vaccin
+        qDebug() << "Mode Ajout - Nouveau vaccin";
+
+        if (v.ajouter()) {
+            QMessageBox::information(this, "Succès", "Vaccin ajouté avec succès !");
+            QMetaObject::invokeMethod(this, [=]() {
+                ui->stackedWidget->setCurrentIndex(3);
+                ui->tab->setCurrentIndex(1); // 1 correspond à l'onglet "Ajout"
+                QApplication::processEvents();
+            }, Qt::QueuedConnection);
+        } else {
+            QMessageBox::critical(this, "Erreur", "Échec de l'ajout !");
+            return;
+        }
+    }
+
+    // ✅ Réinitialisation des `QComboBox` sans les vider complètement
+    ui->lineEdit_typev_2->setCurrentIndex(0);
+    ui->comboBox_status_2->setCurrentIndex(0);
+    ui->lineEdit_certification_2->setCurrentIndex(0);
+
+    // ✅ Remettre les options de la `QComboBox` (si elles sont vides après modification)
+    if (ui->lineEdit_typev_2->count() == 0) {
+        ui->lineEdit_typev_2->addItems({"ARNm", "Viral", "Inactivé", "Sous-unité"});
+    }
+
+    if (ui->lineEdit_certification_2->count() == 0) {
+        ui->lineEdit_certification_2->addItems({"OMS", "EMA", "FDA", "Aucune"});
+    }
+
+    // ✅ Mise à jour de l'affichage
+    ui->tableView->setModel(v.afficher());
+    ui->lineEdit_nom_2->setDisabled(false);
+    ui->lineEdit_nom_2->clear();
+    ui->dateEdit_creation_2->setDate(QDate::currentDate());
+    ui->dateEdit_expiration_2->setDate(QDate::currentDate());
+}
+
+/*void MainWindow::on_pushButton_ajouter_v_clicked() {
+    QString nom = ui->lineEdit_nom_2->text();
+    QString type = ui->lineEdit_typev_2->currentText();
+    QDate date_creation = ui->dateEdit_creation_2->date();
+    QDate date_expiration = ui->dateEdit_expiration_2->date();
+    QString statut = ui->comboBox_status_2->currentText();
+    QString certification = ui->lineEdit_certification_2->currentText();
+
+    qDebug() << "🔍 Avant modification, nomAModifier =" << nomAModifier;
+
+    if (modeModification) {
+        if (nomAModifier.isEmpty()) {
+            qDebug() << "❌ ERREUR: nomAModifier est vide lors de la modification !";
+        }
+        // 🔹 Mode Modification : Mettre à jour l'enregistrement existant
+        if (Vaccin(0,nom, type, date_creation, date_expiration, statut, certification).modifier(nomAModifier)) {
+            QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
+            modeModification = false;
+        } else {
+            QMessageBox::critical(this, "Erreur", "Échec de la modification !");
+            return;
+        }
+    } else {
+        // 🔹 Mode Ajout : Ajouter un nouveau vaccin
+        qDebug() << "Mode Ajout - Nouveau vaccin";
+
+        if (Vaccin(0,nom, type, date_creation, date_expiration, statut, certification).ajouter()) {
+            QMessageBox::information(this, "Succès", "Vaccin ajouté avec succès !");
+        } else {
+            QMessageBox::critical(this, "Erreur", "Échec de l'ajout !");
+            return;
+        }
+    }
+
+    // ✅ Mise à jour des `QComboBox`
+    ui->lineEdit_typev_2->setCurrentIndex(0);
+    ui->comboBox_status_2->setCurrentIndex(0);
+    ui->lineEdit_certification_2->setCurrentIndex(0);
+
+    // ✅ Réactiver les `QComboBox`
+    ui->lineEdit_typev_2->setEnabled(true);
+    ui->lineEdit_certification_2->setEnabled(true);
+}
+*/
 
 
 void MainWindow::on_pushButton_suppv_clicked() {
@@ -352,11 +487,17 @@ void MainWindow::on_pushButton_suppv_clicked() {
 
             // Remplir les champs
             ui->lineEdit_nom_2->setText(nom);
-            ui->lineEdit_typev_2->setText(type);
+            if (ui->lineEdit_typev_2->findText(type) != -1)
+                ui->lineEdit_typev_2->setCurrentText(type);
+            else
+                ui->lineEdit_typev_2->addItem(type);
             ui->dateEdit_creation_2->setDate(date_creation);
             ui->dateEdit_expiration_2->setDate(date_expiration);
             ui->comboBox_status_2->setCurrentText(statut);
-            ui->lineEdit_certification_2->setText(certification);
+            if (ui->lineEdit_certification_2->findText(certification) != -1)
+                ui->lineEdit_certification_2->setCurrentText(certification);
+            else
+                ui->lineEdit_certification_2->addItem(certification);
             ui->lineEdit_nom_2->setDisabled(true);
             ancienType = type;
             ancienneDateCreation = date_creation;
@@ -368,6 +509,8 @@ void MainWindow::on_pushButton_suppv_clicked() {
             modeModification = true;
 
             qDebug() << "✅ Après récupération, nomAModifier =" << nomAModifier;
+            qDebug() << "Type récupéré :" << type;
+            qDebug() << "Certification récupérée :" << certification;
 
             // ✅ Affichage du message d'information
             QMessageBox::information(this, "Modification", "Données chargées, vous pouvez modifier !");
@@ -388,7 +531,6 @@ void MainWindow::on_pushButton_suppv_clicked() {
             QMessageBox::critical(this, "Erreur", "Impossible de charger les données du vaccin !");
         }
     }
-
 
 
 
@@ -418,7 +560,9 @@ void MainWindow::on_lineEdit_recherche_2_textChanged(const QString &arg1)
         return;
     }
 
-    model->setQuery(query);
+   // model->setQuery(query);
+    model->setQuery(std::move(query));
+
     ui->tableView->setModel(model);
 }
 
@@ -576,8 +720,8 @@ bool MainWindow::nomExisteDeja(const QString &nom) {
     int count = query.value(0).toInt();
     return (count > 0);
 }
-void MainWindow::verifierTypeVaccin() {
-    QString type = ui->lineEdit_typev_2->text().trimmed();
+/*void MainWindow::verifierTypeVaccin() {
+    QString type = ui->lineEdit_typev_2->currentText().trimmed();
 
     // 🔴 Si vide
     if (type.isEmpty()) {
@@ -601,7 +745,7 @@ void MainWindow::verifierTypeVaccin() {
     }
 }
 void MainWindow::verifierCertificationVaccin() {
-    QString certification = ui->lineEdit_certification_2->text().trimmed();
+    QString certification = ui->lineEdit_certification_2->currentText();
 
     // 🔴 Si vide
     if (certification.isEmpty()) {
@@ -623,7 +767,7 @@ void MainWindow::verifierCertificationVaccin() {
         ui->labelErrorCertification->clear();
         ui->labelErrorCertification->setStyleSheet("color: transparent; background-color: transparent; border: none; font-weight: normal;");
     }
-}
+}*/
 
 void MainWindow::on_pushButton_annuler_2_clicked()
 {
@@ -632,11 +776,11 @@ void MainWindow::on_pushButton_annuler_2_clicked()
 
         // 🔹 Remettre les anciennes valeurs
         ui->lineEdit_nom_2->setText(nomAModifier);
-        ui->lineEdit_typev_2->setText(ancienType);
+        ui->lineEdit_typev_2->setCurrentText(ancienType);
         ui->dateEdit_creation_2->setDate(ancienneDateCreation);
         ui->dateEdit_expiration_2->setDate(ancienneDateExpiration);
         ui->comboBox_status_2->setCurrentText(ancienStatut);
-        ui->lineEdit_certification_2->setText(ancienneCertification);
+        ui->lineEdit_certification_2->setCurrentText(ancienneCertification);
 
         QMessageBox::information(this, "Annulation", "Les valeurs avant modification ont été restaurées.");
     } else {
@@ -644,15 +788,17 @@ void MainWindow::on_pushButton_annuler_2_clicked()
 
         // 🔹 Vider tous les champs
         ui->lineEdit_nom_2->clear();
-        ui->lineEdit_typev_2->clear();
+        ui->lineEdit_typev_2->setCurrentIndex(0);
         ui->comboBox_status_2->setCurrentIndex(0);
         ui->dateEdit_creation_2->setDate(QDate::currentDate());
         ui->dateEdit_expiration_2->setDate(QDate::currentDate());
-        ui->lineEdit_certification_2->clear();
+        ui->lineEdit_certification_2->setCurrentIndex(0);
 
         QMessageBox::information(this, "Annulation", "Les champs ont été effacés.");
     }
 }
+
+
 
 
 

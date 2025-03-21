@@ -65,12 +65,12 @@ QSqlQueryModel* Vaccin::afficher()
 
     // 🔹 Définir les en-têtes des colonnes pour l'affichage
    // model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID Vaccination"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Type"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Date de Création"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Date d'Expiration"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Statut"));
-    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Certification Vaccin"));
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Type"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Date de Création"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Date d'Expiration"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Statut"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Certification Vaccin"));
 
     return model;
 }
