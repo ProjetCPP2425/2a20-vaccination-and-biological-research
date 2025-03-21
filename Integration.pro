@@ -6,7 +6,6 @@
 
 QT       += core gui sql
 QT += printsupport
-QT += network
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -31,14 +30,12 @@ SOURCES += \
     carnets.cpp \
         main.cpp \
         mainwindow.cpp \
-    connection.cpp \
-    smsnotif.cpp
+    connection.cpp
 
 HEADERS += \
     carnets.h \
         mainwindow.h \
-    connection.h \
-    smsnotif.h
+    connection.h
 
 FORMS += \
         mainwindow.ui
