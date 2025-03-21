@@ -13,7 +13,6 @@
 #include <QTextEdit>
 
 #include <QTimer>
-#include "SmsNotif.h"
 #include <QDate>
 #include <QTimer>
 
