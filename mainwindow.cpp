@@ -147,7 +147,7 @@ MainWindow::~MainWindow()
 
 
 
-void MainWindow::envoyerRappelSMS()
+/*void MainWindow::envoyerRappelSMS()
 {
     if (!QSqlDatabase::database().isOpen()) {
         qDebug() << "❌ Base de données non ouverte!";
@@ -187,7 +187,7 @@ void MainWindow::envoyerRappelSMS()
         }
     }
 
-}
+}*/
 
 
 
@@ -842,7 +842,7 @@ void MainWindow::on_btnGeneratePDF_clicked()
     msgBox.setButtonText(QMessageBox::Ok, "D'accord");
     msgBox.exec();
 }
-void MainWindow::testSMS()
+/*void MainWindow::testSMS()
 {
     SmsNotif sms;
     QString numero = "+21654430709";
@@ -855,4 +855,4 @@ void MainWindow::testSMS()
     } else {
         QMessageBox::critical(this, "Erreur SMS", "❌ La requête n'a pas pu être envoyée.");
     }
-}
+}*/

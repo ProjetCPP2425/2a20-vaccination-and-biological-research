@@ -1,4 +1,4 @@
-#include "SmsNotif.h"
+/*#include "SmsNotif.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -49,3 +49,4 @@ bool SmsNotif::sendSMS(const QString &to, const QString &message)
 
     return true; // Indique que la requête a été envoyée
 }
+*/

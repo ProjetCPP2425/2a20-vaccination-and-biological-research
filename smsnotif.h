@@ -1,4 +1,4 @@
-#ifndef SMSNOTIF_H
+/*#ifndef SMSNOTIF_H
 #define SMSNOTIF_H
 
 #include <QObject>
@@ -22,4 +22,4 @@ private:
     const QString TWILIO_PHONE = "+";   // 🔹 Ton numéro Twilio
 };
 
-#endif // SMSNOTIF_H
+#endif // SMSNOTIF_H*/
