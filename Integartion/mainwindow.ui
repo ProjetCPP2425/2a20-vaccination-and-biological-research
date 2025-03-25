@@ -3459,14 +3459,14 @@ QGroupBox::title {
      <widget class="QTabWidget" name="tab">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>70</y>
+        <x>10</x>
+        <y>100</y>
         <width>1361</width>
         <height>861</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -3946,8 +3946,8 @@ QPushButton:hover {
        <widget class="QLabel" name="label_tri_2">
         <property name="geometry">
          <rect>
-          <x>90</x>
-          <y>210</y>
+          <x>80</x>
+          <y>200</y>
           <width>71</width>
           <height>21</height>
          </rect>

@@ -17,6 +17,18 @@
 #include <QtPrintSupport/QPrinter>
 #include <QTextDocument>
 #include <QDate>
+#include <QtCharts/QChartView>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
+#include <QChartView>
+#include <QBarSet>
+#include <QBarSeries>
+#include <QVBoxLayout>
+#include <QBarCategoryAxis>
+#include <QValueAxis>
+
 // Constructeur de MainWindow
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -174,93 +186,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-/*void MainWindow::on_pushButton_ajouter_v_clicked() {
-    QString nom = ui->lineEdit_nom_2->text();
-    QString type = ui->lineEdit_typev_2->currentText();
-    QDate date_creation = ui->dateEdit_creation_2->date();
-    QDate date_expiration = ui->dateEdit_expiration_2->date();
-    QString statut = ui->comboBox_status_2->currentText();
-    QString certification = ui->lineEdit_certification_2->currentText();
-
-    qDebug() << "🔍 Avant modification, nomAModifier =" << nomAModifier;
-
-    // ✅ Désactiver la vérification si on est en mode modification
-    if (!modeModification && (!ui->labelErrorNom->text().isEmpty() ||
-                              !ui->labelErrorType->text().isEmpty() ||
-                              !ui->labelErrorCertification->text().isEmpty())) {
-        QMessageBox::warning(this, "Erreur", "Veuillez corriger les erreurs avant de continuer !");
-        return;
-    }
-
-    // 🔴 Vérification que le statut est valide
-    if (statut != "effectuer" && statut != "en cour") {
-        QMessageBox::warning(this, "Erreur", "Veuillez choisir un statut valide !");
-        return;
-    }
-
-    // Vérifier que la date d'expiration est après la date de création
-    if (date_expiration <= date_creation) {
-        QMessageBox::warning(this, "Date invalide", "La date d'expiration doit être après la date de création !");
-        return;
-    }
-
-    Vaccin v(0, nom, type, date_creation, date_expiration, statut, certification);
-
-    if (modeModification) {
-
-        if (nomAModifier.isEmpty()) {
-            qDebug() << "❌ ERREUR: nomAModifier est vide lors de la modification !";
-        }
-        // 🔹 Mode Modification : Mettre à jour l'enregistrement existant
-        if (v.modifier(nomAModifier)) {
-            QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
-            modeModification = false;  // Désactiver le mode modification après enregistrement
-            connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom); // Réactiver la vérification
-
-        } else {
-            QMessageBox::critical(this, "Erreur", "Échec de la modification !");
-            return;
-        }
-    } else {
-        // 🔹 Mode Ajout : Ajouter un nouveau vaccin
-        qDebug() << "Mode Ajout - Nouveau vaccin";
-
-        if (v.ajouter()) {
-            QMessageBox::information(this, "Succès", "Vaccin ajouté avec succès !");
-            // ✅ Redirection forcée avec QMetaObject::invokeMethod
-            QMetaObject::invokeMethod(this, [=]() {
-                qDebug() << "🔄 Forçage de la redirection vers la page d'ajout";
-                ui->stackedWidget->setCurrentIndex(3);
-                ui->tab->setCurrentIndex(1); // 0 correspond à l'onglet "Ajout"
-
-                QApplication::processEvents(); // ✅ Force l'UI à traiter les événements
-                qDebug() << "📌 Vérification après redirection : Page active =" << ui->stackedWidget->currentIndex();
-
-            }, Qt::QueuedConnection);
-        } else {
-            QMessageBox::critical(this, "Erreur", "Échec de l'ajout !");
-            return;
-        }
-    }
-    // ✅ Mise à jour des `QComboBox`
-    ui->lineEdit_typev_2->setCurrentIndex(0);
-    ui->comboBox_status_2->setCurrentIndex(0);
-    ui->lineEdit_certification_2->setCurrentIndex(0);
-
-    // ✅ Réactiver les `QComboBox`
-    ui->lineEdit_typev_2->setEnabled(true);
-    ui->lineEdit_certification_2->setEnabled(true);
-    // 🔄 Mise à jour de la table après ajout/modification
-    ui->tableView->setModel(v.afficher());
-    ui->lineEdit_nom_2->setDisabled(false);
-    ui->lineEdit_nom_2->clear();
-    ui->lineEdit_typev_2->clear();
-    ui->comboBox_status_2->setCurrentIndex(0);
-    ui->dateEdit_creation_2->setDate(QDate::currentDate());
-    ui->dateEdit_expiration_2->setDate(QDate::currentDate());
-    ui->lineEdit_certification_2->clear();
-}
-*/
 void MainWindow::on_pushButton_ajouter_v_clicked() {
     QString nom = ui->lineEdit_nom_2->text();
     QString type = ui->lineEdit_typev_2->currentText();
@@ -298,7 +223,7 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
             qDebug() << "❌ ERREUR: nomAModifier est vide lors de la modification !";
         }
         // 🔹 Mode Modification : Mise à jour du vaccin
-        if (v.modifier(nomAModifier)) {
+        if (v.modifier(nom)) {
             QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
             modeModification = false;  // Désactiver le mode modification
             connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
@@ -344,51 +269,6 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
     ui->dateEdit_creation_2->setDate(QDate::currentDate());
     ui->dateEdit_expiration_2->setDate(QDate::currentDate());
 }
-
-/*void MainWindow::on_pushButton_ajouter_v_clicked() {
-    QString nom = ui->lineEdit_nom_2->text();
-    QString type = ui->lineEdit_typev_2->currentText();
-    QDate date_creation = ui->dateEdit_creation_2->date();
-    QDate date_expiration = ui->dateEdit_expiration_2->date();
-    QString statut = ui->comboBox_status_2->currentText();
-    QString certification = ui->lineEdit_certification_2->currentText();
-
-    qDebug() << "🔍 Avant modification, nomAModifier =" << nomAModifier;
-
-    if (modeModification) {
-        if (nomAModifier.isEmpty()) {
-            qDebug() << "❌ ERREUR: nomAModifier est vide lors de la modification !";
-        }
-        // 🔹 Mode Modification : Mettre à jour l'enregistrement existant
-        if (Vaccin(0,nom, type, date_creation, date_expiration, statut, certification).modifier(nomAModifier)) {
-            QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
-            modeModification = false;
-        } else {
-            QMessageBox::critical(this, "Erreur", "Échec de la modification !");
-            return;
-        }
-    } else {
-        // 🔹 Mode Ajout : Ajouter un nouveau vaccin
-        qDebug() << "Mode Ajout - Nouveau vaccin";
-
-        if (Vaccin(0,nom, type, date_creation, date_expiration, statut, certification).ajouter()) {
-            QMessageBox::information(this, "Succès", "Vaccin ajouté avec succès !");
-        } else {
-            QMessageBox::critical(this, "Erreur", "Échec de l'ajout !");
-            return;
-        }
-    }
-
-    // ✅ Mise à jour des `QComboBox`
-    ui->lineEdit_typev_2->setCurrentIndex(0);
-    ui->comboBox_status_2->setCurrentIndex(0);
-    ui->lineEdit_certification_2->setCurrentIndex(0);
-
-    // ✅ Réactiver les `QComboBox`
-    ui->lineEdit_typev_2->setEnabled(true);
-    ui->lineEdit_certification_2->setEnabled(true);
-}
-*/
 
 
 void MainWindow::on_pushButton_suppv_clicked() {
@@ -498,7 +378,7 @@ void MainWindow::on_pushButton_suppv_clicked() {
                 ui->lineEdit_certification_2->setCurrentText(certification);
             else
                 ui->lineEdit_certification_2->addItem(certification);
-            ui->lineEdit_nom_2->setDisabled(true);
+           // ui->lineEdit_nom_2->setDisabled(true);
             ancienType = type;
             ancienneDateCreation = date_creation;
             ancienneDateExpiration = date_expiration;
@@ -532,39 +412,37 @@ void MainWindow::on_pushButton_suppv_clicked() {
         }
     }
 
+ void MainWindow::on_lineEdit_recherche_2_textChanged(const QString &arg1)
+    {
+        qDebug() << "Recherche en cours... Texte saisi :" << arg1;
 
+        QSqlQueryModel *model = new QSqlQueryModel();
+        QSqlQuery query;
+        QString searchText = arg1.trimmed();
 
-void MainWindow::on_lineEdit_recherche_2_textChanged(const QString &arg1)
-{
-    qDebug() << "Recherche en cours... Texte saisi :" << arg1; // Debug
+        QString baseQuery = R"(
+        SELECT NOM, TYPE, DATE_CREATION, DATE_EXPIRATION, STATUT, CERTIFICATION_VACCIN
+        FROM VACCIN
+    )";
 
-    QSqlQueryModel *model = new QSqlQueryModel();
-    QSqlQuery query;
-    QString searchText = arg1.trimmed(); // Supprime les espaces avant et après
+        if (!searchText.isEmpty()) {
+            baseQuery += " WHERE LOWER(NOM) LIKE LOWER(:val) "
+                         "OR LOWER(TYPE) LIKE LOWER(:val) "
+                         "OR LOWER(CERTIFICATION_VACCIN) LIKE LOWER(:val)";
+            query.prepare(baseQuery);
+            query.bindValue(":val", "%" + searchText + "%");
+        } else {
+            query.prepare(baseQuery);
+        }
 
-    if (searchText.isEmpty()) {
-        // 🔹 Afficher tous les vaccins si aucun texte n'est saisi
-        query.prepare("SELECT * FROM VACCIN");
+        if (!query.exec()) {
+            qDebug() << "Erreur SQL :" << query.lastError().text();
+            return;
+        }
+
+        model->setQuery(std::move(query));
+        ui->tableView->setModel(model);
     }
-    else {
-        // 🔹 Recherche par Nom, Type de vaccin ou Certification
-        query.prepare("SELECT * FROM VACCIN WHERE "
-                      "LOWER(NOM) LIKE LOWER(:val) OR "
-                      "LOWER(TYPE) LIKE LOWER(:val) OR "
-                      "LOWER(CERTIFICATION_VACCIN) LIKE LOWER(:val)");
-        query.bindValue(":val", "%" + searchText + "%");
-    }
-
-    if (!query.exec()) {
-        qDebug() << "Erreur SQL :" << query.lastError().text(); // Debug erreur SQL
-        return;
-    }
-
-   // model->setQuery(query);
-    model->setQuery(std::move(query));
-
-    ui->tableView->setModel(model);
-}
 
 void MainWindow::verifierVaccinsExpires() {
     QSqlQuery query;
@@ -677,12 +555,12 @@ void MainWindow::verifierNom() {
     qDebug() << "📌 Valeur actuelle de nomAModifier :" << nomAModifier;
 
     // ✅ Désactiver la vérification si on est en mode modification
-    if (modeModification) {
+   /* if (modeModification) {
         qDebug() << "✅ Mode modification actif, validation du nom ignorée.";
         ui->labelErrorNom->clear();
         ui->labelErrorNom->setStyleSheet("color: transparent; background-color: transparent; border: none;");
         return;  // ⛔ Quitter immédiatement la fonction
-    }
+    }*/
 
     if (nom.isEmpty()) {
         ui->labelErrorNom->setText("⚠ Le nom ne peut pas être vide !");
@@ -720,54 +598,6 @@ bool MainWindow::nomExisteDeja(const QString &nom) {
     int count = query.value(0).toInt();
     return (count > 0);
 }
-/*void MainWindow::verifierTypeVaccin() {
-    QString type = ui->lineEdit_typev_2->currentText().trimmed();
-
-    // 🔴 Si vide
-    if (type.isEmpty()) {
-        ui->labelErrorType->setText("⚠ Le type de vaccin ne peut pas être vide !");
-        ui->labelErrorType->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
-    }
-    // 🔴 Si moins de 3 caractères
-    else if (type.length() < 3) {
-        ui->labelErrorType->setText("⚠ Le type de vaccin doit contenir au moins 3 caractères !");
-        ui->labelErrorType->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
-    }
-    // 🔴 Si contient des caractères interdits (ex: chiffres, symboles)
-    else if (!type.contains(QRegularExpression("^[a-zA-ZÀ-ÖØ-öø-ÿ\\s]+$"))) {
-        ui->labelErrorType->setText("⚠ Seuls les lettres et espaces sont autorisés !");
-        ui->labelErrorType->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
-    }
-    // ✅ Si tout est bon
-    else {
-        ui->labelErrorType->clear();
-        ui->labelErrorType->setStyleSheet("color: transparent; background-color: transparent; border: none; font-weight: normal;");
-    }
-}
-void MainWindow::verifierCertificationVaccin() {
-    QString certification = ui->lineEdit_certification_2->currentText();
-
-    // 🔴 Si vide
-    if (certification.isEmpty()) {
-        ui->labelErrorCertification->setText("⚠ La certification ne peut pas être vide !");
-        ui->labelErrorCertification->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
-    }
-    // 🔴 Si moins de 5 caractères
-    else if (certification.length() < 5) {
-        ui->labelErrorCertification->setText("⚠ La certification doit contenir au moins 5 caractères !");
-        ui->labelErrorCertification->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
-    }
-    // 🔴 Si contient des caractères interdits (ex: chiffres, symboles autres que `-`)
-    else if (!certification.contains(QRegularExpression("^[a-zA-ZÀ-ÖØ-öø-ÿ\\s-]+$"))) {
-        ui->labelErrorCertification->setText("⚠ Seuls les lettres, espaces et tirets sont autorisés !");
-        ui->labelErrorCertification->setStyleSheet("color: red; background-color: transparent; border: none; font-weight: normal;");
-    }
-    // ✅ Si tout est bon
-    else {
-        ui->labelErrorCertification->clear();
-        ui->labelErrorCertification->setStyleSheet("color: transparent; background-color: transparent; border: none; font-weight: normal;");
-    }
-}*/
 
 void MainWindow::on_pushButton_annuler_2_clicked()
 {
@@ -908,3 +738,156 @@ void MainWindow::on_pushButton_pdf_2_clicked() {
     // 🔔 Message de succès
     QMessageBox::information(this, "Succès", "Le rapport de certification a été généré avec succès !");
 }
+
+void MainWindow::on_pushButtonStat_18_clicked()
+{
+    ui->tab->setCurrentIndex(2);
+
+    if (!ui->Statistique_8) {
+        qDebug() << "Erreur : L'onglet Statistique_8 n'existe pas";
+        return;
+    }
+
+    // 🔁 Supprimer ancien layout proprement
+    QLayout *oldLayout = ui->Statistique_8->layout();
+    if (oldLayout) {
+        QLayoutItem *item;
+        while ((item = oldLayout->takeAt(0)) != nullptr) {
+            if (item->widget()) item->widget()->deleteLater();
+            delete item;
+        }
+        delete oldLayout;
+        ui->Statistique_8->setLayout(nullptr);
+    }
+
+    // 📦 Requête Oracle (groupement par année)
+    QSqlQuery query;
+    if (!query.exec("SELECT TO_CHAR(date_creation, 'YYYY') AS annee, COUNT(*) FROM Vaccin GROUP BY TO_CHAR(date_creation, 'YYYY') ORDER BY annee")) {
+        qDebug() << "Erreur SQL :" << query.lastError().text();
+        return;
+    }
+
+    // 📊 Préparer données
+    QBarSet *set0 = new QBarSet("Vaccinations");
+    set0->setColor(QColor("#2e86c1"));  // 🔹 Couleur personnalisée
+    QStringList categories;
+    QList<int> valeurs;
+    int totalVaccinations = 0;
+
+    while (query.next()) {
+        QString annee = query.value(0).toString();
+        int nb = query.value(1).toInt();
+        categories << annee;
+        *set0 << nb;
+        valeurs << nb;
+        totalVaccinations += nb;
+        qDebug() << "Année:" << annee << "Nombre:" << nb;
+    }
+
+    if (categories.isEmpty()) {
+        qDebug() << "Aucune donnée dans la base pour les statistiques.";
+        return;
+    }
+
+    QBarSeries *series = new QBarSeries();
+    series->append(set0);
+    series->setLabelsVisible(true);  // 🔢 Afficher les valeurs au-dessus des barres
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("📊 Statistiques des vaccinations par année");
+    chart->setAnimationOptions(QChart::AllAnimations);
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignTop);
+
+    // 🧭 Axe X
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    // 📈 Axe Y
+    int maxValue = *std::max_element(valeurs.begin(), valeurs.end()) + 5;
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setRange(0, maxValue);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    // 👁 Vue graphique
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setMinimumSize(500, 300);
+    chartView->setMaximumSize(800, 500);
+    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // 🧱 Encadré dans un QGroupBox
+    QGroupBox *graphBox = new QGroupBox("Vue Globale des vaccinations");
+    graphBox->setStyleSheet("QGroupBox { font-weight: bold; border: 2px solid #ccc; border-radius: 10px; padding: 10px; margin-top: 10px; }");
+    QVBoxLayout *boxLayout = new QVBoxLayout();
+    boxLayout->addWidget(chartView);
+    graphBox->setLayout(boxLayout);
+
+    // 💬 Résumé texte
+    QLabel *summary = new QLabel("📅 Total années : " + QString::number(categories.size()) +
+                                 " — 💉 Total vaccinations : " + QString::number(totalVaccinations));
+    summary->setAlignment(Qt::AlignCenter);
+    summary->setStyleSheet("font-style: italic; color: #2e86c1;");
+
+    // 📐 Layout final
+    QVBoxLayout *layout = new QVBoxLayout();
+
+    QLabel *titleLabel = new QLabel("📊 Statistiques des vaccinations par année");
+    titleLabel->setAlignment(Qt::AlignCenter);
+    titleLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #800000;");
+    layout->addWidget(titleLabel);
+
+    layout->addWidget(graphBox);
+    layout->addWidget(summary);
+
+    ui->Statistique_8->setLayout(layout);
+    ui->Statistique_8->update();
+    ui->Statistique_8->repaint();
+}
+
+
+
+
+
+
+void MainWindow::on_comboBox_tri_2_currentIndexChanged(int index)
+{
+    qDebug() << "Tri demandé par :" << index;
+
+    QSqlQueryModel *model = new QSqlQueryModel();
+    QSqlQuery query;
+
+    QString orderColumn;
+
+    if (index == 0)
+        orderColumn = "DATE_CREATION";
+    else if (index == 1)
+        orderColumn = "DATE_EXPIRATION";
+    else if (index == 2)
+        orderColumn = "STATUT";
+    else
+        orderColumn = "DATE_CREATION"; // Valeur par défaut
+
+    // ⚠️ On exclut l’ID dans les colonnes affichées
+    QString queryString = QString(
+                              "SELECT NOM, TYPE, DATE_CREATION, DATE_EXPIRATION, STATUT, CERTIFICATION_VACCIN "
+                              "FROM VACCIN ORDER BY %1 ASC").arg(orderColumn);
+
+    if (!query.prepare(queryString)) {
+        qDebug() << "Erreur préparation requête :" << query.lastError().text();
+        return;
+    }
+
+    if (!query.exec()) {
+        qDebug() << "Erreur exécution requête :" << query.lastError().text();
+        return;
+    }
+
+    model->setQuery(std::move(query));
+    ui->tableView->setModel(model);
+}
+

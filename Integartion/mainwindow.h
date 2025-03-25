@@ -49,6 +49,10 @@ private slots:
 
     void on_pushButton_pdf_2_clicked();
 
+    void on_pushButtonStat_18_clicked();
+
+    void on_comboBox_tri_2_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
     Vaccin vacc;
