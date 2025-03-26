@@ -65,6 +65,8 @@ private:
 
 
         void testSMS();
+        QTimer *smsTimer;
+
 
 };
 #endif // MAINWINDOW_H

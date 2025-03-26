@@ -138,9 +138,9 @@ MainWindow::MainWindow(QWidget *parent)
     //testSMS();
    // envoyerRappelSMS();
 
-  /*  QTimer::singleShot(15000, this, [this]() {
-        envoyerRappelSMS();
-    });*///correcte
+  /*  smsTimer = new QTimer(this);
+    connect(smsTimer, &QTimer::timeout, this, &MainWindow::envoyerRappelSMS);
+    smsTimer->start(60000); // 60 000 ms = toutes les 60 secondes*///--->correcte
 
 }
 
