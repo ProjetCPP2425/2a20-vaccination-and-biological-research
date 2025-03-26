@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include "carnets.h"
+#include "smsnotif.h"
+
 #include <QStyledItemDelegate>
 #include <QHBoxLayout>  // Pour QHBoxLayout
 #include <QPushButton>  // Pour QPushButton

@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QPdfWriter>
 #include <QFileDialog>
+#include "smsnotif.h"
 
 #include <QDateTime>
 #include <QMessageBox>
@@ -135,6 +136,11 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(true);
     });
     //testSMS();
+   // envoyerRappelSMS();
+
+  /*  QTimer::singleShot(15000, this, [this]() {
+        envoyerRappelSMS();
+    });*///correcte
 
 }
 
@@ -190,6 +196,50 @@ MainWindow::~MainWindow()
 }*/
 
 
+void MainWindow::envoyerRappelSMS()
+{
+    if (!QSqlDatabase::database().isOpen()) {
+        qDebug() << "❌ Base de données non ouverte!";
+        return;
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT NOM, PRENOM, NUM, DATE_RDV FROM CARNETS");
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL :" << query.lastError().text();
+        return;
+    }
+
+    QDateTime now = QDateTime::currentDateTime();
+    QDateTime limite = now.addSecs(48 * 3600); // 48 heures max
+
+    while (query.next()) {
+        QString nom = query.value(0).toString();
+        QString prenom = query.value(1).toString();
+        QString num = query.value(2).toString();
+        QDate rdv = query.value(3).toDate();
+        QDateTime rdvDateTime(rdv, QTime(8, 0)); // On suppose RDV à 08:00
+
+        if (rdvDateTime > now && rdvDateTime <= limite) {
+            if (!num.startsWith("+216")) {
+                num = "+216" + num;
+            }
+
+            QString msg = QString("📅 Bonjour %1 %2, ceci est un rappel de votre RDV prévu le %3.")
+                              .arg(nom)
+                              .arg(prenom)
+                              .arg(rdv.toString("dd/MM/yyyy"));
+
+            SmsNotif sms;
+            if (sms.sendSMS(num, msg)) {
+                QMessageBox::information(this, "Rappel SMS", QString("📩 SMS envoyé à %1 %2").arg(nom).arg(num));
+            } else {
+                QMessageBox::critical(this, "Erreur SMS", QString("Échec de l'envoi à %1 %2").arg(nom).arg(num));
+            }
+        }
+    }
+}
 
 
 
