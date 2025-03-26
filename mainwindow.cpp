@@ -64,7 +64,6 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(ui->annuler, &QPushButton::clicked, this, &MainWindow::on_annuler_clicked);
-    connect(ui->btnGeneratePDF, &QPushButton::clicked, this, &MainWindow::on_btnGeneratePDF_clicked);
 
 
     ui->stackedWidget->setCurrentIndex(6);
@@ -152,48 +151,6 @@ MainWindow::~MainWindow()
 
 
 
-
-/*void MainWindow::envoyerRappelSMS()
-{
-    if (!QSqlDatabase::database().isOpen()) {
-        qDebug() << "❌ Base de données non ouverte!";
-        return;  // Retourne sans faire la requête
-    }
-
-    QSqlQuery query;
-    query.prepare("SELECT NUM, DATE_RDV FROM CARNETS");
-
-    if (!query.exec()) {
-        qDebug() << "❌ Erreur SQL lors de la récupération des RDV :" << query.lastError().text();
-        return;
-    }
-
-    SmsNotif sms;
-    QDateTime maintenant = QDateTime::currentDateTime();
-    QDateTime limite = maintenant.addSecs(48 * 3600); // 🔔 48 heures
-
-    while (query.next()) {
-        QString brut = query.value(0).toString(); // ce qui vient de la base
-        QDateTime dateRdv = query.value(1).toDateTime();
-
-        if (dateRdv > maintenant && dateRdv <= limite) {
-            QString numero = brut;
-
-            if (!numero.startsWith("+216")) {
-                numero = "+216" + numero;
-            }
-
-            qDebug() << "📲 Numéro original :" << brut;
-            qDebug() << "📲 Numéro final pour Twilio :" << numero;
-
-            QString message = "📅 Rappel : Votre RDV est prévu le " + dateRdv.toString("dd/MM/yyyy à HH:mm") + ".";
-            sms.sendSMS(numero, message);
-
-            qDebug() << "📩 SMS de rappel envoyé à :" << numero;
-        }
-    }
-
-}*/
 
 
 void MainWindow::envoyerRappelSMS()
@@ -760,149 +717,110 @@ bool MainWindow::estValide()
 
     return valide;
 }
-
 void MainWindow::on_btnGeneratePDF_clicked()
 {
-    // 🔹 Récupérer le CIN depuis `suppid`
     QString cin = ui->suppid->text().trimmed();
     if (cin.isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez entrer un CIN valide !");
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer un CIN !");
         return;
     }
 
-    // 🔹 Récupération des informations du patient depuis la base de données
     QSqlQuery query;
-    query.prepare("SELECT NOM, PRENOM, AGE, SEXE, NUM, POIDS, STATUT_VACCINAL, REMARQUES FROM CARNETS WHERE CIN = :cin");
+    query.prepare("SELECT NOM, PRENOM, AGE, SEXE, NUM, POIDS, STATUT_VACCINAL, REMARQUES, DATE_RDV FROM CARNETS WHERE CIN = :cin");
     query.bindValue(":cin", cin);
 
     if (!query.exec() || !query.next()) {
-        QMessageBox::warning(this, "Erreur", "Aucun patient trouvé avec ce CIN !");
+        QMessageBox::warning(this, "Erreur", "Aucun patient trouvé !");
         return;
     }
 
-    // 📌 Récupération des données
     QString nom = query.value("NOM").toString();
     QString prenom = query.value("PRENOM").toString();
     QString age = query.value("AGE").toString();
     QString sexe = query.value("SEXE").toString();
     QString num = query.value("NUM").toString();
     QString poids = query.value("POIDS").toString();
-    QString statutVaccinal = query.value("STATUT_VACCINAL").toString();
+    QString statut = query.value("STATUT_VACCINAL").toString();
     QString remarques = query.value("REMARQUES").toString();
+    QString dateRdv = query.value("DATE_RDV").toDate().toString("dd/MM/yyyy");
 
-    // 📂 Boîte de dialogue pour enregistrer le fichier
-    QString filePath = QFileDialog::getSaveFileName(this, "Enregistrer le carnet", "", "PDF Files (*.pdf)");
+    QString filePath = QFileDialog::getSaveFileName(this, "Enregistrer le carnet PDF", "", "PDF Files (*.pdf)");
     if (filePath.isEmpty()) return;
 
-    // 📄 Création du PDF
     QPdfWriter pdfWriter(filePath);
     pdfWriter.setPageSize(QPageSize(QPageSize::A4));
-    pdfWriter.setPageOrientation(QPageLayout::Landscape);
     pdfWriter.setResolution(300);
 
     QPainter painter(&pdfWriter);
     if (!painter.isActive()) {
-        qDebug() << "Erreur : Impossible d'initialiser le QPainter.";
+        qDebug() << "Erreur PDF";
         return;
     }
 
-    // 🎨 Définition des polices et couleurs
-    QFont titleFont("Arial", 26, QFont::Bold);
-    QFont headerFont("Arial", 16, QFont::Bold);
-    QFont normalFont("Arial", 12);
-    QPen bluePen(Qt::darkBlue);
-    QPen blackPen(Qt::black);
-
-    // 📌 Position et dimensions ajustées
-    int leftMargin = 60;
-    int topMargin = 150;
-    int tableWidth = (pdfWriter.width() / 2) - 120;
-    int tableHeight = pdfWriter.height() - 400;  // 🔹 Taille du tableau réduite
-
-    // 🎯 Titre principal (corrigé)
+    // 🟥 Titre en rouge bordeaux et gras
+    QFont titleFont("Arial", 18, QFont::Bold);
     painter.setFont(titleFont);
-    painter.setPen(bluePen);
-    painter.drawText(QRect(0, 80, pdfWriter.width(), 60), Qt::AlignCenter, "🔹 CARNET DE SUIVI MÉDICAL 🔹");
+    painter.setPen(QColor("#800000"));  // Rouge bordeaux
+    painter.drawText(QRect(0, 80, pdfWriter.width(), 150), Qt::AlignCenter, "🩺 Carnet de Vaccination - Patient");
 
-    // 🏥 Encadrement des sections
-    painter.setFont(headerFont);
-    painter.setPen(blackPen);
+    // 🔲 Cadre noir en gras
+    QPen cadrePen(Qt::black);
+    cadrePen.setWidth(4);
+    painter.setPen(cadrePen);
+    painter.drawRect(20, 210, 2350, 3000);
 
-    // 🔹 Tableau 1 : Informations Patient
-    painter.drawRect(leftMargin, topMargin, tableWidth, tableHeight);
-    painter.drawText(leftMargin + 20, topMargin - 10, "📌 INFORMATIONS DU PATIENT");
+    QFont labelFont("Arial", 12, QFont::Bold);     // Pour titres : gras
+    QFont valueFont("Arial", 12);                  // Valeurs normales
 
-    painter.setFont(normalFont);
-    int textY = topMargin + 40;
-    int textSpacing = 40;  // 🔹 Espacement optimisé entre chaque ligne
+    int leftX = 80;
+    int rightX = pdfWriter.width() / 2 + 50;
+    int yLeft = 500;
+    int yRight = 500;
+    int spacing = 150;
 
-    painter.drawText(leftMargin + 20, textY, "🆔 CIN : " + cin);
-    painter.drawText(leftMargin + 20, textY += textSpacing, "👤 Nom : " + nom);
-    painter.drawText(leftMargin + 20, textY += textSpacing, "🧑 Prénom : " + prenom);
-    painter.drawText(leftMargin + 20, textY += textSpacing, "🎂 Âge : " + age + " ans");
-    painter.drawText(leftMargin + 20, textY += textSpacing, "⚧ Sexe : " + sexe);
-    painter.drawText(leftMargin + 20, textY += textSpacing, "📞 Téléphone : " + num);
-    painter.drawText(leftMargin + 20, textY += textSpacing, "⚖️ Poids : " + poids + " kg");
-    painter.drawText(leftMargin + 20, textY += textSpacing, "💉 Statut Vaccinal : " + statutVaccinal);
-    painter.drawText(leftMargin + 20, textY += textSpacing, "📝 Remarques : " + remarques);
+    // 🟩 Partie gauche : Prochain RDV
+    painter.setFont(labelFont);
+    painter.setPen(QColor("#006400"));  // Vert foncé
+    painter.drawText(leftX, yLeft, "📅 Prochain Rendez-vous");
+    yLeft += spacing;
+    painter.drawText(leftX, yLeft, "🗓️ Date :");
 
-    // 🔹 Tableau 2 : Historique des Rendez-vous
-    int rightMargin = leftMargin + tableWidth + 80;
-    painter.drawRect(rightMargin, topMargin, tableWidth, tableHeight);
-    painter.drawText(rightMargin + 20, topMargin - 10, "📅 HISTORIQUE DES RENDEZ-VOUS");
+    painter.setFont(valueFont);
+    painter.setPen(Qt::black);
+    painter.drawText(leftX + 200, yLeft, dateRdv);
 
-    painter.setFont(normalFont);
-    int rowY = topMargin + 40;
+    // 🟩 Partie droite : Infos patient
+    QStringList labels = {
+        "👤 Nom:", "👤 Prénom:", "🆔 CIN:",
+        "🎂 Âge:", "⚧ Sexe:", "📞 Téléphone:",
+        "⚖️ Poids:", "💉 Statut:", "📝 Remarques:"
+    };
 
-    // 📌 Récupération des rendez-vous
-    QSqlQuery queryRDV;
-    queryRDV.prepare("SELECT DATE_RDV FROM CARNETS WHERE CIN = :cin");
-    queryRDV.bindValue(":cin", cin);
+    QStringList values = {
+        nom, prenom, cin, age + " ans", sexe, num, poids + " kg", statut, remarques
+    };
 
-    if (queryRDV.exec()) {
-        int rowCount = 0;
-        while (queryRDV.next() && rowCount < 10) {
-            QDateTime dateRDV = queryRDV.value("DATE_RDV").toDateTime();
+    painter.setFont(labelFont);
+    painter.setPen(QColor("#006400"));  // Vert foncé pour titres
 
-            // 🔹 Affichage de la date RDV à gauche du texte "Date RDV"
-            painter.drawText(rightMargin + 20, rowY, dateRDV.toString("dd/MM/yyyy") + "  📆 Date RDV");
-            rowY += textSpacing;
-            rowCount++;
-        }
-    } else {
-        qDebug() << "Erreur SQL : " << queryRDV.lastError().text();
+    for (int i = 0; i < labels.size(); ++i) {
+        painter.drawText(rightX, yRight, labels[i]);
+        painter.setFont(valueFont);
+        painter.setPen(Qt::black);
+        painter.drawText(rightX + 370, yRight, values[i]);
+        yRight += spacing;
+        painter.setFont(labelFont);
+        painter.setPen(QColor("#006400"));
     }
 
-    // 📌 Section Cachet & Signature (réduite et repositionnée)
-    int cachetX = pdfWriter.width() - 280;
-    int cachetY = pdfWriter.height() - 100;
-    painter.setFont(headerFont);
-    painter.drawText(cachetX, cachetY, "🔹 Cachet & Signature :");
-    painter.drawRect(cachetX, cachetY + 30, 220, 70);
+    // 🟥 Signature en rouge bordeaux et italique
+    QFont signatureFont("Arial", 10);
+    signatureFont.setItalic(true);
+    painter.setFont(signatureFont);
+    painter.setPen(QColor("#800000"));
+    painter.drawText(pdfWriter.width() - 800, pdfWriter.height() - 80, "🔐 Signature du Centre de vaccination");
 
-    // 📌 Fin du rendu
     painter.end();
 
-    // 📌 Confirmation de la génération du PDF
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("✅ PDF généré");
-    msgBox.setText("📄 Le carnet du patient a été enregistré avec succès !");
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.setButtonText(QMessageBox::Ok, "D'accord");
-    msgBox.exec();
+    QMessageBox::information(this, "PDF Généré", "📄 Le carnet a été exporté avec succès !");
 }
-/*void MainWindow::testSMS()
-{
-    SmsNotif sms;
-    QString numero = "+21654430709";
-    QString message = "📅 Rappel : Votre RDV est prévu dans les prochaines 48 heures. Merci de confirmer la réception.";
-
-    bool sent = sms.sendSMS(numero, message);
-
-    if (sent) {
-        QMessageBox::information(this, "SMS ", "📩 Votre Message a été envoyé avec succes.");
-    } else {
-        QMessageBox::critical(this, "Erreur SMS", "❌ La requête n'a pas pu être envoyée.");
-    }
-}*/
