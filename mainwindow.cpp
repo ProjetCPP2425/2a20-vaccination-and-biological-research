@@ -16,6 +16,11 @@
 #include <QDateTime>
 #include <QMessageBox>
 
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
+#include <QtCharts/QChartView>
+#include <QtCharts/QChart>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -824,3 +829,75 @@ void MainWindow::on_btnGeneratePDF_clicked()
 
     QMessageBox::information(this, "PDF Généré", "📄 Le carnet a été exporté avec succès !");
 }
+
+
+
+
+    void MainWindow::on_btnStat_clicked()
+{
+    // 👉 Changer l’onglet si nécessaire
+    ui->tabs->setCurrentIndex(3);  // Change l’index si besoin
+
+    if (!ui->stat_carnet) {
+        qDebug() << "Erreur : L'onglet stat_carnet n'existe pas";
+        return;
+    }
+
+    // 🧹 Nettoyer l’ancien layout
+    QLayout *oldLayout = ui->stat_carnet->layout();
+    if (oldLayout) {
+        QLayoutItem *item;
+        while ((item = oldLayout->takeAt(0)) != nullptr) {
+            if (item->widget()) item->widget()->deleteLater();
+            delete item;
+        }
+        delete oldLayout;
+        ui->stat_carnet->setLayout(nullptr);
+    }
+
+    // 📦 Requête SQL
+    int totalV = 0, totalNV = 0;
+    QSqlQuery query("SELECT STATUT_VACCINAL FROM CARNETS");
+    while (query.next()) {
+        QString statut = query.value(0).toString().toLower();
+        if (statut == "vacciné" || statut == "vacciner"|| statut == "vaccine")
+            totalV++;
+        else
+            totalNV++;
+    }
+
+    // 📊 Graphique camembert
+    QPieSeries *series = new QPieSeries();
+    series->append("Vaccinés", totalV);
+    series->append("Non Vaccinés", totalNV);
+
+    QPieSlice *sliceV = series->slices().at(0);
+    QPieSlice *sliceNV = series->slices().at(1);
+    sliceV->setBrush(Qt::green);
+    sliceNV->setBrush(Qt::red);
+    sliceV->setLabel(QString("Vaccinés (%1)").arg(totalV));
+    sliceNV->setLabel(QString("Non Vaccinés (%1)").arg(totalNV));
+    series->setLabelsVisible(true);
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("📊 Couverture vaccinale totale");
+    chart->legend()->setAlignment(Qt::AlignBottom);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setMinimumSize(500, 400);
+
+    QLabel *summary = new QLabel(
+        QString("🟢 Vaccinés : %1\n🔴 Non Vaccinés : %2").arg(totalV).arg(totalNV));
+    summary->setAlignment(Qt::AlignCenter);
+    summary->setStyleSheet("font-style: italic; font-size: 14px;");
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(chartView);
+    layout->addWidget(summary);
+
+    ui->stat_carnet->setLayout(layout);
+    ui->stat_carnet->update();
+}
+

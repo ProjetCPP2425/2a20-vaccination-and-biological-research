@@ -51,6 +51,10 @@ private slots:
 
     void on_btnGeneratePDF_clicked();
 
+
+
+    void on_btnStat_clicked();
+
 private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;

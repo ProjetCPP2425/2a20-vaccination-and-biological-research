@@ -302,7 +302,7 @@ public:
     QLabel *label_171;
     QLineEdit *rechercheC;
     QWidget *widget_15;
-    QPushButton *pushButtonStat_10;
+    QPushButton *btnStat;
     QPushButton *btnGeneratePDF;
     QPushButton *modifierC;
     QTableView *tableView;
@@ -318,6 +318,8 @@ public:
     QLabel *label_173;
     QTextEdit *predictionResult;
     QLabel *label_174;
+    QWidget *tab;
+    QWidget *stat_carnet;
     QWidget *pagelogin;
     QFrame *frame_5;
     QFrame *frame_7;
@@ -3478,15 +3480,15 @@ public:
 ");\n"
 "border-radius: 30px; \n"
 "border: 2px solid black; "));
-        pushButtonStat_10 = new QPushButton(widget_15);
-        pushButtonStat_10->setObjectName("pushButtonStat_10");
-        pushButtonStat_10->setGeometry(QRect(50, 0, 91, 91));
-        pushButtonStat_10->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        btnStat = new QPushButton(widget_15);
+        btnStat->setObjectName("btnStat");
+        btnStat->setGeometry(QRect(50, 0, 91, 91));
+        btnStat->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background: transparent;\n"
 "    border: none;\n"
 "}"));
-        pushButtonStat_10->setIcon(icon2);
-        pushButtonStat_10->setIconSize(QSize(50, 50));
+        btnStat->setIcon(icon2);
+        btnStat->setIconSize(QSize(50, 50));
         btnGeneratePDF = new QPushButton(widget_15);
         btnGeneratePDF->setObjectName("btnGeneratePDF");
         btnGeneratePDF->setGeometry(QRect(220, 10, 81, 71));
@@ -3679,6 +3681,12 @@ public:
 "}\n"
 ""));
         tabs->addTab(Statistique_10, QString());
+        tab = new QWidget();
+        tab->setObjectName("tab");
+        stat_carnet = new QWidget(tab);
+        stat_carnet->setObjectName("stat_carnet");
+        stat_carnet->setGeometry(QRect(120, 80, 881, 471));
+        tabs->addTab(tab, QString());
         stackedWidget->addWidget(pageCarnet);
         pagelogin = new QWidget();
         pagelogin->setObjectName("pagelogin");
@@ -3815,7 +3823,7 @@ public:
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(1);
+        tabs->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4124,7 +4132,7 @@ public:
         label_170->setText(QCoreApplication::translate("MainWindow", "Trier par:", nullptr));
         label_171->setText(QCoreApplication::translate("MainWindow", "Recherche:", nullptr));
         rechercheC->setText(QString());
-        pushButtonStat_10->setText(QString());
+        btnStat->setText(QString());
         btnGeneratePDF->setText(QString());
         modifierC->setText(QString());
         nom_2->setText(QCoreApplication::translate("MainWindow", "Entrer le CIN du patient:", nullptr));
@@ -4136,6 +4144,7 @@ public:
         label_173->setText(QCoreApplication::translate("MainWindow", "R\303\251sultats:", nullptr));
         label_174->setText(QCoreApplication::translate("MainWindow", "              Pr\303\251diction M\303\251dicale", nullptr));
         tabs->setTabText(tabs->indexOf(Statistique_10), QCoreApplication::translate("MainWindow", "Pr\303\251diction", nullptr));
+        tabs->setTabText(tabs->indexOf(tab), QCoreApplication::translate("MainWindow", "Page", nullptr));
         label_18->setText(QCoreApplication::translate("MainWindow", "Login", nullptr));
         pushButton_3->setText(QCoreApplication::translate("MainWindow", "Se Connecter", nullptr));
         label_19->setText(QCoreApplication::translate("MainWindow", "Mot de passe oubli\303\251?", nullptr));
