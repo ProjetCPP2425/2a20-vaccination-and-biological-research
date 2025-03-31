@@ -72,6 +72,6 @@ private:
         void testSMS();
         QTimer *smsTimer;
 
-
+        void trierCarnets(const QString &critere);
 };
 #endif // MAINWINDOW_H

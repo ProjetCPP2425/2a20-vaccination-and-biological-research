@@ -145,6 +145,11 @@ MainWindow::MainWindow(QWidget *parent)
   /*  smsTimer = new QTimer(this);
     connect(smsTimer, &QTimer::timeout, this, &MainWindow::envoyerRappelSMS);
     smsTimer->start(60000); // 60 000 ms = toutes les 60 secondes*///--->correcte
+    connect(ui->comboTrierCarnets, &QComboBox::currentTextChanged, this, &MainWindow::trierCarnets);
+    ui->comboTrierCarnets->addItem("Âge");
+    ui->comboTrierCarnets->addItem("Date de RDV");
+    ui->comboTrierCarnets->addItem("Poids");
+
 
 }
 
@@ -899,5 +904,25 @@ void MainWindow::on_btnGeneratePDF_clicked()
 
     ui->stat_carnet->setLayout(layout);
     ui->stat_carnet->update();
+}
+
+void MainWindow::trierCarnets(const QString &critere)
+{
+    QString requete = "SELECT STATUT_VACCINAL, AGE, SEXE, CIN, NUM, NOM, POIDS, DATE_RDV, PRENOM, REMARQUES FROM CARNETS";
+
+    if (critere == "Âge") {
+        requete += " ORDER BY AGE ASC";
+    } else if (critere == "Date de RDV") {
+        requete += " ORDER BY DATE_RDV ASC";
+    } else if (critere == "Poids") {
+        requete += " ORDER BY POIDS ASC";
+    }
+
+    QSqlQueryModel *model = new QSqlQueryModel();
+    model->setQuery(requete);
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();
+
+    // ✅ Plus besoin de hideColumn(0), car l’ID n’est même pas sélectionné
 }
 

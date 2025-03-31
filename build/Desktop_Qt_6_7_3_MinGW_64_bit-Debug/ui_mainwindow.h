@@ -297,7 +297,7 @@ public:
     QLabel *numErrorLabel;
     QLabel *label_169;
     QWidget *lirect_10;
-    QComboBox *comboBox_20;
+    QComboBox *comboTrierCarnets;
     QLabel *label_170;
     QLabel *label_171;
     QLineEdit *rechercheC;
@@ -3440,12 +3440,9 @@ public:
         tabs->addTab(ajoutct_10, QString());
         lirect_10 = new QWidget();
         lirect_10->setObjectName("lirect_10");
-        comboBox_20 = new QComboBox(lirect_10);
-        comboBox_20->addItem(QString());
-        comboBox_20->addItem(QString());
-        comboBox_20->addItem(QString());
-        comboBox_20->setObjectName("comboBox_20");
-        comboBox_20->setGeometry(QRect(160, 195, 351, 41));
+        comboTrierCarnets = new QComboBox(lirect_10);
+        comboTrierCarnets->setObjectName("comboTrierCarnets");
+        comboTrierCarnets->setGeometry(QRect(160, 195, 351, 41));
         label_170 = new QLabel(lirect_10);
         label_170->setObjectName("label_170");
         label_170->setGeometry(QRect(90, 210, 191, 21));
@@ -3823,7 +3820,7 @@ public:
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(3);
+        tabs->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4125,10 +4122,6 @@ public:
         numErrorLabel->setText(QString());
         label_169->setText(QCoreApplication::translate("MainWindow", "Ajouter un carnet du vaccination", nullptr));
         tabs->setTabText(tabs->indexOf(ajoutct_10), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
-        comboBox_20->setItemText(0, QCoreApplication::translate("MainWindow", "date", nullptr));
-        comboBox_20->setItemText(1, QCoreApplication::translate("MainWindow", "age", nullptr));
-        comboBox_20->setItemText(2, QCoreApplication::translate("MainWindow", "status", nullptr));
-
         label_170->setText(QCoreApplication::translate("MainWindow", "Trier par:", nullptr));
         label_171->setText(QCoreApplication::translate("MainWindow", "Recherche:", nullptr));
         rechercheC->setText(QString());

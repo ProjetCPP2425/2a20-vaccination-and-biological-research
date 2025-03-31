@@ -5263,7 +5263,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="ajoutct_10">
        <attribute name="title">
@@ -6058,7 +6058,7 @@ QPushButton:hover {
        <attribute name="title">
         <string>Affichage</string>
        </attribute>
-       <widget class="QComboBox" name="comboBox_20">
+       <widget class="QComboBox" name="comboTrierCarnets">
         <property name="geometry">
          <rect>
           <x>160</x>
@@ -6067,21 +6067,6 @@ QPushButton:hover {
           <height>41</height>
          </rect>
         </property>
-        <item>
-         <property name="text">
-          <string>date</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>age</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>status</string>
-         </property>
-        </item>
        </widget>
        <widget class="QLabel" name="label_170">
         <property name="geometry">
