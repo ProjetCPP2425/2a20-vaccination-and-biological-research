@@ -3815,12 +3815,12 @@ public:
 
         retranslateUi(MainWindow);
 
-        Affichage->setCurrentIndex(1);
+        Affichage->setCurrentIndex(2);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(1);
+        tabs->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

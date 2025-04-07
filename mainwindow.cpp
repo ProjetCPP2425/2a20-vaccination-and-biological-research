@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-   // envoyerRappelSMS();
+    // envoyerRappelSMS();
 
 
 
@@ -140,9 +140,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(true);
     });
     //testSMS();
-   // envoyerRappelSMS();
+    // envoyerRappelSMS();
 
-  /*  smsTimer = new QTimer(this);
+      /*smsTimer = new QTimer(this);
     connect(smsTimer, &QTimer::timeout, this, &MainWindow::envoyerRappelSMS);
     smsTimer->start(60000); // 60 000 ms = toutes les 60 secondes*///--->correcte
     connect(ui->comboTrierCarnets, &QComboBox::currentTextChanged, this, &MainWindow::trierCarnets);
@@ -838,7 +838,7 @@ void MainWindow::on_btnGeneratePDF_clicked()
 
 
 
-    void MainWindow::on_btnStat_clicked()
+void MainWindow::on_btnStat_clicked()
 {
     // 👉 Changer l’onglet si nécessaire
     ui->tabs->setCurrentIndex(3);  // Change l’index si besoin
@@ -925,4 +925,3 @@ void MainWindow::trierCarnets(const QString &critere)
 
     // ✅ Plus besoin de hideColumn(0), car l’ID n’est même pas sélectionné
 }
-

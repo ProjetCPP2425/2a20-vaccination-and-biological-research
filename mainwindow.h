@@ -55,6 +55,7 @@ private slots:
 
     void on_btnStat_clicked();
 
+
 private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
@@ -73,5 +74,7 @@ private:
         QTimer *smsTimer;
 
         void trierCarnets(const QString &critere);
+
+
 };
 #endif // MAINWINDOW_H
