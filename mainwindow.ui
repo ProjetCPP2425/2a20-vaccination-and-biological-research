@@ -380,7 +380,7 @@ QPushButton:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -4386,14 +4386,14 @@ QPushButton:pressed {
      <widget class="QTabWidget" name="Affichage_6">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>20</x>
         <y>70</y>
         <width>1271</width>
         <height>801</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <property name="iconSize">
        <size>
@@ -4431,8 +4431,8 @@ QPushButton:pressed {
         <widget class="QGroupBox" name="groupBox_27">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>60</y>
+           <x>80</x>
+           <y>30</y>
            <width>991</width>
            <height>601</height>
           </rect>
@@ -4470,15 +4470,30 @@ QGroupBox::title {
          <widget class="QComboBox" name="vaccins_utilises">
           <property name="geometry">
            <rect>
-            <x>500</x>
-            <y>180</y>
+            <x>410</x>
+            <y>130</y>
             <width>271</width>
             <height>41</height>
            </rect>
           </property>
           <item>
            <property name="text">
-            <string>choisir le vaccin</string>
+            <string>pfizer</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>moderna</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>grippe</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string/>
            </property>
           </item>
           <item>
@@ -4495,8 +4510,8 @@ QGroupBox::title {
          <widget class="QPushButton" name="pushButton_ajouter">
           <property name="geometry">
            <rect>
-            <x>240</x>
-            <y>510</y>
+            <x>180</x>
+            <y>520</y>
             <width>161</width>
             <height>51</height>
            </rect>
@@ -4528,8 +4543,8 @@ QPushButton:hover {
          <widget class="QPushButton" name="pushButton_annuler">
           <property name="geometry">
            <rect>
-            <x>550</x>
-            <y>510</y>
+            <x>410</x>
+            <y>520</y>
             <width>161</width>
             <height>51</height>
            </rect>
@@ -4631,8 +4646,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_expiration">
           <property name="geometry">
            <rect>
-            <x>490</x>
-            <y>340</y>
+            <x>410</x>
+            <y>260</y>
             <width>201</width>
             <height>41</height>
            </rect>
@@ -4655,7 +4670,7 @@ QPushButton:hover {
           <property name="geometry">
            <rect>
             <x>470</x>
-            <y>20</y>
+            <y>0</y>
             <width>251</width>
             <height>41</height>
            </rect>
@@ -4677,8 +4692,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_status">
           <property name="geometry">
            <rect>
-            <x>490</x>
-            <y>130</y>
+            <x>460</x>
+            <y>90</y>
             <width>171</width>
             <height>41</height>
            </rect>
@@ -4720,7 +4735,7 @@ QPushButton:hover {
            <string>date_fin :</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="nom_campagne">
+         <widget class="QLineEdit" name="nom_compagne">
           <property name="geometry">
            <rect>
             <x>50</x>
@@ -4778,8 +4793,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_status_2">
           <property name="geometry">
            <rect>
-            <x>490</x>
-            <y>240</y>
+            <x>440</x>
+            <y>170</y>
             <width>171</width>
             <height>41</height>
            </rect>
@@ -4801,20 +4816,25 @@ QPushButton:hover {
          <widget class="QComboBox" name="statut">
           <property name="geometry">
            <rect>
-            <x>510</x>
-            <y>280</y>
+            <x>410</x>
+            <y>210</y>
             <width>271</width>
             <height>41</height>
            </rect>
           </property>
           <item>
            <property name="text">
-            <string>choisir le vaccin</string>
+            <string>en cours</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>a</string>
+            <string>terminer </string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>en planning</string>
            </property>
           </item>
           <item>
@@ -4831,8 +4851,8 @@ QPushButton:hover {
          <widget class="QLineEdit" name="objectif_doses">
           <property name="geometry">
            <rect>
-            <x>500</x>
-            <y>70</y>
+            <x>440</x>
+            <y>40</y>
             <width>221</width>
             <height>41</height>
            </rect>
@@ -4852,8 +4872,8 @@ QPushButton:hover {
          <widget class="QLineEdit" name="doses_administrees">
           <property name="geometry">
            <rect>
-            <x>500</x>
-            <y>390</y>
+            <x>420</x>
+            <y>300</y>
             <width>221</width>
             <height>41</height>
            </rect>
@@ -4868,6 +4888,94 @@ QPushButton:hover {
     padding: 8px;                  /* Espacement interne pour le texte */
     border-style: dashed;          /* Style en pointillés */
 }</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="cout_fournitures">
+          <property name="geometry">
+           <rect>
+            <x>650</x>
+            <y>450</y>
+            <width>221</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir normal */
+    font-size: 14px;               /* Taille de la police */
+    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
+    border-radius: 5px;            /* Coins légèrement arrondis */
+    padding: 8px;                  /* Espacement interne pour le texte */
+    border-style: dashed;          /* Style en pointillés */
+}</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="fournitures">
+          <property name="geometry">
+           <rect>
+            <x>630</x>
+            <y>370</y>
+            <width>221</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir normal */
+    font-size: 14px;               /* Taille de la police */
+    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
+    border-radius: 5px;            /* Coins légèrement arrondis */
+    padding: 8px;                  /* Espacement interne pour le texte */
+    border-style: dashed;          /* Style en pointillés */
+}</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_expiration_3">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>370</y>
+            <width>201</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 18px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string> fournitures :</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_expiration_4">
+          <property name="geometry">
+           <rect>
+            <x>390</x>
+            <y>450</y>
+            <width>231</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 18px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string>cout_fournitures (TND):</string>
           </property>
          </widget>
         </widget>
@@ -5029,7 +5137,7 @@ border: 2px solid black; </string>
           </size>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_pdf">
+        <widget class="QPushButton" name="btn_export_appro">
          <property name="geometry">
           <rect>
            <x>200</x>
@@ -5136,7 +5244,7 @@ QPushButton:pressed {
          <rect>
           <x>10</x>
           <y>260</y>
-          <width>871</width>
+          <width>911</width>
           <height>321</height>
          </rect>
         </property>
@@ -5180,6 +5288,315 @@ QPushButton:pressed {
        <attribute name="title">
         <string>Statistique</string>
        </attribute>
+       <widget class="QCalendarWidget" name="calendar_campaigns">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>10</y>
+          <width>811</width>
+          <height>221</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_add_campaign">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>260</y>
+          <width>80</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>➕ Ajouter</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_delete_campaign">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>300</y>
+          <width>80</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>❌ Supprimer </string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_edit_campaign">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>260</y>
+          <width>80</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>✏️ Modifier</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_export_campaigns">
+        <property name="geometry">
+         <rect>
+          <x>890</x>
+          <y>250</y>
+          <width>80</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PDF</string>
+        </property>
+       </widget>
+       <widget class="QTableView" name="table_campaigns">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>250</y>
+          <width>621</width>
+          <height>201</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_notification">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>460</y>
+          <width>561</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QDateEdit" name="search_date">
+        <property name="geometry">
+         <rect>
+          <x>880</x>
+          <y>330</y>
+          <width>110</width>
+          <height>25</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>880</x>
+          <y>300</y>
+          <width>191</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Recherche par date :</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>20</y>
+          <width>101</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Affectation </string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>100</y>
+          <width>91</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Liste Employés</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>170</y>
+          <width>121</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Liste Campagnes</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_17">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>240</y>
+          <width>81</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Affecter</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_affecter">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>240</y>
+          <width>80</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Affecter</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="line_employe">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>90</y>
+          <width>231</width>
+          <height>51</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="line_compagne">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>170</y>
+          <width>221</width>
+          <height>51</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
+       <widget class="QScrollArea" name="scroll_affectations">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>60</y>
+          <width>1061</width>
+          <height>331</height>
+         </rect>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1059</width>
+           <height>329</height>
+          </rect>
+         </property>
+         <widget class="QWidget" name="widget_4" native="true">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>20</y>
+            <width>981</width>
+            <height>291</height>
+           </rect>
+          </property>
+          <widget class="QWidget" name="verticalLayoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>-1</x>
+             <y>-1</y>
+             <width>981</width>
+             <height>291</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout"/>
+          </widget>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="btn_valider_affectations">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>420</y>
+          <width>80</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
+       <widget class="QPushButton" name="btn_stat_vaccination_zone">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>80</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="chartVaccZone" native="true">
+        <property name="geometry">
+         <rect>
+          <x>320</x>
+          <y>90</y>
+          <width>611</width>
+          <height>291</height>
+         </rect>
+        </property>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>19</x>
+           <y>19</y>
+           <width>721</width>
+           <height>271</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout"/>
+        </widget>
+       </widget>
+       <widget class="QTextBrowser" name="resume_vaccination_zone">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>101</y>
+          <width>291</width>
+          <height>301</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>

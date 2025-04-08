@@ -8,8 +8,8 @@
 class Compagne
 {
 private:
-    int Id_Campagne;
-    QString Nom_Campagne;
+    int Id_Compagne;
+    QString Nom_Compagne;
     QDate Date_Debut;
     QDate Date_Fin;
     QString Zone_Geographique;
@@ -18,15 +18,18 @@ private:
     QString Vaccins_Utilises;
     QString Statut;
 
+    QString Fournitures;       // ✅ Liste des fournitures nécessaires
+    float Cout_Fournitures;     // ✅ Coût estimé pour l'achat des fournitures
+
 public:
     // Constructeurs
     Compagne();
-    Compagne(int Id_Campagne, QString Nom_Campagne, QDate Date_Debut, QDate Date_Fin, QString Zone_Geographique,
-             int Objectif_Doses, int Doses_Administrees, QString Vaccins_Utilises, QString Statut);
+    Compagne(int Id_Compagne, QString Nom_Compagne, QDate Date_Debut, QDate Date_Fin, QString Zone_Geographique,
+             int Objectif_Doses, int Doses_Administrees, QString Vaccins_Utilises, QString Statut ,QString Fournitures, float Cout_Fournitures);
 
     // Getters
-    int getIdCampagne() const;
-    QString getNomCampagne() const;
+    int getIdCompagne() const;
+    QString getNomCompagne() const;
     QDate getDateDebut() const;
     QDate getDateFin() const;
     QString getZoneGeographique() const;
@@ -35,9 +38,12 @@ public:
     QString getVaccinsUtilises() const;
     QString getStatut() const;
 
+    QString getFournitures() const;
+    float getCoutFournitures() const;
+
     // Setters
-    void setIdCampagne(int id);
-    void setNomCampagne(const QString &nom);
+    void setIdCompagne(int id);
+    void setNomCompagne(const QString &nom);
     void setDateDebut(const QDate &dateDebut);
     void setDateFin(const QDate &dateFin);
     void setZoneGeographique(const QString &zone);
@@ -46,12 +52,15 @@ public:
     void setVaccinsUtilises(const QString &vaccins);
     void setStatut(const QString &statut);
 
+    void setFournitures(const QString &fournitures);
+    void setCoutFournitures(float cout);
+
     // CRUD
     bool ajouter();
     QSqlQueryModel * afficher();
 
     bool modifier(QString nom);
-    bool chargerCampagne(QString nom);  // ✅ Charge les données d’une campagne avant modification
+    bool chargerCompagne(QString nom);  // ✅ Charge les données d’une campagne avant modification
 
 
     bool supprimer(QString nom);
