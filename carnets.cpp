@@ -256,14 +256,14 @@ QString Carnets::analyserRisqueParCIN(QString cin)
     QString alerteVaccin = "\n🔔 **Recommandations Post-Vaccinales :**\n\n";
 
     if (categorieRisque == "🚨 Critique") {
-        prediction += "**🛑 RISQUE CRITIQUE DÉTECTÉ !**\n\n"
+        prediction += "🛑 RISQUE CRITIQUE DÉTECTÉ !\n\n"
                       "Le patient présente un niveau de risque médical **très élevé** en raison de plusieurs facteurs de santé.\n"
-                      "Les complications potentielles incluent **des troubles cardiovasculaires graves, un risque accru d'infection sévère, et une réponse immunitaire affaiblie**.\n\n"
-                      "👉 **Mesures immédiates recommandées :**\n"
-                      "   - **Évitez toute activité physique intense durant les 48 prochaines heures.**\n"
-                      "   - **Surveillez tout effet secondaire inhabituel (fièvre prolongée, douleurs intenses, essoufflement).**\n"
-                      "   - **Consultez un médecin en urgence en cas d'apparition de symptômes inquiétants.**\n";
-        alerteVaccin += "⚠️ **Après la vaccination, le patient doit se reposer strictement et éviter toute prise d'anti-inflammatoires sans avis médical.**\n";
+                      "Les complications potentielles incluent **des troubles cardiovasculaires graves, un risque accru d'infection sévère, et une réponse immunitaire affaiblie.\n\n"
+                      "👉 Mesures immédiates recommandées :**\n"
+                      "   - Évitez toute activité physique intense durant les 48 prochaines heures.\n"
+                      "   - Surveillez tout effet secondaire inhabituel (fièvre prolongée, douleurs intenses, essoufflement).\n"
+                      "   - Consultez un médecin en urgence en cas d'apparition de symptômes inquiétants.\n";
+        alerteVaccin += "⚠️Après la vaccination, le patient doit se reposer strictement et éviter toute prise d'anti-inflammatoires sans avis médical.\n";
     }
     else if (categorieRisque == "⚠️ Élevé") {
         prediction += "**⚠️ RISQUE ÉLEVÉ IDENTIFIÉ**\n\n"

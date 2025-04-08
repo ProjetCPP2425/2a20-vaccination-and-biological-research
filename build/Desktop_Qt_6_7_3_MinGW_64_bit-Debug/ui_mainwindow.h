@@ -261,7 +261,7 @@ public:
     QWidget *pageCarnet;
     QWidget *widget_13;
     QLabel *label_158;
-    QTabWidget *tabs;
+    QTabWidget *tab_2;
     QWidget *ajoutct_10;
     QFrame *frame_20;
     QGroupBox *groupBox_19;
@@ -3024,9 +3024,9 @@ public:
 "    color: #FFFFFF;     /* Black text */\n"
 "}\n"
 ""));
-        tabs = new QTabWidget(pageCarnet);
-        tabs->setObjectName("tabs");
-        tabs->setGeometry(QRect(0, 70, 1401, 801));
+        tab_2 = new QTabWidget(pageCarnet);
+        tab_2->setObjectName("tab_2");
+        tab_2->setGeometry(QRect(0, 70, 1401, 801));
         ajoutct_10 = new QWidget();
         ajoutct_10->setObjectName("ajoutct_10");
         frame_20 = new QFrame(ajoutct_10);
@@ -3437,7 +3437,7 @@ public:
 "    text-align: center;         /* Centrage du texte */\n"
 "}\n"
 ""));
-        tabs->addTab(ajoutct_10, QString());
+        tab_2->addTab(ajoutct_10, QString());
         lirect_10 = new QWidget();
         lirect_10->setObjectName("lirect_10");
         comboTrierCarnets = new QComboBox(lirect_10);
@@ -3565,7 +3565,7 @@ public:
 "}\n"
 ""));
         supprimerC->setIcon(icon5);
-        tabs->addTab(lirect_10, QString());
+        tab_2->addTab(lirect_10, QString());
         Statistique_10 = new QWidget();
         Statistique_10->setObjectName("Statistique_10");
         frame_21 = new QFrame(Statistique_10);
@@ -3677,13 +3677,13 @@ public:
 "    text-align: center;         /* Centrage du texte */\n"
 "}\n"
 ""));
-        tabs->addTab(Statistique_10, QString());
+        tab_2->addTab(Statistique_10, QString());
         tab = new QWidget();
         tab->setObjectName("tab");
         stat_carnet = new QWidget(tab);
         stat_carnet->setObjectName("stat_carnet");
         stat_carnet->setGeometry(QRect(120, 80, 881, 471));
-        tabs->addTab(tab, QString());
+        tab_2->addTab(tab, QString());
         stackedWidget->addWidget(pageCarnet);
         pagelogin = new QWidget();
         pagelogin->setObjectName("pagelogin");
@@ -3820,7 +3820,7 @@ public:
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tabs->setCurrentIndex(3);
+        tab_2->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -4121,7 +4121,7 @@ public:
         poidsErrorLabel->setText(QString());
         numErrorLabel->setText(QString());
         label_169->setText(QCoreApplication::translate("MainWindow", "Ajouter un carnet du vaccination", nullptr));
-        tabs->setTabText(tabs->indexOf(ajoutct_10), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
+        tab_2->setTabText(tab_2->indexOf(ajoutct_10), QCoreApplication::translate("MainWindow", "Ajout", nullptr));
         label_170->setText(QCoreApplication::translate("MainWindow", "Trier par:", nullptr));
         label_171->setText(QCoreApplication::translate("MainWindow", "Recherche:", nullptr));
         rechercheC->setText(QString());
@@ -4130,14 +4130,14 @@ public:
         modifierC->setText(QString());
         nom_2->setText(QCoreApplication::translate("MainWindow", "Entrer le CIN du patient:", nullptr));
         supprimerC->setText(QString());
-        tabs->setTabText(tabs->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
+        tab_2->setTabText(tab_2->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());
         label_172->setText(QCoreApplication::translate("MainWindow", "         Cin du patient:", nullptr));
         btnPredire->setText(QCoreApplication::translate("MainWindow", "Valider", nullptr));
         label_173->setText(QCoreApplication::translate("MainWindow", "R\303\251sultats:", nullptr));
         label_174->setText(QCoreApplication::translate("MainWindow", "              Pr\303\251diction M\303\251dicale", nullptr));
-        tabs->setTabText(tabs->indexOf(Statistique_10), QCoreApplication::translate("MainWindow", "Pr\303\251diction", nullptr));
-        tabs->setTabText(tabs->indexOf(tab), QCoreApplication::translate("MainWindow", "Page", nullptr));
+        tab_2->setTabText(tab_2->indexOf(Statistique_10), QCoreApplication::translate("MainWindow", "Pr\303\251diction", nullptr));
+        tab_2->setTabText(tab_2->indexOf(tab), QCoreApplication::translate("MainWindow", "Page", nullptr));
         label_18->setText(QCoreApplication::translate("MainWindow", "Login", nullptr));
         pushButton_3->setText(QCoreApplication::translate("MainWindow", "Se Connecter", nullptr));
         label_19->setText(QCoreApplication::translate("MainWindow", "Mot de passe oubli\303\251?", nullptr));

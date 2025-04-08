@@ -142,13 +142,24 @@ MainWindow::MainWindow(QWidget *parent)
     //testSMS();
     // envoyerRappelSMS();
 
-      /*smsTimer = new QTimer(this);
+    /*  smsTimer = new QTimer(this);
     connect(smsTimer, &QTimer::timeout, this, &MainWindow::envoyerRappelSMS);
     smsTimer->start(60000); // 60 000 ms = toutes les 60 secondes*///--->correcte
     connect(ui->comboTrierCarnets, &QComboBox::currentTextChanged, this, &MainWindow::trierCarnets);
     ui->comboTrierCarnets->addItem("Âge");
     ui->comboTrierCarnets->addItem("Date de RDV");
     ui->comboTrierCarnets->addItem("Poids");
+    ui->rechercheC->setPlaceholderText("🔍 Recherche par CIN, nom, prénom,etat vaccination");
+    ui->rechercheC->setStyleSheet(R"(
+    QLineEdit {
+        color: black;
+        font-size: 14px;
+    }
+    QLineEdit:empty {
+        color: #B0B0B0; /* gris très clair pour placeholder uniquement */
+    }
+)");
+
 
 
 }
@@ -306,7 +317,7 @@ void MainWindow::on_ajout_carnet_clicked()
 
         if (carnet.ajouter()) {
             QMessageBox::information(this, "Succès", "Carnet modifié avec succès !");
-            ui->tabs->setCurrentIndex(1);  // Rediriger vers l'onglet Affichage
+            ui->tab_2->setCurrentIndex(1);  // Rediriger vers l'onglet Affichage
 
         } else {
             QMessageBox::critical(this, "Erreur", "Le CIN existe déjà ! Impossible de modifier");
@@ -318,7 +329,7 @@ void MainWindow::on_ajout_carnet_clicked()
     } else {
         if (carnet.ajouter()) {
             QMessageBox::information(this, "Succès", "Carnet ajouté avec succès !");
-            ui->tabs->setCurrentIndex(1);  // Rediriger vers l'onglet Affichage
+            ui->tab_2->setCurrentIndex(1);  // Rediriger vers l'onglet Affichage
 
         } else {
             QMessageBox::critical(this, "Erreur", "Le CIN existe déjà ! Impossible d'ajouter");
@@ -463,7 +474,7 @@ void MainWindow::on_modifierC_clicked()
         modeModification = true;
 
         QMessageBox::information(this, "Modification", "Données chargées, vous pouvez modifier !");
-        ui->tabs->setCurrentIndex(0);  // 🔄 Rediriger vers l'onglet Ajout
+        ui->tab_2->setCurrentIndex(0);  // 🔄 Rediriger vers l'onglet Ajout
 
     } else {
 
@@ -727,6 +738,10 @@ bool MainWindow::estValide()
 
     return valide;
 }
+
+
+
+
 void MainWindow::on_btnGeneratePDF_clicked()
 {
     QString cin = ui->suppid->text().trimmed();
@@ -757,78 +772,69 @@ void MainWindow::on_btnGeneratePDF_clicked()
     QString filePath = QFileDialog::getSaveFileName(this, "Enregistrer le carnet PDF", "", "PDF Files (*.pdf)");
     if (filePath.isEmpty()) return;
 
-    QPdfWriter pdfWriter(filePath);
-    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
-    pdfWriter.setResolution(300);
+    QPdfWriter pdf(filePath);
+    QPageLayout layout(QPageSize(QPageSize::A4), QPageLayout::Landscape, QMarginsF(30,30,30,30));
+    pdf.setPageLayout(layout);
+    pdf.setResolution(300);
 
-    QPainter painter(&pdfWriter);
-    if (!painter.isActive()) {
-        qDebug() << "Erreur PDF";
-        return;
-    }
+    QPainter painter(&pdf);
+    QTextDocument doc;
 
-    // 🟥 Titre en rouge bordeaux et gras
-    QFont titleFont("Arial", 18, QFont::Bold);
-    painter.setFont(titleFont);
-    painter.setPen(QColor("#800000"));  // Rouge bordeaux
-    painter.drawText(QRect(0, 80, pdfWriter.width(), 150), Qt::AlignCenter, "🩺 Carnet de Vaccination - Patient");
+    QString html = R"(
+    <html>
+    <head>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 42pt; }
+        .header { width: 100%; margin-bottom: 50px; }
+        .header img { vertical-align: middle; width:180px; height:180px; }
+        .title { color: #800000; font-weight:bold; display:inline-block; vertical-align: middle; margin-left:15px; font-size: 48pt; }
+        .container { display:flex; justify-content: space-between; width:100%; }
+        .left { width:50%; }
+        .right { width:45%; text-align: right; }
+        table { border-collapse: collapse; width:100%; }
+        td, th { border: 3px solid black; padding: 18px; font-size: 40pt; }
+        .signature { color: #800000; font-style:italic; margin-top:40px; font-size:38pt; }
+        .rdv-box { border: 4px solid #000; padding:25px; font-size: 44pt; display:inline-block; }
+    </style>
+    </head>
+    <body>
+        <div class='header'>
+            <img src=':/images/logo.png'>
+            <span class='title'>🩺 Carnet de Vaccination - Patient</span>
+        </div>
 
-    // 🔲 Cadre noir en gras
-    QPen cadrePen(Qt::black);
-    cadrePen.setWidth(4);
-    painter.setPen(cadrePen);
-    painter.drawRect(20, 210, 2350, 3000);
+        <div class='container'>
+            <div class='left'>
+                <table>
+                    <tr><th>Nom</th><td>)" + nom + R"(</td></tr>
+                    <tr><th>Prénom</th><td>)" + prenom + R"(</td></tr>
+                    <tr><th>CIN</th><td>)" + cin + R"(</td></tr>
+                    <tr><th>Âge</th><td>)" + age + R"( ans</td></tr>
+                    <tr><th>Sexe</th><td>)" + sexe + R"(</td></tr>
+                    <tr><th>Téléphone</th><td>)" + num + R"(</td></tr>
+                    <tr><th>Poids</th><td>)" + poids + R"( kg</td></tr>
+                    <tr><th>Statut Vaccinal</th><td>)" + statut + R"(</td></tr>
+                    <tr><th>Remarques</th><td>)" + remarques + R"(</td></tr>
+                </table>
+                <div class='signature'>
+                    ✒️ Signature & Cachet du Centre de vaccination
+                </div>
+            </div>
 
-    QFont labelFont("Arial", 12, QFont::Bold);     // Pour titres : gras
-    QFont valueFont("Arial", 12);                  // Valeurs normales
+            <div class='right'>
+                <div class='rdv-box'>
+                    📅 <strong>Prochain Rendez-vous</strong><br><br>
+                    )" + dateRdv + R"(
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    )";
 
-    int leftX = 80;
-    int rightX = pdfWriter.width() / 2 + 50;
-    int yLeft = 500;
-    int yRight = 500;
-    int spacing = 150;
-
-    // 🟩 Partie gauche : Prochain RDV
-    painter.setFont(labelFont);
-    painter.setPen(QColor("#006400"));  // Vert foncé
-    painter.drawText(leftX, yLeft, "📅 Prochain Rendez-vous");
-    yLeft += spacing;
-    painter.drawText(leftX, yLeft, "🗓️ Date :");
-
-    painter.setFont(valueFont);
-    painter.setPen(Qt::black);
-    painter.drawText(leftX + 200, yLeft, dateRdv);
-
-    // 🟩 Partie droite : Infos patient
-    QStringList labels = {
-        "👤 Nom:", "👤 Prénom:", "🆔 CIN:",
-        "🎂 Âge:", "⚧ Sexe:", "📞 Téléphone:",
-        "⚖️ Poids:", "💉 Statut:", "📝 Remarques:"
-    };
-
-    QStringList values = {
-        nom, prenom, cin, age + " ans", sexe, num, poids + " kg", statut, remarques
-    };
-
-    painter.setFont(labelFont);
-    painter.setPen(QColor("#006400"));  // Vert foncé pour titres
-
-    for (int i = 0; i < labels.size(); ++i) {
-        painter.drawText(rightX, yRight, labels[i]);
-        painter.setFont(valueFont);
-        painter.setPen(Qt::black);
-        painter.drawText(rightX + 370, yRight, values[i]);
-        yRight += spacing;
-        painter.setFont(labelFont);
-        painter.setPen(QColor("#006400"));
-    }
-
-    // 🟥 Signature en rouge bordeaux et italique
-    QFont signatureFont("Arial", 10);
-    signatureFont.setItalic(true);
-    painter.setFont(signatureFont);
-    painter.setPen(QColor("#800000"));
-    painter.drawText(pdfWriter.width() - 800, pdfWriter.height() - 80, "🔐 Signature du Centre de vaccination");
+    doc.setHtml(html);
+    doc.setPageSize(QSizeF(pdf.width(), pdf.height()));
+    doc.drawContents(&painter);
 
     painter.end();
 
@@ -836,19 +842,16 @@ void MainWindow::on_btnGeneratePDF_clicked()
 }
 
 
-
-
 void MainWindow::on_btnStat_clicked()
 {
-    // 👉 Changer l’onglet si nécessaire
-    ui->tabs->setCurrentIndex(3);  // Change l’index si besoin
+    ui->tab_2->setCurrentIndex(3);  // Change l’index si nécessaire
 
     if (!ui->stat_carnet) {
         qDebug() << "Erreur : L'onglet stat_carnet n'existe pas";
         return;
     }
 
-    // 🧹 Nettoyer l’ancien layout
+    // Nettoyer l’ancien layout
     QLayout *oldLayout = ui->stat_carnet->layout();
     if (oldLayout) {
         QLayoutItem *item;
@@ -860,43 +863,49 @@ void MainWindow::on_btnStat_clicked()
         ui->stat_carnet->setLayout(nullptr);
     }
 
-    // 📦 Requête SQL
-    int totalV = 0, totalNV = 0;
+    // Requête SQL pour compter les vaccinés/non vaccinés
+    int totalV = 0, totalNV = 0, total = 0;
     QSqlQuery query("SELECT STATUT_VACCINAL FROM CARNETS");
     while (query.next()) {
         QString statut = query.value(0).toString().toLower();
-        if (statut == "vacciné" || statut == "vacciner"|| statut == "vaccine")
+        if (statut == "vacciné" || statut == "vacciner" || statut == "vaccine")
             totalV++;
         else
             totalNV++;
     }
+    total = totalV + totalNV;
 
-    // 📊 Graphique camembert
+    // Calcul des pourcentages
+    double pourcentageV = total > 0 ? (double(totalV) / total) * 100 : 0;
+    double pourcentageNV = total > 0 ? (double(totalNV) / total) * 100 : 0;
+
+    // Création du graphique camembert avec pourcentages
     QPieSeries *series = new QPieSeries();
-    series->append("Vaccinés", totalV);
-    series->append("Non Vaccinés", totalNV);
+    series->append(QString("Vaccinés (%1%)").arg(QString::number(pourcentageV, 'f', 1)), totalV);
+    series->append(QString("Non Vaccinés (%1%)").arg(QString::number(pourcentageNV, 'f', 1)), totalNV);
 
     QPieSlice *sliceV = series->slices().at(0);
     QPieSlice *sliceNV = series->slices().at(1);
     sliceV->setBrush(Qt::green);
     sliceNV->setBrush(Qt::red);
-    sliceV->setLabel(QString("Vaccinés (%1)").arg(totalV));
-    sliceNV->setLabel(QString("Non Vaccinés (%1)").arg(totalNV));
     series->setLabelsVisible(true);
 
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("📊 Couverture vaccinale totale");
+    chart->setTitle("📊 Couverture vaccinale totale (en %)");
     chart->legend()->setAlignment(Qt::AlignBottom);
 
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
     chartView->setMinimumSize(500, 400);
 
+    // Résumé en bas avec pourcentages
     QLabel *summary = new QLabel(
-        QString("🟢 Vaccinés : %1\n🔴 Non Vaccinés : %2").arg(totalV).arg(totalNV));
+        QString("🟢 Vaccinés : %1% | 🔴 Non Vaccinés : %2%")
+            .arg(QString::number(pourcentageV, 'f', 1))
+            .arg(QString::number(pourcentageNV, 'f', 1)));
     summary->setAlignment(Qt::AlignCenter);
-    summary->setStyleSheet("font-style: italic; font-size: 14px;");
+    summary->setStyleSheet("font-style: italic; font-size: 16px;");
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(chartView);
@@ -905,6 +914,7 @@ void MainWindow::on_btnStat_clicked()
     ui->stat_carnet->setLayout(layout);
     ui->stat_carnet->update();
 }
+
 
 void MainWindow::trierCarnets(const QString &critere)
 {
