@@ -12,17 +12,32 @@ Employe::Employe() {}
 Employe::Employe(QString cin, int id, QString nom, QString prenom, QString poste, QString sexe, float salaire,
                  QString contact, QDate date_embauche, int disponibilite, QString type_absences)
 {
-    this->CIN = cin;
+    // 🔹 Affectation des valeurs aux attributs de la classe
+    this->CIN = cin.trimmed();
     this->ID_EMPLOYE = id;
-    this->NOM = nom;
-    this->PRENOM = prenom;
-    this->POSTE = poste;
-    this->SEXE = sexe;
+    this->NOM = nom.trimmed();
+    this->PRENOM = prenom.trimmed();
+    this->POSTE = poste.trimmed();
+    this->SEXE = sexe.trimmed();
     this->SALAIRE = salaire;
-    this->CONTACT = contact;
+    this->CONTACT = contact.trimmed();
     this->DATE_EMBAUCHE = date_embauche;
     this->DISPONIBILITE = disponibilite;
-    this->TYPE_ABSENCES = type_absences;
+    this->TYPE_ABSENCES = type_absences.trimmed();
+
+    // 🔍 Affichage pour débogage
+    qDebug() << "✅ Constructeur Employe appelé avec :"
+             << "\n   CIN: " << this->CIN
+             << "\n   ID: " << this->ID_EMPLOYE
+             << "\n   Nom: " << this->NOM
+             << "\n   Prénom: " << this->PRENOM
+             << "\n   Poste: " << this->POSTE
+             << "\n   Sexe: " << this->SEXE
+             << "\n   Salaire: " << this->SALAIRE
+             << "\n   Contact: " << this->CONTACT
+             << "\n   Date embauche: " << this->DATE_EMBAUCHE.toString("dd/MM/yyyy")
+             << "\n   Disponibilité: " << (this->DISPONIBILITE ? "Oui" : "Non")
+             << "\n   Type absences: " << this->TYPE_ABSENCES;
 }
 
 
@@ -98,7 +113,7 @@ bool Employe::ajouter() {
 
 QSqlQueryModel* Employe::afficher() {
     QSqlQueryModel *model = new QSqlQueryModel();
-    model->setQuery("SELECT CIN, ID_EMPLOYE, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES");
+    model->setQuery("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES");
 
     if (model->lastError().isValid()) {
         lastError = model->lastError().text();
@@ -125,18 +140,6 @@ bool Employe::supprimerParCIN(QString cin) {
     }
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -226,20 +229,100 @@ bool Employe::modifier(QString cin)
 
 
 
+bool Employe::authentifier(const QString &login, const QString &cin)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM SMARTVACC.EMPLOYES WHERE PRENOM || SUBSTR(CIN, -4) = :login AND CIN = :cin");
+    query.bindValue(":login", login);
+    query.bindValue(":cin", cin);
+
+    if (!query.exec()) {
+        qDebug() << "Erreur SQL (authentifier) :" << query.lastError().text();
+        return false;
+    }
+
+    return query.next(); // ✅ Authentifié si une ligne existe
+}
+
+QString Employe::getPosteFromCIN(const QString &cin)
+{
+    QSqlQuery query;
+    query.prepare("SELECT POSTE FROM SMARTVACC.EMPLOYES WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
+
+    if (!query.exec() || !query.next()) {
+        qDebug() << "Erreur récupération poste :" << query.lastError().text();
+        return "";
+    }
+
+    return query.value("POSTE").toString();
+}
 
 
 
 
 
 
+QSqlQueryModel* Employe::afficherParPoste() {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    model->setQuery("SELECT * FROM SMARTVACC.EMPLOYES ORDER BY POSTE ASC");
+    return model;
+}
+
+QSqlQueryModel* Employe::afficherParAnciennete() {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    model->setQuery("SELECT * FROM SMARTVACC.EMPLOYES ORDER BY DATE_EMBAUCHE ASC");
+    return model;
+}
+
+QSqlQueryModel* Employe::afficherParSalaire() {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    model->setQuery("SELECT * FROM SMARTVACC.EMPLOYES ORDER BY SALAIRE ASC");
+    return model;
+}
+QSqlQueryModel* Employe::rechercherParCIN(const QString &cin) {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    QSqlQuery query;
+    query.prepare("SELECT * FROM SMARTVACC.EMPLOYES WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
+    query.exec();
+    model->setQuery(query);
+    return model;
+}
+
+QSqlQueryModel* Employe::rechercherParContact(const QString &contact) {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    QSqlQuery query;
+    query.prepare("SELECT * FROM SMARTVACC.EMPLOYES WHERE CONTACT = :contact");
+    query.bindValue(":contact", contact);
+    query.exec();
+    model->setQuery(query);
+    return model;
+}
 
 
 
+QString Employe::getPrenomFromCIN(const QString &cin) {
+    QSqlQuery query;
+    query.prepare("SELECT PRENOM FROM SMARTVACC.EMPLOYES WHERE CIN = :cin");
+    query.bindValue(":cin", cin);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toString();
+    }
+    return "";
+}
 
 
-
-
-
+QSqlQueryModel* Employe::rechercherParDisponibilite(int dispo) {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    QSqlQuery query;
+    query.prepare("SELECT * FROM SMARTVACC.EMPLOYES WHERE DISPONIBILITE = :dispo");
+    query.bindValue(":dispo", dispo);
+    query.exec();
+    model->setQuery(query);
+    return model;
+}
 
 
 

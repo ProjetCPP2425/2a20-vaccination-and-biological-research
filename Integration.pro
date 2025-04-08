@@ -6,6 +6,9 @@
 
 QT       += core gui sql
 
+QT += network
+
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Integration
@@ -45,3 +48,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images/images.qrc
+QT += charts
+DISTFILES += faq_employes.json

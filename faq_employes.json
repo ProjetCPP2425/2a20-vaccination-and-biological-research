@@ -1,0 +1,27 @@
+[
+    {
+      "keywords": ["ajouter employé", "ajouter un employé", "enregistrer employé", "nouvel employé", "ajouter employe", "comment ajouter"],
+      "answer": "Pour ajouter un employé, allez dans la section RH, remplissez le formulaire à gauche, puis cliquez sur 'Ajouter'."
+    },
+    {
+      "keywords": ["supprimer employé", "supprimer employe", "effacer employé", "retirer employé"],
+      "answer": "Pour supprimer un employé, recherchez-le par CIN et cliquez sur 'Supprimer' dans la fiche RH."
+    },
+    {
+      "keywords": ["modifier employé", "modifier employe", "éditer employé", "changer employé", "mettre à jour employé"],
+      "answer": "Pour modifier les informations d’un employé, utilisez le bouton 'Modifier' après avoir chargé ses données."
+    },
+    {
+      "keywords": ["liste des employés", "afficher employés", "voir les employés", "tous les employés"],
+      "answer": "La liste des employés est visible dans l’onglet RH à droite, sous forme de tableau."
+    },
+    {
+      "keywords": ["disponibilité", "employé disponible", "absent", "présent"],
+      "answer": "La disponibilité est visible à côté du nom de l’employé : 'Disponible' en vert, 'Absent' en rouge."
+    },
+    {
+      "keywords": ["statistiques rh", "graphique employé", "taux d'absence", "camembert"],
+      "answer": "Les statistiques RH sont disponibles dans l’onglet 'Statistique', avec un camembert du taux d’absentéisme et plus."
+    }
+  ]
+  

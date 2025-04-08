@@ -8,6 +8,36 @@
 #include <QDebug>
 #include <QSqlError>
 #include <QRegularExpression>
+#include <QFileDialog>
+#include <QTextStream>
+#include <QFile>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QRandomGenerator>
+#include <QTimer>
+#include <QTextDocument>
+#include <QPdfWriter>
+#include <QPainter>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QChart>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
+#include <QPropertyAnimation>
+//#include <QAbstractAnimation>
+//#include <QPropertyAnimation>
+#include <QEasingCurve>
+
+
+
+
+
+
 
 // Constructeur de MainWindow
 MainWindow::MainWindow(QWidget *parent)
@@ -15,6 +45,23 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+   // ui->frame_chatbox->hide(); // caché au départ
+    //ui->frame_chatbox->hide();  // ✅ Pas setVisible(false), mais bien hide()
+    connect(ui->button_chatbot_icon, &QPushButton::clicked, this, []() {
+        qDebug() << "Icône chatbot cliquée !";
+    });
+
+    connect(ui->btn_toggle_password, &QPushButton::clicked, this, [=]() {
+        if (ui->lineedit_password->echoMode() == QLineEdit::Password) {
+            ui->lineedit_password->setEchoMode(QLineEdit::Normal);
+            ui->btn_toggle_password->setText("🙈"); // ou une autre icône
+        } else {
+            ui->lineedit_password->setEchoMode(QLineEdit::Password);
+            ui->btn_toggle_password->setText("👁️");
+        }
+    });
+
+
     ui->stackedWidget->setCurrentIndex(6);
     ui->frame->setVisible(false);
 
@@ -49,12 +96,8 @@ MainWindow::MainWindow(QWidget *parent)
                       "Le salaire doit être un nombre valide.");
     });
 
-    connect(ui->lineeditposte, &QLineEdit::textChanged, this, [=]() {
-        validateInput(ui->lineeditposte, ui->posteErrorLabel,
-                      QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$"),
-                      "Le poste doit contenir uniquement des lettres.");
-    });
 
+    // Validation pour combobox_abscences
     connect(ui->combobox_abscences, &QComboBox::currentTextChanged, this, [=]() {
         if (ui->combobox_abscences->currentIndex() == 0) {
             ui->abscenceErrorLabel->setText("❌ Veuillez sélectionner un type d'absence.");
@@ -65,6 +108,29 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
+    // Validation pour combobox_disponibilite
+    connect(ui->combobox_disponibilite, &QComboBox::currentTextChanged, this, [=]() {
+        if (ui->combobox_disponibilite->currentIndex() == 0) {
+            ui->disponibiliteErrorLabel->setText("❌ Veuillez sélectionner une disponibilité.");
+            ui->disponibiliteErrorLabel->setStyleSheet("color: red; font-weight: bold;");
+        } else {
+            ui->disponibiliteErrorLabel->setText("✔️ Valide");
+            ui->disponibiliteErrorLabel->setStyleSheet("color: green; font-weight: bold;");
+        }
+    });
+
+    // Validation pour combobox_poste
+    connect(ui->combobox_poste, &QComboBox::currentTextChanged, this, [=]() {
+        if (ui->combobox_poste->currentIndex() == 0) {
+            ui->posteErrorLabel->setText("❌ Veuillez sélectionner un poste.");
+            ui->posteErrorLabel->setStyleSheet("color: red; font-weight: bold;");
+        } else {
+            ui->posteErrorLabel->setText("✔️ Valide");
+            ui->posteErrorLabel->setStyleSheet("color: green; font-weight: bold;");
+        }
+    });
+
+
     // ✅ Réinitialisation des champs avec le bouton Annuler
     connect(ui->annuler, &QPushButton::clicked, this, &MainWindow::on_annuler_clicked);
 
@@ -74,7 +140,7 @@ MainWindow::MainWindow(QWidget *parent)
     };
 
     // ✅ Bouton retour à la connexion
-    connect(ui->pushButton_3, &QPushButton::clicked, this, [=]() {
+    connect(ui->btn_login, &QPushButton::clicked, this, [=]() {
         ui->stackedWidget->setCurrentIndex(6);
         updateSidebarVisibility(6);
     });
@@ -84,10 +150,6 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(false);
     });
 
-    connect(ui->pushButton_3, &QPushButton::clicked, this, [=]() {
-        ui->stackedWidget->setCurrentIndex(0);
-        ui->frame->setVisible(true);
-    });
 
     // ✅ Navigation entre les pages
     connect(ui->employe, &QPushButton::clicked, this, [=]() {
@@ -97,6 +159,7 @@ MainWindow::MainWindow(QWidget *parent)
         // Mettre à jour immédiatement l'affichage des employés
         Employe e;
         ui->tableView->setModel(e.afficher());
+        chargerNomsDansComboBoxPDF();
 
         // Ajustements d'affichage
         ui->tableView->verticalHeader()->setDefaultSectionSize(35);
@@ -133,6 +196,63 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(ui->pushButton_modifier_employe, &QPushButton::clicked, this, &MainWindow::on_button_modifier_clicked);
+    connect(ui->btn_login, &QPushButton::clicked, this, &MainWindow::seConnecter);
+    connect(ui->comboBox_tri_3, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &MainWindow::appliquerTriEmployes);
+
+    connect(ui->btn_rechercher, &QPushButton::clicked, this, &MainWindow::lancerRechercheEmploye);
+    connect(ui->btn_reset_table, &QPushButton::clicked, this, &MainWindow::reinitialiserTableEmployes);
+    connect(ui->btn_planning_pdf, &QPushButton::clicked, this, &MainWindow::exporterPlanningHoraireHTML);
+
+
+    QTimer::singleShot(0, this, SLOT(chargerNomsDansComboBoxPDF()));  // pour bien le charger après l'UI
+    connect(ui->btn_stats_employes, &QPushButton::clicked, this, &MainWindow::afficherStatistiquesEmployes);
+
+
+    ui->button_chatbot_icon->setGraphicsEffect(nullptr); // assure aucun effet parasite*/
+
+    manager = new QNetworkAccessManager(this);
+    connect(ui->button_chatbot_icon, &QPushButton::clicked, this, &MainWindow::on_button_chatbot_icon_clicked);
+    connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::receptionReponseGPT);
+
+    connect(ui->button_fermer_chatbot, &QPushButton::clicked, this, &MainWindow::on_button_fermer_chatbot_clicked);
+    connect(ui->button_envoyer, &QPushButton::clicked, this, &MainWindow::on_button_envoyer_clicked);
+    ui->textEdit_chat->setStyleSheet("color: black; background-color: white; border-radius: 10px;");
+
+
+    ui->textEdit_chat->setWordWrapMode(QTextOption::WordWrap);
+
+
+
+    // (optionnel : connecter ici si non connecté par le designer)
+    faqMap.insert("comment ajouter un employe", "Pour ajouter un employé, allez dans la section 'Employés', cliquez sur 'Ajouter', remplissez le formulaire puis validez.");
+    faqMap.insert("ajouter employe", "Pour ajouter un employé, allez dans la section 'Employés', cliquez sur 'Ajouter', remplissez le formulaire puis validez.");
+    faqMap.insert("supprimer un employe", "Pour supprimer un employé, sélectionnez-le dans la liste puis cliquez sur 'Supprimer'.");
+    faqMap.insert("modifier employe", "Cliquez sur l'employé à modifier, changez les champs désirés et appuyez sur 'Enregistrer'.");
+    faqMap.insert("liste employes", "Vous pouvez consulter la liste complète des employés depuis l’onglet 'Gestion des employés'.");
+    faqMap.insert("statistiques employes", "Les statistiques RH sont disponibles dans l’onglet 'Statistiques' du module Employés.");
+    faqMap.insert("employe le plus ancien", "L’employé le plus ancien est affiché dans la section des statistiques RH.");
+    faqMap.insert("absences employes", "Les absences sont gérées automatiquement depuis le module RH.");
+
+
+    faq = QJsonArray{
+        QJsonObject{{"keywords", QJsonArray{"ajouter employé", "ajouter un employé", "nouvel employé", "ajout employé"}},
+                    {"response", "Pour ajouter un employé, allez dans l'onglet RH et remplissez le formulaire avec le nom, prénom, poste, etc., puis cliquez sur Ajouter."}},
+        QJsonObject{{"keywords", QJsonArray{"modifier employé", "changer infos employé", "mettre à jour employé"}},
+                    {"response", "Pour modifier un employé, recherchez-le par CIN puis cliquez sur Modifier. Modifiez les champs et validez."}},
+        QJsonObject{{"keywords", QJsonArray{"supprimer employé", "effacer employé", "retirer employé"}},
+                    {"response", "Pour supprimer un employé, entrez son CIN dans le champ dédié puis cliquez sur Supprimer."}},
+        QJsonObject{{"keywords", QJsonArray{"statistiques employé", "camembert employés", "taux d'absence"}},
+                    {"response", "Cliquez sur 'Statistiques' pour voir les données de disponibilité, absences et le top 3 des anciens employés."}},
+        QJsonObject{{"keywords", QJsonArray{"export planning", "pdf employés", "horaire employés"}},
+                    {"response", "Utilisez le bouton 'Exporter Planning Hebdo' pour générer un planning en HTML ou PDF sur une période donnée."}},
+        QJsonObject{{"keywords", QJsonArray{"rechercher employé", "chercher un employé", "trouver employé"}},
+                    {"response", "Utilisez la section de recherche par CIN, contact ou disponibilité pour filtrer les employés."}},
+        QJsonObject{{"keywords", QJsonArray{"connexion", "se connecter", "login employé"}},
+                    {"response", "Les employés se connectent avec leur prénom + 4 derniers chiffres du CIN. Le poste détermine l'accès aux modules."}}
+    };
+    connect(ui->btn_historique_connexions, &QPushButton::clicked, this, &MainWindow::afficherHistoriqueConnexions);
+
 }
 
 MainWindow::~MainWindow()
@@ -140,19 +260,44 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_Affichage_currentChanged(int index)
+{
+    if (index ==0){
+        Employe employe;
+        ui->tableView->setModel(employe.afficher());
+
+    }
+}
+void MainWindow::afficherDashboard(const QString& prenom, const QString& poste)
+{
+    ui->label_bienvenue->setText("👋 Bienvenue, " + prenom + " !");
+    ui->label_poste->setText("Poste : " + poste);
+    ui->stackedWidget->setCurrentIndex(7); // vers le dashboard
+}
+
 void MainWindow::on_ajouter_employe_clicked()
 {
+    // ✅ 1. Récupérer le prochain ID_EMPLOYE automatiquement
+    QSqlQuery idQuery;
+    idQuery.prepare("SELECT COALESCE(MAX(ID_EMPLOYE), 0) + 1 FROM SMARTVACC.EMPLOYES");
+
+    int id_employe = 1; // Valeur par défaut si la table est vide
+    if (idQuery.exec() && idQuery.next()) {
+        id_employe = idQuery.value(0).toInt(); // Récupère l'ID suivant
+    }
+
+    // ✅ 2. Récupérer les valeurs des champs
     QString cin = ui->lineedit_cin_employe->text().trimmed();
-    int id_employe = ui->lineedit_id_employe->text().toInt();
     QString nom = ui->lineedit_nom_employe->text().trimmed();
     QString prenom = ui->lineedit_prenom_employe->text().trimmed();
-    QString poste = ui->lineeditposte->text().trimmed();
+    QString poste = ui->combobox_poste->currentText();
     float salaire = ui->lineditsalaire->text().toFloat();
     QString contact = ui->lineeditcontact->text().trimmed();
     QDate date_embauche = ui->dateEdit->date();
-    int disponibilite = (ui->lineeditdisponibilite->text().toLower() == "oui") ? 1 : 0;
+    int disponibilite = (ui->combobox_disponibilite->currentText().toLower() == "oui") ? 1 : 0;
     QString type_absences = ui->combobox_abscences->currentText();
 
+    // ✅ 3. Vérification du sexe
     QString sexe;
     if (ui->radiobutton_homme->isChecked()) {
         sexe = "Homme";
@@ -163,11 +308,17 @@ void MainWindow::on_ajouter_employe_clicked()
         return;
     }
 
-    // 🔹 Mode Modification 🛠
-    if (modeModification) {
-        Employe emp(cinOriginal, id_employe, nom, prenom, poste, sexe, salaire, contact, date_embauche, disponibilite, type_absences);
+    // ✅ 4. Vérifier si les champs obligatoires sont remplis
+    if (cin.isEmpty() || nom.isEmpty() || prenom.isEmpty() || poste.isEmpty() || salaire <= 0 || contact.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs obligatoires !");
+        return;
+    }
 
-        if (emp.modifier(cinOriginal)) {
+    // ✅ 5. Mode Modification 🛠
+    if (modeModification) {
+        Employe employe (cin, id_employe, nom, prenom, poste, sexe, salaire, contact, date_embauche, disponibilite, type_absences);
+
+        if (employe.modifier(cin)) {
             QMessageBox::information(this, "Succès", "L'employé a été modifié avec succès !");
             modeModification = false;  // Désactiver le mode modification
             cinOriginal.clear();
@@ -176,11 +327,11 @@ void MainWindow::on_ajouter_employe_clicked()
             return;
         }
     }
-    // 🔹 Mode Ajout 🆕
+    // ✅ 6. Mode Ajout 🆕
     else {
-        Employe emp(cin, id_employe, nom, prenom, poste, sexe, salaire, contact, date_embauche, disponibilite, type_absences);
+        Employe employe(cin, id_employe, nom, prenom, poste, sexe, salaire, contact, date_embauche, disponibilite, type_absences);
 
-        if (emp.ajouter()) {
+        if (employe.ajouter()) {
             QMessageBox::information(this, "Succès", "L'employé a été ajouté avec succès !");
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de l'ajout de l'employé !");
@@ -188,25 +339,23 @@ void MainWindow::on_ajouter_employe_clicked()
         }
     }
 
-    // 🔄 Mise à jour de la tableView après Ajout/Modification
+    // ✅ 7. Mise à jour de la `tableView`
     ui->tableView->setModel(employe.afficher());
 
-    // 🧹 Effacer les champs après Ajout/Modification
+    // ✅ 8. Réinitialiser les champs après l'ajout ou modification
     ui->lineedit_cin_employe->clear();
-    ui->lineedit_id_employe->clear();
     ui->lineedit_nom_employe->clear();
     ui->lineedit_prenom_employe->clear();
-    ui->lineeditposte->clear();
+    ui->combobox_poste->setCurrentIndex(0); // Remettre à l'option par défaut
     ui->lineditsalaire->clear();
     ui->lineeditcontact->clear();
     ui->dateEdit->setDate(QDate::currentDate());
-    ui->lineeditdisponibilite->clear();
+    ui->combobox_disponibilite->setCurrentIndex(0);
     ui->combobox_abscences->setCurrentIndex(0);
     ui->radiobutton_homme->setChecked(false);
     ui->radiobutton_femme->setChecked(false);
 
-    // 🔙 Revenir à la liste des employés après modification/ajout
-    ui->Affichage->setCurrentWidget(ui->lirect);
+
 }
 
 
@@ -257,13 +406,13 @@ void MainWindow::on_pushButton_supprimer_employe_clicked() {
         ui->lineedit_cin_employe->clear();
         ui->lineedit_nom_employe->clear();
         ui->lineedit_prenom_employe->clear();
-        ui->lineeditposte->clear();
+        ui->combobox_poste->clear();
         ui->radiobutton_homme->setChecked(false);
         ui->radiobutton_femme->setChecked(false);
         ui->lineditsalaire->clear();
         ui->lineeditcontact->clear();
         ui->dateEdit->setDate(QDate::currentDate());
-        ui->lineeditdisponibilite->clear();
+        ui->combobox_disponibilite->clear();
         ui->combobox_abscences->setCurrentIndex(0);
     }
 }
@@ -297,30 +446,49 @@ void MainWindow::on_button_modifier_clicked()
     }
 
     // 🔹 Vérifier si l'employé existe avant de modifier
+    Employe employe;
     if (!employe.chargerEmploye(cin)) {
         QMessageBox::critical(this, "Erreur", "Aucun employé trouvé avec ce CIN !");
         return;
     }
 
-    modeModification = true;  // Active le mode modification
+    modeModification = true;  // ✅ Active le mode modification
     cinOriginal = cin;  // ✅ Stocke l'ancien CIN pour la mise à jour
 
     // 🔹 Pré-remplissage des champs avec les données existantes
-    ui->lineedit_cin_employe->setText(employe.getCIN());  // ✅ Correction
-    ui->lineedit_id_employe->setText(QString::number(employe.getIdEmploye()));  // ✅ Correction
+    ui->lineedit_cin_employe->setText(employe.getCIN());
     ui->lineedit_nom_employe->setText(employe.getNom());
     ui->lineedit_prenom_employe->setText(employe.getPrenom());
-    ui->lineeditposte->setText(employe.getPoste());
+
+    // ✅ Sélection du poste dans la ComboBox
+    int posteIndex = ui->combobox_poste->findText(employe.getPoste());
+    if (posteIndex != -1) {
+        ui->combobox_poste->setCurrentIndex(posteIndex);
+    }
+
+    // ✅ Sélection du sexe
     ui->radiobutton_homme->setChecked(employe.getSexe() == "Homme");
     ui->radiobutton_femme->setChecked(employe.getSexe() == "Femme");
-    ui->lineditsalaire->setText(QString::number(employe.getSalaire()));
+
+    // ✅ Conversion et mise à jour des champs numériques
+    ui->lineditsalaire->setText(QString::number(employe.getSalaire(), 'f', 2));  // Format avec 2 décimales
     ui->lineeditcontact->setText(employe.getContact());
     ui->dateEdit->setDate(employe.getDateEmbauche());
-    ui->lineeditdisponibilite->setText(employe.getDisponibilite() ? "Oui" : "Non");
-    ui->combobox_abscences->setCurrentText(employe.getTypeAbsences());
+
+    // ✅ Sélection de la disponibilité dans la ComboBox
+    int dispoIndex = ui->combobox_disponibilite->findText(employe.getDisponibilite() ? "Oui" : "Non");
+    if (dispoIndex != -1) {
+        ui->combobox_disponibilite->setCurrentIndex(dispoIndex);
+    }
+
+    // ✅ Sélection du type d'absence dans la ComboBox
+    int absenceIndex = ui->combobox_abscences->findText(employe.getTypeAbsences());
+    if (absenceIndex != -1) {
+        ui->combobox_abscences->setCurrentIndex(absenceIndex);
+    }
 
     // ✅ Redirige vers la page d'édition
-    ui->Affichage->setCurrentWidget(ui->ajoutct);
+   // ui->pdf->setCurrentWidget(ui->ajoutct);
 }
 
 
@@ -363,8 +531,9 @@ bool MainWindow::estValide()
     QString styleErreur = "color: red; font-weight: bold; background: transparent;";
     QString styleValide = "color: green; font-weight: bold; background: transparent;";
 
-    // Vérification du CIN
-    if (!QRegularExpression("^[0-9]{8}$").match(ui->lineedit_cin_employe->text().trimmed()).hasMatch()) {
+    // ✅ Vérification du CIN (8 chiffres uniquement)
+    QString cin = ui->lineedit_cin_employe->text().trimmed();
+    if (!QRegularExpression("^[0-9]{8}$").match(cin).hasMatch()) {
         ui->cinErrorLabel->setText("❌ Le CIN doit contenir exactement 8 chiffres.");
         ui->cinErrorLabel->setStyleSheet(styleErreur);
         valide = false;
@@ -373,19 +542,30 @@ bool MainWindow::estValide()
         ui->cinErrorLabel->setStyleSheet(styleValide);
     }
 
-    // Vérification de l'ID Employé
-    bool ok;
-    int id = ui->lineedit_id_employe->text().toInt(&ok);
-    if (!ok || id <= 0) {
-        ui->idErrorLabel->setText("❌ L'ID employé doit être un nombre positif.");
-        ui->idErrorLabel->setStyleSheet(styleErreur);
+    // ✅ Vérification du Nom (lettres uniquement)
+    QString nom = ui->lineedit_nom_employe->text().trimmed();
+    if (!QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$").match(nom).hasMatch() || nom.isEmpty()) {
+        ui->nomErrorLabel->setText("❌ Le nom doit contenir uniquement des lettres.");
+        ui->nomErrorLabel->setStyleSheet(styleErreur);
         valide = false;
     } else {
-        ui->idErrorLabel->setText("✔️ Valide");
-        ui->idErrorLabel->setStyleSheet(styleValide);
+        ui->nomErrorLabel->setText("✔️ Valide");
+        ui->nomErrorLabel->setStyleSheet(styleValide);
     }
 
-    // Vérification du salaire
+    // ✅ Vérification du Prénom (lettres uniquement)
+    QString prenom = ui->lineedit_prenom_employe->text().trimmed();
+    if (!QRegularExpression("^[A-Za-zÀ-ÿ\\s-]+$").match(prenom).hasMatch() || prenom.isEmpty()) {
+        ui->prenomErrorLabel->setText("❌ Le prénom doit contenir uniquement des lettres.");
+        ui->prenomErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->prenomErrorLabel->setText("✔️ Valide");
+        ui->prenomErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // ✅ Vérification du Salaire (valeur positive uniquement)
+    bool ok;
     float salaire = ui->lineditsalaire->text().toFloat(&ok);
     if (!ok || salaire <= 0) {
         ui->salaireErrorLabel->setText("❌ Le salaire doit être un nombre strictement positif.");
@@ -396,8 +576,9 @@ bool MainWindow::estValide()
         ui->salaireErrorLabel->setStyleSheet(styleValide);
     }
 
-    // Vérification du contact
-    if (!QRegularExpression("^[0-9]{8}$").match(ui->lineeditcontact->text().trimmed()).hasMatch()) {
+    // ✅ Vérification du Contact (exactement 8 chiffres)
+    QString contact = ui->lineeditcontact->text().trimmed();
+    if (!QRegularExpression("^[0-9]{8}$").match(contact).hasMatch()) {
         ui->contactErrorLabel->setText("❌ Le contact doit contenir exactement 8 chiffres.");
         ui->contactErrorLabel->setStyleSheet(styleErreur);
         valide = false;
@@ -406,7 +587,48 @@ bool MainWindow::estValide()
         ui->contactErrorLabel->setStyleSheet(styleValide);
     }
 
-    return valide;}
+    // ✅ Vérification du Poste (ComboBox)
+    if (ui->combobox_poste->currentIndex() == 0) {
+        ui->posteErrorLabel->setText("❌ Veuillez sélectionner un poste.");
+        ui->posteErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->posteErrorLabel->setText("✔️ Valide");
+        ui->posteErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // ✅ Vérification de la Disponibilité (ComboBox)
+    if (ui->combobox_disponibilite->currentIndex() == 0) {
+        ui->disponibiliteErrorLabel->setText("❌ Veuillez sélectionner une disponibilité.");
+        ui->disponibiliteErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->disponibiliteErrorLabel->setText("✔️ Valide");
+        ui->disponibiliteErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // ✅ Vérification du Type d'Absence (ComboBox)
+    if (ui->combobox_abscences->currentIndex() == 0) {
+        ui->abscenceErrorLabel->setText("❌ Veuillez sélectionner un type d'absence.");
+        ui->abscenceErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->abscenceErrorLabel->setText("✔️ Valide");
+        ui->abscenceErrorLabel->setStyleSheet(styleValide);
+    }
+
+    // ✅ Vérification du Sexe (RadioButton)
+    if (!ui->radiobutton_homme->isChecked() && !ui->radiobutton_femme->isChecked()) {
+        ui->sexeErrorLabel->setText("❌ Veuillez sélectionner un sexe.");
+        ui->sexeErrorLabel->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->sexeErrorLabel->setText("✔️ Valide");
+        ui->sexeErrorLabel->setStyleSheet(styleValide);
+    }
+
+    return valide;
+}
 
 void MainWindow::on_annuler_clicked()
 {
@@ -417,39 +639,688 @@ void MainWindow::on_annuler_clicked()
         query.bindValue(":cin", ui->lineedit_cin_employe->text().trimmed());
 
         if (query.exec() && query.next()) {
-            // ✅ Remettre toutes les anciennes valeurs, y compris le CIN
+            // ✅ Récupérer et afficher les anciennes valeurs
             ui->lineedit_cin_employe->setText(query.value("CIN").toString());
-            ui->lineedit_id_employe->setText(query.value("ID_EMPLOYE").toString());
             ui->lineedit_nom_employe->setText(query.value("NOM").toString());
             ui->lineedit_prenom_employe->setText(query.value("PRENOM").toString());
-            ui->lineeditposte->setText(query.value("POSTE").toString());
+
+            // ✅ Sélection de la valeur correcte dans la ComboBox "Poste"
+            int posteIndex = ui->combobox_poste->findText(query.value("POSTE").toString());
+            if (posteIndex != -1) ui->combobox_poste->setCurrentIndex(posteIndex);
+
+            // ✅ Sélection du sexe
             ui->radiobutton_homme->setChecked(query.value("SEXE").toString() == "Homme");
             ui->radiobutton_femme->setChecked(query.value("SEXE").toString() == "Femme");
-            ui->lineditsalaire->setText(query.value("SALAIRE").toString());
+
+            // ✅ Formatage des valeurs numériques
+            ui->lineditsalaire->setText(QString::number(query.value("SALAIRE").toFloat(), 'f', 2));
             ui->lineeditcontact->setText(query.value("CONTACT").toString());
             ui->dateEdit->setDate(query.value("DATE_EMBAUCHE").toDate());
-            ui->lineeditdisponibilite->setText(query.value("DISPONIBILITE").toInt() == 1 ? "Oui" : "Non");
-            ui->combobox_abscences->setCurrentText(query.value("TYPE_ABSENCES").toString());
+
+            // ✅ Sélection de la valeur correcte dans la ComboBox "Disponibilité"
+            int dispoIndex = ui->combobox_disponibilite->findText(query.value("DISPONIBILITE").toInt() == 1 ? "Oui" : "Non");
+            if (dispoIndex != -1) ui->combobox_disponibilite->setCurrentIndex(dispoIndex);
+
+            // ✅ Sélection de la valeur correcte dans la ComboBox "Type d'absence"
+            int absenceIndex = ui->combobox_abscences->findText(query.value("TYPE_ABSENCES").toString());
+            if (absenceIndex != -1) ui->combobox_abscences->setCurrentIndex(absenceIndex);
         } else {
             QMessageBox::warning(this, "Erreur", "Impossible de récupérer les données de l'employé.");
         }
     } else {
         // 🔹 Si on est en mode ajout, vider les champs
         ui->lineedit_cin_employe->clear();
-        ui->lineedit_id_employe->clear();
         ui->lineedit_nom_employe->clear();
         ui->lineedit_prenom_employe->clear();
-        ui->lineeditposte->clear();
         ui->lineditsalaire->clear();
         ui->lineeditcontact->clear();
         ui->dateEdit->setDate(QDate::currentDate());
-        ui->lineeditdisponibilite->clear();
+
+        // ✅ Réinitialiser les ComboBox à leur valeur par défaut
+        ui->combobox_poste->setCurrentIndex(0);
+        ui->combobox_disponibilite->setCurrentIndex(0);
         ui->combobox_abscences->setCurrentIndex(0);
+
+        // ✅ Décocher les boutons radio
         ui->radiobutton_homme->setChecked(false);
         ui->radiobutton_femme->setChecked(false);
+    }
+
+}
+
+void MainWindow::seConnecter()
+{
+    static int tentativeConnexion = 0;
+    static bool connexionBloquee = false;
+
+    if (connexionBloquee) {
+        QMessageBox::critical(this, "Connexion bloquée", "Vous avez atteint le nombre maximal de tentatives.\nVeuillez patienter 30 secondes.");
+        return;
+    }
+
+    QString login = ui->lineedit_login->text().trimmed();
+    QString cin = ui->lineedit_password->text().trimmed();
+
+    if (login.isEmpty() || cin.isEmpty()) {
+        QMessageBox::warning(this, "Champs manquants", "Veuillez remplir tous les champs !");
+        return;
+    }
+
+    Employe e;
+    if (e.authentifier(login, cin)) {
+        ui->label_tentatives->clear();  // Réinitialise l'affichage des tentatives
+        tentativeConnexion = 0;
+
+        QString poste = e.getPosteFromCIN(cin).toLower();
+
+        // ✅ Animation rebond
+        QPropertyAnimation *animation = new QPropertyAnimation(ui->frame_7, "geometry");
+        QRect startRect = ui->frame_7->geometry();
+        animation->setDuration(500);
+        animation->setStartValue(startRect.adjusted(0, -50, 0, -50));
+        animation->setEndValue(startRect);
+        animation->setEasingCurve(QEasingCurve::OutBounce);
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+
+        enregistrerConnexion(login); // ✅ Historique
+
+        // ✅ Redirection après animation
+        QTimer::singleShot(750, this, [=]() {
+            afficherDashboard(login, poste); // ✅ Ajouter ici
+
+            if (poste == "hr")            redirectTo("employe", 0);
+            else if (poste == "produits") redirectTo("produits", 1);
+            else if (poste == "labo")     redirectTo("labo", 2);
+            else if (poste == "vaccin")   redirectTo("vaccin", 3);
+            else if (poste == "compagne") redirectTo("compagne", 4);
+            else if (poste == "carnet")   redirectTo("carnet", 5);
+            else if (poste == "admin")    redirectTo("admin", 0, true);
+            else {
+                QMessageBox::critical(this, "Accès refusé", "Ce poste n'a pas accès à l'application.");
+                ui->stackedWidget->setCurrentIndex(6); // retour login
+            }
+        });
+    }
+    else {
+        tentativeConnexion++;
+        ui->label_tentatives->setText("❌ Tentative " + QString::number(tentativeConnexion) + "/3");
+
+        // ❌ Animation shake
+        QPropertyAnimation *shake = new QPropertyAnimation(ui->frame_7, "pos");
+        QPoint originalPos = ui->frame_7->pos();
+        shake->setDuration(500);
+        shake->setKeyValueAt(0, originalPos);
+        shake->setKeyValueAt(0.25, originalPos + QPoint(-10, 0));
+        shake->setKeyValueAt(0.5, originalPos + QPoint(10, 0));
+        shake->setKeyValueAt(0.75, originalPos + QPoint(-10, 0));
+        shake->setKeyValueAt(1, originalPos);
+        shake->start(QAbstractAnimation::DeleteWhenStopped);
+
+        if (tentativeConnexion >= 3) {
+            connexionBloquee = true;
+            QMessageBox::critical(this, "Trop de tentatives", "Vous avez fait 3 tentatives incorrectes.\nConnexion bloquée pendant 30 secondes.");
+
+            QTimer::singleShot(30000, this, [=]() mutable {
+                tentativeConnexion = 0;
+                connexionBloquee = false;
+                ui->label_tentatives->clear();
+                QMessageBox::information(this, "Connexion réactivée", "Vous pouvez réessayer de vous connecter.");
+            });
+        } else {
+            QMessageBox::critical(this, "Erreur", QString("Identifiant ou mot de passe incorrect.\nTentative %1/3").arg(tentativeConnexion));
+        }
     }
 }
 
 
 
+void MainWindow::redirectTo(const QString &poste, int pageIndex, bool fullAccess)
+{
+    ui->stackedWidget->setCurrentIndex(pageIndex);
+    ui->frame->setVisible(true); // afficher la sidebar
+
+    if (fullAccess) {
+        disableOtherModulesExcept({"employe", "produits", "labo", "vaccin", "compagne", "carnet"});
+    } else {
+        disableOtherModulesExcept({poste});
+    }
+}
+
+void MainWindow::disableOtherModulesExcept(const QStringList &allowed)
+{
+    ui->employe->setEnabled(allowed.contains("employe"));
+    ui->produits->setEnabled(allowed.contains("produits"));
+    ui->labo->setEnabled(allowed.contains("labo"));
+    ui->vaccin->setEnabled(allowed.contains("vaccin"));
+    ui->compagne->setEnabled(allowed.contains("compagne"));
+    ui->carnet->setEnabled(allowed.contains("carnet"));
+}
+
+
+
+void MainWindow::appliquerTriEmployes()
+{
+    Employe e;
+    int index = ui->comboBox_tri_3->currentIndex();
+
+    switch(index) {
+    case 0: // Trier par poste
+        ui->tableView->setModel(e.afficherParPoste());
+        break;
+    case 1: // Trier par ancienneté
+        ui->tableView->setModel(e.afficherParAnciennete());
+        break;
+    case 2: // Trier par salaire
+        ui->tableView->setModel(e.afficherParSalaire());
+        break;
+    default:
+        break;
+    }
+}
+void MainWindow::lancerRechercheEmploye()
+{
+    QString critere = ui->comboBox_recherche->currentText().toLower().trimmed();
+    QString valeur = ui->lineEdit_recherche_3->text().trimmed();
+
+    if (valeur.isEmpty()) {
+        QMessageBox::warning(this, "Champ vide", "Veuillez entrer une valeur de recherche.");
+        return;
+    }
+
+    Employe e;
+
+    if (critere.contains("cin")) {
+        ui->tableView->setModel(e.rechercherParCIN(valeur));
+    }
+    else if (critere.contains("contact")) {
+        ui->tableView->setModel(e.rechercherParContact(valeur));
+    }
+    else if (critere.contains("dispo")) {
+        if (valeur == "oui" || valeur == "1") {
+            ui->tableView->setModel(e.rechercherParDisponibilite(1));
+        } else if (valeur == "non" || valeur == "0") {
+            ui->tableView->setModel(e.rechercherParDisponibilite(0));
+        } else {
+            QMessageBox::warning(this, "Erreur", "Veuillez taper 'oui' ou 'non' (ou 1 ou 0) pour la disponibilité.");
+        }
+    }
+    else {
+        QMessageBox::warning(this, "Critère inconnu", "Ce critère de recherche n'est pas reconnu.");
+    }
+}
+
+
+
+void MainWindow::reinitialiserTableEmployes()
+{
+    Employe e;
+    ui->tableView->setModel(e.afficher());
+    ui->comboBox_tri_3->setCurrentIndex(-1); // désélectionne le tri
+    ui->comboBox_recherche->setCurrentIndex(-1); // désélectionne recherche
+    ui->lineEdit_recherche->clear(); // vide le champ
+}
+void MainWindow::chargerNomsDansComboBoxPDF()
+{
+    QSqlQuery query("SELECT CIN, NOM, PRENOM FROM SMARTVACC.EMPLOYES ORDER BY NOM ASC");
+
+    ui->comboBox_employe_pdf->clear();
+    ui->comboBox_employe_pdf->addItem("Tous");
+
+    while (query.next()) {
+        QString cin = query.value("CIN").toString();
+        QString nom = query.value("NOM").toString();
+        QString prenom = query.value("PRENOM").toString();
+        ui->comboBox_employe_pdf->addItem(cin + " " + nom + " " + prenom);
+    }
+}
+
+
+
+void MainWindow::exporterPlanningHoraireHTML()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Exporter Planning Hebdo", "", "Fichier HTML (*.html)");
+    if (fileName.isEmpty()) return;
+
+    QDate dateDebut = ui->dateEdit_debut_pdf->date();
+    QDate dateFin = ui->dateEdit_fin_pdf->date();
+    QString nomSelectionne = ui->comboBox_employe_pdf->currentText();
+
+    if (dateDebut > dateFin) {
+        QMessageBox::warning(this, "Erreur de date", "La date de début doit être antérieure à la date de fin !");
+        return;
+    }
+
+    QMap<QString, QString> horairesParPoste = {
+        {"medecin", "10h-14h"}, {"infirmier", "8h-12h"}, {"hr", "14h-17h"},
+        {"produits", "13h-16h"}, {"carnet", "9h-11h"}, {"compagne", "11h-15h"},
+        {"vaccin", "9h-12h"}, {"admin", "8h-10h"}
+    };
+
+    QString html = "<html><head><meta charset='utf-8'><title>Planning</title>"
+                   "<style>"
+                   "body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7fa; padding: 30px; }"
+                   "h2 { text-align: center; color: #2c3e50; font-size: 26px; }"
+                   "table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }"
+                   "th { background-color: #2980b9; color: white; padding: 12px; font-size: 15px; }"
+                   "td { padding: 10px; text-align: center; border-bottom: 1px solid #ccc; font-size: 14px; }"
+                   "tr:nth-child(even) { background-color: #ecf0f1; }"
+                   ".green { color: green; font-weight: bold; }"
+                   ".red { color: red; font-weight: bold; }"
+                   ".summary { margin-top: 20px; font-weight: bold; background: #ecf0f1; padding: 15px; border-radius: 8px; }"
+                   ".actions { text-align: center; margin-top: 20px; }"
+                   "button { padding: 10px 20px; font-size: 14px; border: none; background-color: #3498db; color: white; border-radius: 5px; cursor: pointer; }"
+                   "button:hover { background-color: #2980b9; }"
+                   "</style></head><body>";
+
+    html += "<h2>📅 Planning Hebdomadaire des Employés</h2>";
+    html += "<p style='text-align:center; font-size:16px;'><strong>Période : </strong>" +
+            dateDebut.toString("dd/MM/yyyy") + " ➡️ " + dateFin.toString("dd/MM/yyyy") + "</p>";
+
+    // Tableau des jours
+    html += "<table border='1'><tr><th>CIN</th><th>Nom</th><th>Poste</th><th>Disponibilité</th><th>Absence</th>";
+    QStringList jours;
+    for (QDate d = dateDebut; d <= dateFin; d = d.addDays(1)) {
+        jours << d.toString("dd/MM");
+        html += "<th>" + d.toString("ddd<br>dd/MM") + "</th>";
+    }
+    html += "</tr>";
+
+    QSqlQuery query;
+    if (nomSelectionne == "Tous") {
+        query.prepare("SELECT CIN, NOM, PRENOM, POSTE, DISPONIBILITE, TYPE_ABSENCES, HORAIRE FROM SMARTVACC.EMPLOYES");
+    } else {
+        QStringList parts = nomSelectionne.split(" ");
+        if (parts.size() >= 2) {
+            QString nom = parts[0];
+            QString prenom = parts.mid(1).join(" ");
+            query.prepare("SELECT CIN, NOM, PRENOM, POSTE, DISPONIBILITE, TYPE_ABSENCES, HORAIRE FROM SMARTVACC.EMPLOYES WHERE NOM = :nom AND PRENOM = :prenom");
+            query.bindValue(":nom", nom);
+            query.bindValue(":prenom", prenom);
+        }
+    }
+
+    if (!query.exec()) {
+        QMessageBox::critical(this, "Erreur SQL", query.lastError().text());
+        return;
+    }
+
+    int total = 0, dispo = 0;
+    while (query.next()) {
+        total++;
+        QString cin = query.value("CIN").toString();
+        QString nom = query.value("NOM").toString();
+        QString prenom = query.value("PRENOM").toString();
+        QString poste = query.value("POSTE").toString().toLower();
+        QString disponibilite = query.value("DISPONIBILITE").toInt() == 1 ? "Oui" : "Non";
+        QString absence = query.value("TYPE_ABSENCES").toString();
+        QString horaire = query.value("HORAIRE").toString().trimmed();
+        if (horaire.isEmpty()) horaire = horairesParPoste.value(poste, "Non défini");
+
+        if (disponibilite == "Oui") dispo++;
+
+        html += "<tr>";
+        html += "<td>" + cin + "</td>";
+        html += "<td>" + nom + " " + prenom + "</td>";
+        html += "<td>" + poste + "</td>";
+        html += QString("<td class='%1'>%2</td>").arg((disponibilite == "Oui" ? "green" : "red"), disponibilite);
+
+        html += "<td>" + absence + "</td>";
+        for (int i = 0; i < jours.size(); ++i)
+            html += "<td>" + horaire + "</td>";
+        html += "</tr>";
+    }
+
+    double taux = total > 0 ? (double)dispo / total * 100 : 0.0;
+
+    html += "</table>";
+    html += "<div class='summary'>Total d'employés : " + QString::number(total) +
+            " | Disponibles : " + QString::number(dispo) +
+            " | Taux de disponibilité : " + QString::number(taux, 'f', 1) + "%</div>";
+
+    html += "<div class='actions'><button onclick='window.print()'>🖨️ Imprimer / Exporter en PDF</button></div>";
+    html += "</body></html>";
+
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream stream(&file);
+        stream << html;
+        file.close();
+        QMessageBox::information(this, "Succès", "Planning exporté avec succès !");
+        QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
+    } else {
+        QMessageBox::warning(this, "Erreur", "Impossible d'écrire le fichier.");
+    }
+}
+
+
+
+
+
+
+
+void MainWindow::afficherStatistiquesEmployes()
+{
+    int total = 0, dispo = 0, indispo = 0;
+    QMap<QString, int> absentsParPoste;
+    QMap<QString, int> totalParPoste;
+    QVector<QPair<QString, QDate>> anciens;
+
+    QSqlQuery query("SELECT POSTE, DISPONIBILITE, DATE_EMBAUCHE, NOM, PRENOM FROM SMARTVACC.EMPLOYES");
+    while (query.next()) {
+        QString poste = query.value("POSTE").toString();
+        bool disponible = query.value("DISPONIBILITE").toInt();
+        QDate embauche = query.value("DATE_EMBAUCHE").toDate();
+        QString nom = query.value("NOM").toString() + " " + query.value("PRENOM").toString();
+
+        total++;
+        totalParPoste[poste]++;
+        if (disponible)
+            dispo++;
+        else {
+            indispo++;
+            absentsParPoste[poste]++;
+        }
+
+        anciens.append(qMakePair(nom, embauche));
+    }
+
+    double taux = total > 0 ? ((double)indispo / total) * 100 : 0;
+
+    std::sort(anciens.begin(), anciens.end(), [](auto &a, auto &b) {
+        return a.second < b.second;
+    });
+
+    QString top3;
+    for (int i = 0; i < anciens.size() && i < 3; ++i) {
+        top3 += QString::number(i + 1) + ". " + anciens[i].first + " (" + anciens[i].second.toString("dd/MM/yyyy") + ")<br>";
+    }
+
+    QString statistiques = "📊 <b>Total :</b> " + QString::number(total) +
+                           "<br>✅ <b>Disponibles :</b> " + QString::number(dispo) +
+                           "<br>❌ <b>Absents :</b> " + QString::number(indispo);
+
+    if (taux > 50.0)
+        statistiques += "<br><br><span style='color:red; font-weight:bold;'>🚨 Plus de 50% des employés sont absents !</span>";
+
+    for (auto it = absentsParPoste.begin(); it != absentsParPoste.end(); ++it) {
+        double tauxPoste = (double)it.value() / totalParPoste[it.key()] * 100;
+        if (tauxPoste > 50.0) {
+            statistiques += "<br><span style='color:orange;'>⚠️ " + it.key() + " : " + QString::number(tauxPoste, 'f', 1) + "% absents</span>";
+        }
+    }
+
+    statistiques += "<br><br>📈 <b>Taux d’absentéisme :</b> <span style='color:" + QString(taux > 50 ? "red" : "green") + ";'>" + QString::number(taux, 'f', 1) + "%</span>";
+    statistiques += "<br><br>👴 <b>Top 3 Anciens Employés :</b><br>" + top3;
+    ui->label_statistiques->setText(statistiques);
+
+    // 🔵 Camembert Disponibilité
+    QPieSeries *series = new QPieSeries();
+    series->append("Disponibles", dispo);
+    series->append("Absents", indispo);
+    series->setLabelsVisible();
+
+    QPieSlice *dispoSlice = series->slices().at(0);
+    QPieSlice *absentSlice = series->slices().at(1);
+    dispoSlice->setBrush(QColor("#2ecc71"));
+    absentSlice->setBrush(QColor("#e74c3c"));
+    absentSlice->setExploded(true);
+    absentSlice->setExplodeDistanceFactor(0.10);
+    dispoSlice->setLabelColor(Qt::white);
+    absentSlice->setLabelColor(Qt::white);
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("📊 Répartition des employés par disponibilité");
+    chart->setTitleFont(QFont("Segoe UI", 14, QFont::Bold));
+    chart->setTitleBrush(Qt::white);
+    chart->setBackgroundBrush(QColor("#2c3e50"));
+    chart->legend()->setLabelColor(Qt::white);
+    chart->legend()->setAlignment(Qt::AlignBottom);
+
+    if (chartViewStatistique) {
+        chartViewStatistique->setParent(nullptr);
+        delete chartViewStatistique;
+        chartViewStatistique = nullptr;
+    }
+
+    chartViewStatistique = new QChartView(chart);
+    chartViewStatistique->setRenderHint(QPainter::Antialiasing);
+
+    if (QLayout *layout = ui->frame_stats->layout()) {
+        QLayoutItem *child;
+        while ((child = layout->takeAt(0)) != nullptr) {
+            if (child->widget()) child->widget()->deleteLater();
+            delete child;
+        }
+
+        layout->addWidget(chartViewStatistique);
+    }
+
+    // 👉 Afficher aussi le tableau d'absences détaillées
+    afficherTableauAbsencesDetaillees();
+}
+
+
+
+
+
+
+
+
+
+void MainWindow::afficherTableauAbsencesDetaillees()
+{
+    ui->table_absences->setRowCount(0);
+    ui->table_absences->setColumnCount(6); // Ajout d'une colonne
+    ui->table_absences->setHorizontalHeaderLabels({
+        "Nom", "Prénom", "Poste", "Taux d'absence", "Remarques", "Action RH"
+    });
+
+    QSqlQuery query("SELECT NOM, PRENOM, POSTE, DISPONIBILITE FROM SMARTVACC.EMPLOYES");
+    while (query.next()) {
+        QString nom = query.value("NOM").toString();
+        QString prenom = query.value("PRENOM").toString();
+        QString poste = query.value("POSTE").toString();
+        int dispo = query.value("DISPONIBILITE").toInt();
+
+        // Hypothèse : 20 jours travaillés par mois
+        int absents = dispo ? 0 : 1;
+        double taux = (absents / 20.0) * 100.0;
+
+        QString remarque, couleur, actionRH;
+        if (taux > 60.0) {
+            remarque = "🚨 À surveiller !";
+            couleur = "#e74c3c";
+        } else if (taux > 40.0) {
+            remarque = "⚠️ En observation";
+            couleur = "#f39c12";
+        } else if (taux > 20.0) {
+            remarque = "🙂 Moyenne";
+            couleur = "#2980b9";
+        } else {
+            remarque = "🌟 Excellent";
+            couleur = "#27ae60";
+        }
+
+        // Action RH suggérée
+        if (taux > 50.0)
+            actionRH = "❌ Entretien disciplinaire";
+        else if (taux >= 20.0)
+            actionRH = "📋 Suivi trimestriel";
+        else
+            actionRH = "✅ Bonus annuel";
+
+        int row = ui->table_absences->rowCount();
+        ui->table_absences->insertRow(row);
+        ui->table_absences->setItem(row, 0, new QTableWidgetItem(nom));
+        ui->table_absences->setItem(row, 1, new QTableWidgetItem(prenom));
+        ui->table_absences->setItem(row, 2, new QTableWidgetItem(poste));
+
+        QTableWidgetItem* tauxItem = new QTableWidgetItem(QString::number(taux, 'f', 1) + " %");
+        tauxItem->setBackground(QColor(couleur));
+        tauxItem->setForeground(Qt::white);
+        tauxItem->setTextAlignment(Qt::AlignCenter);
+        ui->table_absences->setItem(row, 3, tauxItem);
+
+        QTableWidgetItem* remarqueItem = new QTableWidgetItem(remarque);
+        remarqueItem->setTextAlignment(Qt::AlignCenter);
+        ui->table_absences->setItem(row, 4, remarqueItem);
+
+        QTableWidgetItem* actionItem = new QTableWidgetItem(actionRH);
+        actionItem->setTextAlignment(Qt::AlignCenter);
+        ui->table_absences->setItem(row, 5, actionItem);
+    }
+
+    ui->table_absences->resizeColumnsToContents();
+    ui->table_absences->horizontalHeader()->setStretchLastSection(true);
+}
+void MainWindow::on_button_chatbot_icon_clicked()
+{
+    if (ui->frame_chatbox->isHidden()) {
+        ui->frame_chatbox->show();  // ✅ Affiche correctement
+        qDebug() << "Chatbot affiché";
+    } else {
+        ui->frame_chatbox->hide();  // ✅ Cache s’il est déjà visible
+        qDebug() << "Chatbot caché";
+    }
+}
+
+
+void MainWindow::on_button_fermer_chatbot_clicked()
+{
+    ui->frame_chatbox->hide();
+}
+
+void MainWindow::on_button_envoyer_clicked()
+{
+    QString question = ui->lineEdit_question->text().trimmed();
+    if (question.isEmpty()) return;
+
+    ui->textEdit_chat->append("🧍‍♀️ <b>Vous</b> : " + question);
+    ui->lineEdit_question->clear();
+
+    QString reponseFAQ = chercherReponseFAQ(question);
+
+    if (!reponseFAQ.isEmpty()) {
+        ui->textEdit_chat->append("🤖 <b>RHBot</b> : " + reponseFAQ);
+        return;
+    }
+
+    envoyerRequeteChatGPT(question);  // Sinon GPT4All
+}
+
+void MainWindow::envoyerRequeteChatGPT(const QString &message)
+{
+    QString question = message.toLower();
+
+    // Chercher dans la FAQ intégrée
+    for (const QJsonValue &entry : faq) {
+        QJsonObject obj = entry.toObject();
+        QJsonArray keywords = obj["keywords"].toArray();
+        for (const QJsonValue &kw : keywords) {
+            QString keyword = kw.toString().toLower();
+            if (question.contains(keyword)) {
+                QString rep = obj["response"].toString();
+                ui->textEdit_chat->append("🤖 RHBot : " + rep);
+                return;
+            }
+        }
+    }
+
+    // Si aucune réponse dans la FAQ, faire appel à GPT (en français)
+    QJsonObject json;
+    QJsonArray messages;
+
+    messages.append(QJsonObject{
+        {"role", "system"},
+        {"content", "Tu es un assistant RH pour une application Qt. Tu dois toujours répondre en français."}
+    });
+    messages.append(QJsonObject{
+        {"role", "user"},
+        {"content", message}
+    });
+
+    json["model"] = "Mistral Instruct";  // ou celui que tu utilises localement
+    json["messages"] = messages;
+
+    QJsonDocument doc(json);
+    QByteArray data = doc.toJson();
+
+    QNetworkRequest request(QUrl("http://localhost:4891/v1/chat/completions"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    manager->post(request, data);
+}
+
+
+
+void MainWindow::receptionReponseGPT(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError) {
+        QString erreur = reply->errorString();
+        ui->textEdit_chat->append("❌ Erreur API : " + erreur);
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray response = reply->readAll();
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(response, &parseError);
+
+    if (parseError.error != QJsonParseError::NoError) {
+        ui->textEdit_chat->append("❌ Erreur JSON : " + parseError.errorString());
+        reply->deleteLater();
+        return;
+    }
+
+    if (!doc.isObject()) {
+        ui->textEdit_chat->append("❌ Erreur : Réponse inattendue.");
+        reply->deleteLater();
+        return;
+    }
+
+    QJsonObject obj = doc.object();
+    QJsonArray choices = obj["choices"].toArray();
+
+    if (!choices.isEmpty()) {
+        QJsonObject message = choices[0].toObject()["message"].toObject();
+        QString content = message["content"].toString().trimmed();
+
+        ui->textEdit_chat->append("🤖 RHBot : " + content);
+    } else {
+        ui->textEdit_chat->append("❌ Erreur : Réponse vide.");
+    }
+
+    reply->deleteLater();
+}
+
+QString MainWindow::chercherReponseFAQ(const QString &question)
+{
+    QString questionMin = question.toLower();
+    for (const QString &cle : faqMap.keys()) {
+        if (questionMin.contains(cle)) {
+            return faqMap.value(cle);
+        }
+    }
+    return ""; // Rien trouvé
+}
+
+void MainWindow::enregistrerConnexion(const QString& login) {
+    QFile file("historique_connexions.txt");
+    if (file.open(QIODevice::Append | QIODevice::Text)) {
+        QTextStream out(&file);
+        QString dateHeure = QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss");
+        out << login << " | " << dateHeure << "\n";
+        file.close();
+    }
+}
+void MainWindow::afficherHistoriqueConnexions() {
+    QFile file("historique_connexions.txt");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&file);
+        QString contenu = in.readAll();
+        ui->textEdit_historique->setPlainText(contenu);
+        file.close();
+    }
+}
 

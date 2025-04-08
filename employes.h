@@ -1,15 +1,13 @@
-#ifndef EMPLOYE_H
-#define EMPLOYE_H
+#ifndef EMPLOYES_H
+#define EMPLOYES_H
 
 #include <QString>
 #include <QDate>
 #include <QSqlQuery>
 #include <QSqlQueryModel>
-#include <QtCharts/QChartView>
-#include <QtCharts/QPieSeries>
-#include <QtCharts/QBarSeries>
-#include <QtCharts/QBarSet>
-#include <QtCharts/QCategoryAxis>
+#include <QSqlError>
+#include <QDebug>
+#include <QMessageBox>
 
 class Employe {
 private:
@@ -26,12 +24,15 @@ private:
     QString TYPE_ABSENCES;
 
 public:
-    // Constructeurs
+    // 🔹 Gestion des erreurs SQL
+    QString lastError;
+
+    // ✅ Constructeurs
     Employe();
     Employe(QString cin, int id, QString nom, QString prenom, QString poste, QString sexe, float salaire,
             QString contact, QDate date_embauche, int disponibilite, QString type_absences);
 
-    // Getters
+    // ✅ Getters
     QString getCIN() const;
     int getIdEmploye() const;
     QString getNom() const;
@@ -43,8 +44,10 @@ public:
     QDate getDateEmbauche() const;
     int getDisponibilite() const;
     QString getTypeAbsences() const;
+    QString getPrenomFromCIN(const QString &cin);
 
-    // Setters
+
+    // ✅ Setters
     void setCIN(const QString &cin);
     void setIdEmploye(int id);
     void setNom(const QString &nom);
@@ -57,38 +60,24 @@ public:
     void setDisponibilite(int disponibilite);
     void setTypeAbsences(const QString &typeAbsences);
 
-    // Méthodes pour interaction avec la base de données (déclarées mais pas implémentées ici)
+    // ✅ Fonctions principales
     bool ajouter();
-    bool supprimerParCIN(QString cin);
-
-    QSqlQueryModel* afficher();
-
-
-
-
     bool modifier(QString cin);
+    bool supprimerParCIN(QString cin);
     bool chargerEmploye(QString cin);
+    QSqlQueryModel* afficher();
+    bool authentifier(const QString &login, const QString &cin);
+    QString getPosteFromCIN(const QString &cin);
+    QSqlQueryModel* afficherParPoste();
+    QSqlQueryModel* afficherParAnciennete();
+    QSqlQueryModel* afficherParSalaire();
+    QSqlQueryModel* rechercherParCIN(const QString &cin);
+    QSqlQueryModel* rechercherParContact(const QString &contact);
+    QSqlQueryModel* rechercherParDisponibilite(int dispo);
 
 
-private:
-    QString lastError;
-public:
-    QString getLastError() const { return lastError; }
 
 
 };
 
-#endif // EMPLOYE_H
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif // EMPLOYES_H
