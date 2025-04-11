@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>0ef43bc7-99f0-43ec-8ab9-fcfcd5ce7fe8.jpeg</file>
+        <file>5b1112d6-b483-42ab-99e9-7d366e3644ae.jpeg</file>
+        <file>476795083_514548728337984_1144380379871755551_n.png</file>
+        <file>doc.png</file>
+        <file>logo.png</file>
+        <file>nom.png</file>
+        <file>stat.png</file>
+        <file>vax.png</file>
+    </qresource>
+</RCC>
