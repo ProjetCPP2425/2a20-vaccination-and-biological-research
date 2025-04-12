@@ -149,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboTrierCarnets->addItem("Âge");
     ui->comboTrierCarnets->addItem("Date de RDV");
     ui->comboTrierCarnets->addItem("Poids");
-    ui->rechercheC->setPlaceholderText("🔍 Recherche par CIN, nom, prénom,etat vaccination");
+    ui->rechercheC->setPlaceholderText("🔍 Recherche par CIN, nom, prénom,Statut_vaccinal");
     ui->rechercheC->setStyleSheet(R"(
     QLineEdit {
         color: black;
@@ -739,9 +739,6 @@ bool MainWindow::estValide()
     return valide;
 }
 
-
-
-
 void MainWindow::on_btnGeneratePDF_clicked()
 {
     QString cin = ui->suppid->text().trimmed();
@@ -788,13 +785,51 @@ void MainWindow::on_btnGeneratePDF_clicked()
         .header { width: 100%; margin-bottom: 50px; }
         .header img { vertical-align: middle; width:180px; height:180px; }
         .title { color: #800000; font-weight:bold; display:inline-block; vertical-align: middle; margin-left:15px; font-size: 48pt; }
-        .container { display:flex; justify-content: space-between; width:100%; }
-        .left { width:50%; }
-        .right { width:45%; text-align: right; }
-        table { border-collapse: collapse; width:100%; }
-        td, th { border: 3px solid black; padding: 18px; font-size: 40pt; }
-        .signature { color: #800000; font-style:italic; margin-top:40px; font-size:38pt; }
-        .rdv-box { border: 4px solid #000; padding:25px; font-size: 44pt; display:inline-block; }
+
+        /* Structure principale en tableau - Augmenté largeur à 100% */
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+        }
+
+        .main-table td {
+            vertical-align: top;
+            border: none;
+            padding: 0;
+        }
+
+        /* Colonne gauche pour les données - Réduit à 65% pour donner plus d'espace à la colonne droite */
+        .data-column {
+            width: 80%;
+            padding-right: 30px;
+        }
+
+        /* Colonne droite pour le rendez-vous - Augmenté à 35% */
+        .rdv-column {
+            width: 70%;
+        }
+
+        /* Tableau des données patient - Largeur augmentée à 100% */
+        .patient-table {
+            border-collapse: collapse;
+            width: 120%;
+        }
+
+        .patient-table td, .patient-table th {
+            border: 4px solid black; /* Bordure plus épaisse */
+            padding: 25px; /* Padding augmenté pour plus de hauteur */
+            font-size: 42pt; /* Taille de police augmentée */
+        }
+
+        .signature {
+            color: #800000;
+            font-style: italic;
+            margin-top: 120px;
+            font-size: 38pt;
+        }
+
+
     </style>
     </head>
     <body>
@@ -803,31 +838,32 @@ void MainWindow::on_btnGeneratePDF_clicked()
             <span class='title'>🩺 Carnet de Vaccination - Patient</span>
         </div>
 
-        <div class='container'>
-            <div class='left'>
-                <table>
-                    <tr><th>Nom</th><td>)" + nom + R"(</td></tr>
-                    <tr><th>Prénom</th><td>)" + prenom + R"(</td></tr>
-                    <tr><th>CIN</th><td>)" + cin + R"(</td></tr>
-                    <tr><th>Âge</th><td>)" + age + R"( ans</td></tr>
-                    <tr><th>Sexe</th><td>)" + sexe + R"(</td></tr>
-                    <tr><th>Téléphone</th><td>)" + num + R"(</td></tr>
-                    <tr><th>Poids</th><td>)" + poids + R"( kg</td></tr>
-                    <tr><th>Statut Vaccinal</th><td>)" + statut + R"(</td></tr>
-                    <tr><th>Remarques</th><td>)" + remarques + R"(</td></tr>
-                </table>
-                <div class='signature'>
-                    ✒️ Signature & Cachet du Centre de vaccination
-                </div>
-            </div>
-
-            <div class='right'>
-                <div class='rdv-box'>
-                    📅 <strong>Prochain Rendez-vous</strong><br><br>
-                    )" + dateRdv + R"(
-                </div>
-            </div>
-        </div>
+        <table class='main-table'>
+            <tr>
+                <td class='data-column'>
+                    <table class='patient-table'>
+                        <tr><th>Nom</th><td>)" + nom + R"(</td></tr>
+                        <tr><th>Prénom</th><td>)" + prenom + R"(</td></tr>
+                        <tr><th>CIN</th><td>)" + cin + R"(</td></tr>
+                        <tr><th>Âge</th><td>)" + age + R"( ans</td></tr>
+                        <tr><th>Sexe</th><td>)" + sexe + R"(</td></tr>
+                        <tr><th>Téléphone</th><td>)" + num + R"(</td></tr>
+                        <tr><th>Poids</th><td>)" + poids + R"( kg</td></tr>
+                        <tr><th>Statut Vaccinal</th><td>)" + statut + R"(</td></tr>
+                        <tr><th>Remarques</th><td>)" + remarques + R"(</td></tr>
+                    </table>
+                    <div class='signature'>
+                        ✒️ Signature & Cachet du Centre de vaccination
+                    </div>
+                </td>
+                <td class='rdv-column'>
+                    <div class='rdv-box'>
+                        📅 <strong>Prochain Rendez-vous</strong><br><br>
+                        )" + dateRdv + R"(
+                    </div>
+                </td>
+            </tr>
+        </table>
     </body>
     </html>
     )";
@@ -840,8 +876,6 @@ void MainWindow::on_btnGeneratePDF_clicked()
 
     QMessageBox::information(this, "PDF Généré", "📄 Le carnet a été exporté avec succès !");
 }
-
-
 void MainWindow::on_btnStat_clicked()
 {
     ui->tab_2->setCurrentIndex(3);  // Change l’index si nécessaire
