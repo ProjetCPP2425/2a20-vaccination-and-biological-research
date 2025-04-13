@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>doc.png</file>
+        <file>logo.png</file>
+        <file>nom.png</file>
+        <file>stat.png</file>
+        <file>vax.png</file>
+    </qresource>
+</RCC>
