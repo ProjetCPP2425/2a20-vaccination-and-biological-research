@@ -5596,17 +5596,17 @@ QPushButton:pressed {
        </property>
       </widget>
      </widget>
-     <widget class="QTabWidget" name="Affichage_5">
+     <widget class="QTabWidget" name="tab_2">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>70</y>
-        <width>1271</width>
+        <y>80</y>
+        <width>1401</width>
         <height>801</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="ajoutct_10">
        <attribute name="title">
@@ -5661,7 +5661,7 @@ QGroupBox::title {
          <property name="title">
           <string/>
          </property>
-         <widget class="QLabel" name="label_159">
+         <widget class="QLabel" name="nom">
           <property name="geometry">
            <rect>
             <x>-10</x>
@@ -5684,7 +5684,7 @@ QGroupBox::title {
            <string>         Nom:</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_64">
+         <widget class="QLineEdit" name="nom_carnet">
           <property name="geometry">
            <rect>
             <x>150</x>
@@ -5705,7 +5705,7 @@ QGroupBox::title {
 }</string>
           </property>
          </widget>
-         <widget class="QRadioButton" name="radioButton_19">
+         <widget class="QRadioButton" name="F">
           <property name="geometry">
            <rect>
             <x>670</x>
@@ -5736,7 +5736,7 @@ QCheckBox::indicator:checked {
            <string>♀</string>
           </property>
          </widget>
-         <widget class="QRadioButton" name="radioButton_20">
+         <widget class="QRadioButton" name="G">
           <property name="geometry">
            <rect>
             <x>570</x>
@@ -5767,7 +5767,7 @@ QCheckBox::indicator:checked {
            <string>♂</string>
           </property>
          </widget>
-         <widget class="QDateEdit" name="dateEdit_10">
+         <widget class="QDateEdit" name="date_rdv">
           <property name="geometry">
            <rect>
             <x>680</x>
@@ -5780,7 +5780,7 @@ QCheckBox::indicator:checked {
            <bool>true</bool>
           </property>
          </widget>
-         <widget class="QComboBox" name="comboBox_19">
+         <widget class="QComboBox" name="statut_vaccinal">
           <property name="geometry">
            <rect>
             <x>680</x>
@@ -5800,7 +5800,7 @@ QCheckBox::indicator:checked {
            </property>
           </item>
          </widget>
-         <widget class="QPushButton" name="pushButton_47">
+         <widget class="QPushButton" name="ajout_carnet">
           <property name="geometry">
            <rect>
             <x>340</x>
@@ -5833,7 +5833,7 @@ QPushButton:hover {
            <string>Ajouter</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton_48">
+         <widget class="QPushButton" name="annulerr">
           <property name="geometry">
            <rect>
             <x>540</x>
@@ -5867,7 +5867,7 @@ QPushButton:hover {
            <string>Annuler</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_160">
+         <widget class="QLabel" name="lakab">
           <property name="geometry">
            <rect>
             <x>-10</x>
@@ -5890,7 +5890,7 @@ QPushButton:hover {
            <string>         Prenom:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_161">
+         <widget class="QLabel" name="poid">
           <property name="geometry">
            <rect>
             <x>440</x>
@@ -5913,7 +5913,7 @@ QPushButton:hover {
            <string>         Poids:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_162">
+         <widget class="QLabel" name="ages">
           <property name="geometry">
            <rect>
             <x>-10</x>
@@ -5936,11 +5936,11 @@ QPushButton:hover {
            <string>         Age:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_163">
+         <widget class="QLabel" name="sexe">
           <property name="geometry">
            <rect>
             <x>440</x>
-            <y>110</y>
+            <y>120</y>
             <width>131</width>
             <height>41</height>
            </rect>
@@ -5959,7 +5959,7 @@ QPushButton:hover {
            <string>         Sexe:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_164">
+         <widget class="QLabel" name="date">
           <property name="geometry">
            <rect>
             <x>440</x>
@@ -5982,7 +5982,7 @@ QPushButton:hover {
            <string>         Date_rdv:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_165">
+         <widget class="QLabel" name="nummm">
           <property name="geometry">
            <rect>
             <x>440</x>
@@ -6005,7 +6005,7 @@ QPushButton:hover {
            <string>         Numéro télephone:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_166">
+         <widget class="QLabel" name="stat">
           <property name="geometry">
            <rect>
             <x>480</x>
@@ -6025,10 +6025,10 @@ QPushButton:hover {
 </string>
           </property>
           <property name="text">
-           <string>Status Vaccinal:</string>
+           <string>Statut Vaccinal:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_167">
+         <widget class="QLabel" name="remarq">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -6051,17 +6051,7 @@ QPushButton:hover {
            <string>Remarques:</string>
           </property>
          </widget>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_10">
-          <property name="geometry">
-           <rect>
-            <x>570</x>
-            <y>50</y>
-            <width>191</width>
-            <height>41</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_19">
+         <widget class="QTextEdit" name="remarques">
           <property name="geometry">
            <rect>
             <x>140</x>
@@ -6076,7 +6066,7 @@ QPushButton:hover {
     color: #000000;                /* Black text */
     font-weight: normal;           /* Normal text inside */
     font-size: 14px;               /* Text size */
-
+    
     border: 2px dashed #000000;    /* Thick dashed border */
     border-radius: 5px;            /* Slightly rounded corners */
     padding: 8px;                  /* Space inside */
@@ -6085,7 +6075,7 @@ QPushButton:hover {
 </string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_65">
+         <widget class="QLineEdit" name="prenom_carnet">
           <property name="geometry">
            <rect>
             <x>150</x>
@@ -6106,7 +6096,7 @@ QPushButton:hover {
 }</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_66">
+         <widget class="QLineEdit" name="age">
           <property name="geometry">
            <rect>
             <x>150</x>
@@ -6127,7 +6117,7 @@ QPushButton:hover {
 }</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_67">
+         <widget class="QLineEdit" name="num">
           <property name="geometry">
            <rect>
             <x>680</x>
@@ -6148,7 +6138,7 @@ QPushButton:hover {
 }</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_168">
+         <widget class="QLabel" name="cinnn">
           <property name="geometry">
            <rect>
             <x>40</x>
@@ -6171,7 +6161,7 @@ QPushButton:hover {
            <string>Cin :</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_68">
+         <widget class="QLineEdit" name="cin">
           <property name="geometry">
            <rect>
             <x>150</x>
@@ -6190,6 +6180,193 @@ QPushButton:hover {
     padding: 8px;                  /* Espacement interne pour le texte */
     border-style: dashed;          /* Style en pointillés */
 }</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="poids">
+          <property name="geometry">
+           <rect>
+            <x>560</x>
+            <y>50</y>
+            <width>221</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir normal */
+    font-size: 14px;               /* Taille de la police */
+    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
+    border-radius: 5px;            /* Coins légèrement arrondis */
+    padding: 8px;                  /* Espacement interne pour le texte */
+    border-style: dashed;          /* Style en pointillés */
+}</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="nomErrorLabell">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>80</y>
+            <width>401</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 10px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="prenomErrorLabell">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>180</y>
+            <width>351</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 10px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="ageErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>270</y>
+            <width>361</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 10px;               /* Taille de police de 18px */
+}
+
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="cinErrorLabel_2">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>360</y>
+            <width>381</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 10px;               /* Taille de police de 18px */
+}
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="remarquesErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>470</y>
+            <width>421</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 8px;               /* Taille de police de 18px */
+}
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="poidsErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>510</x>
+            <y>90</y>
+            <width>281</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 10px;               /* Taille de police de 18px */
+}
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="numErrorLabel">
+          <property name="geometry">
+           <rect>
+            <x>510</x>
+            <y>230</y>
+            <width>391</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 10px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </widget>
@@ -6224,7 +6401,7 @@ QPushButton:hover {
        <attribute name="title">
         <string>Affichage</string>
        </attribute>
-       <widget class="QComboBox" name="comboBox_20">
+       <widget class="QComboBox" name="comboTrierCarnets">
         <property name="geometry">
          <rect>
           <x>160</x>
@@ -6233,21 +6410,6 @@ QPushButton:hover {
           <height>41</height>
          </rect>
         </property>
-        <item>
-         <property name="text">
-          <string>date</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>age</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>status</string>
-         </property>
-        </item>
        </widget>
        <widget class="QLabel" name="label_170">
         <property name="geometry">
@@ -6291,7 +6453,7 @@ QPushButton:hover {
          <string>Recherche:</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_69">
+       <widget class="QLineEdit" name="rechercheC">
         <property name="geometry">
          <rect>
           <x>670</x>
@@ -6300,115 +6462,9 @@ QPushButton:hover {
           <height>41</height>
          </rect>
         </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget_10">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>250</y>
-          <width>1281</width>
-          <height>381</height>
-         </rect>
+        <property name="text">
+         <string/>
         </property>
-        <property name="styleSheet">
-         <string notr="true">QTableWidget {
-    border: 1px solid #B0B0B0; /* Light gray border */
-    gridline-color: #D3D3D3; /* Gridline color */
-    background-color: #FFFFFF; /* White background */
-    alternate-background-color: #F5F5F5; /* Alternate row color */
-    font-size: 14px; /* Font size */
-}
-
-QTableWidget::item {
-    padding: 10px; /* Padding for table cells */
-}
-
-QTableWidget::item:selected {
-    background-color: #FFCCCC; /* Light red background when selected */
-    color: #8B0000; /* Dark red text color */
-}
-
-QHeaderView::section {
-    background-color: #8B0000; /* Dark red for header background */
-    color: white; /* White text */
-    font-weight: bold; /* Bold font for headers */
-    padding: 5px; /* Padding inside headers */
-    border: 1px solid #FFFFFF; /* White border between header cells */
-}
-
-QTableCornerButton::section {
-    background-color: #8B0000; /* Dark red for the top-left corner */
-    border: 1px solid white; /* White border */
-}
-
-QScrollBar:vertical {
-    border: none;
-    background: #F0F0F0; /* Light gray background */
-    width: 10px;
-    margin: 0px 0px 0px 0px;
-}
-
-QScrollBar::handle:vertical {
-    background: #8B0000; /* Dark red handle */
-    min-height: 20px;
-    border-radius: 5px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #FF4500; /* Lighter red when hovered */
-}
-
-QScrollBar::add-line:vertical,
-QScrollBar::sub-line:vertical {
-    border: none;
-    background: none;
-}</string>
-        </property>
-        <row>
-         <property name="text">
-          <string>Yassmine</string>
-         </property>
-        </row>
-        <column>
-         <property name="text">
-          <string>Nom</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Age</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Poids</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Sexe</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Num</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Status _vacc</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Date_rdv</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Remarques</string>
-         </property>
-        </column>
        </widget>
        <widget class="QWidget" name="widget_15" native="true">
         <property name="geometry">
@@ -6428,10 +6484,10 @@ QScrollBar::sub-line:vertical {
     stop:0.5 white,
     stop:1 white
 );
-border-radius: 30px;
+border-radius: 30px; 
 border: 2px solid black; </string>
         </property>
-        <widget class="QPushButton" name="pushButtonStat_10">
+        <widget class="QPushButton" name="btnStat">
          <property name="geometry">
           <rect>
            <x>50</x>
@@ -6460,7 +6516,7 @@ border: 2px solid black; </string>
           </size>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButtonDoc_10">
+        <widget class="QPushButton" name="btnGeneratePDF">
          <property name="geometry">
           <rect>
            <x>220</x>
@@ -6490,11 +6546,11 @@ border: 2px solid black; </string>
          </property>
         </widget>
        </widget>
-       <widget class="QPushButton" name="pushButton_49">
+       <widget class="QPushButton" name="modifierC">
         <property name="geometry">
          <rect>
-          <x>1180</x>
-          <y>630</y>
+          <x>1160</x>
+          <y>370</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -6526,11 +6582,65 @@ QPushButton:pressed {
          <iconset theme="QIcon::ThemeIcon::MailMessageNew"/>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_50">
+       <widget class="QTableView" name="tableVieww">
         <property name="geometry">
          <rect>
-          <x>1120</x>
-          <y>630</y>
+          <x>20</x>
+          <y>260</y>
+          <width>1041</width>
+          <height>481</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="nom_2">
+        <property name="geometry">
+         <rect>
+          <x>1070</x>
+          <y>260</y>
+          <width>291</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 18px;               /* Taille de police de 18px */
+}
+</string>
+        </property>
+        <property name="text">
+         <string>Entrer le CIN du patient:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="suppid">
+        <property name="geometry">
+         <rect>
+          <x>1070</x>
+          <y>310</y>
+          <width>191</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir normal */
+    font-size: 14px;               /* Taille de la police */
+    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
+    border-radius: 5px;            /* Coins légèrement arrondis */
+    padding: 8px;                  /* Espacement interne pour le texte */
+    border-style: dashed;          /* Style en pointillés */
+}</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="supprimerC">
+        <property name="geometry">
+         <rect>
+          <x>1090</x>
+          <y>370</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -6636,10 +6746,10 @@ QGroupBox::title {
 </string>
           </property>
           <property name="text">
-           <string>         Nom du patient:</string>
+           <string>         Cin du patient:</string>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_70">
+         <widget class="QLineEdit" name="idPredictionInput">
           <property name="geometry">
            <rect>
             <x>370</x>
@@ -6660,7 +6770,7 @@ QGroupBox::title {
 }</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton_51">
+         <widget class="QPushButton" name="btnPredire">
           <property name="geometry">
            <rect>
             <x>440</x>
@@ -6716,7 +6826,7 @@ QPushButton:hover {
            <string>Résultats:</string>
           </property>
          </widget>
-         <widget class="QTextEdit" name="textEdit_20">
+         <widget class="QTextEdit" name="predictionResult">
           <property name="geometry">
            <rect>
             <x>110</x>
@@ -6731,7 +6841,7 @@ QPushButton:hover {
     color: #000000;                /* Black text */
     font-weight: normal;           /* Normal text inside */
     font-size: 14px;               /* Text size */
-
+    
     border: 2px dashed #000000;    /* Thick dashed border */
     border-radius: 5px;            /* Slightly rounded corners */
     padding: 8px;                  /* Space inside */
@@ -6766,6 +6876,21 @@ QPushButton:hover {
           <string>              Prédiction Médicale</string>
          </property>
         </widget>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
+       <widget class="QWidget" name="stat_carnet" native="true">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>80</y>
+          <width>881</width>
+          <height>471</height>
+         </rect>
+        </property>
        </widget>
       </widget>
      </widget>
@@ -7087,7 +7212,7 @@ font-weight: bold;
      <x>0</x>
      <y>0</y>
      <width>2096</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

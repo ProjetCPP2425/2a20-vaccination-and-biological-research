@@ -407,9 +407,13 @@ Makefile: ../../Integration.pro C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/features/yacc.prf \
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/features/lex.prf \
 		../../Integration.pro \
+		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Charts.prl \
+		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6OpenGLWidgets.prl \
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Widgets.prl \
+		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6OpenGL.prl \
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Gui.prl \
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Sql.prl \
+		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Network.prl \
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Core.prl \
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6EntryPoint.prl \
 		C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/features/build_pass.prf \
@@ -752,9 +756,13 @@ C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/features/exceptions.prf:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/features/yacc.prf:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/features/lex.prf:
 ../../Integration.pro:
+C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Charts.prl:
+C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6OpenGLWidgets.prl:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Widgets.prl:
+C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6OpenGL.prl:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Gui.prl:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Sql.prl:
+C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Network.prl:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6Core.prl:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/lib/Qt6EntryPoint.prl:
 C:/Users/DELL/Desktop/qt/6.7.3/mingw_64/mkspecs/features/build_pass.prf:

@@ -28,15 +28,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    carnets.cpp \
     employes.cpp \
         main.cpp \
         mainwindow.cpp \
-    connection.cpp
+    connection.cpp \
+    smsnotif.cpp
 
 HEADERS += \
+    carnets.h \
     employes.h \
         mainwindow.h \
-    connection.h
+    connection.h \
+    smsnotif.h
 
 FORMS += \
         mainwindow.ui

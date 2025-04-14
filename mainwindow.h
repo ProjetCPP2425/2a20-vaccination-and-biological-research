@@ -4,6 +4,8 @@
 
 #include <QMainWindow>
 #include "employes.h"
+#include "carnets.h"
+#include "smsnotif.h"
 #include <QStyledItemDelegate>
 #include <QHBoxLayout>  // Pour QHBoxLayout
 #include <QPushButton>  // Pour QPushButton
@@ -44,6 +46,15 @@
 #include <QJsonArray>
 #include <QMap>
 
+
+#include <QStyledItemDelegate>
+
+#include <QSortFilterProxyModel>
+
+
+#include <QTimer>
+#include <QDate>
+#include <QTimer>
 
 //QT_CHARTS_USE_NAMESPACE
 
@@ -88,6 +99,24 @@ private slots:
 
 
     //void actualiserStatistiquesAbsenteisme();
+    void on_ajout_carnet_clicked();
+    void displayCarnet();
+    void on_supprimerC_clicked();
+
+    void on_rechercheC_textChanged(const QString &arg1);
+
+    void on_modifierC_clicked();
+
+    void on_btnPredire_clicked();
+
+    void on_annulerr_clicked();
+
+
+    void on_btnGeneratePDF_clicked();
+
+
+
+    void on_btnStat_clicked();
 
 
 
@@ -101,6 +130,29 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    Carnets carnetTmp;
+    QSortFilterProxyModel *proxyModel;
+    QString idAModifier = "";
+
+    bool modeModifications = false; // Mode modification activé/désactivé
+    void validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex,
+                       const QString &errorMsg, bool checkZeros, bool allowOnlyNumbers, int minValue, int maxValue);
+    void validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
+    bool estValides();
+    void envoyerRappelSMS();
+
+
+    void testSMS();
+    QTimer *smsTimer;
+
+    void trierCarnets(const QString &critere);
+
+
+
+
+
+
+
     Employe employe;
     QChartView *chartViewStatistique = nullptr;  // pour éviter plusieurs affichages
     QChartView *chartViewParPoste = nullptr;
