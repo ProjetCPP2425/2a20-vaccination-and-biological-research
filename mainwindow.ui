@@ -401,7 +401,7 @@ QPushButton:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -411,7 +411,7 @@ QPushButton:hover {
       </property>
       <widget class="QWidget" name="ajoutct">
        <attribute name="title">
-        <string>Ajout</string>
+        <string>Ajouter un employé</string>
        </attribute>
        <widget class="QFrame" name="frame_2">
         <property name="geometry">
@@ -1295,7 +1295,7 @@ QCheckBox::indicator:checked {
       </widget>
       <widget class="QWidget" name="lirect">
        <attribute name="title">
-        <string>Affichage</string>
+        <string>Afficher les employés</string>
        </attribute>
        <widget class="QComboBox" name="comboBox_tri_3">
         <property name="geometry">
@@ -1674,8 +1674,11 @@ QPushButton:pressed {
        </widget>
       </widget>
       <widget class="QWidget" name="pdf">
+       <property name="accessibleName">
+        <string/>
+       </property>
        <attribute name="title">
-        <string>Page</string>
+        <string>PDF</string>
        </attribute>
        <widget class="QComboBox" name="comboBox_employe_pdf">
         <property name="geometry">
@@ -1793,23 +1796,10 @@ QPushButton:pressed {
          </property>
         </widget>
        </widget>
-       <widget class="QPushButton" name="button_chatbot_icon">
-        <property name="geometry">
-         <rect>
-          <x>970</x>
-          <y>560</y>
-          <width>50</width>
-          <height>50</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
       </widget>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Page</string>
+        <string>Historique login</string>
        </attribute>
        <widget class="QPushButton" name="btn_historique_connexions">
         <property name="geometry">

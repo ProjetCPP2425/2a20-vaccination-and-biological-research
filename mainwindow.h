@@ -43,7 +43,8 @@
 #include <QNetworkReply>
 #include <QJsonArray>
 #include <QMap>
-
+#include <QPushButton> // pour QPushButton
+#include <QResizeEvent> // pour resizeEvent
 
 //QT_CHARTS_USE_NAMESPACE
 
@@ -79,18 +80,23 @@ private slots:
    // void calculerTauxAbsenteisme();
     void afficherStatistiquesEmployes();
     void afficherTableauAbsencesDetaillees();
-    void on_button_chatbot_icon_clicked();
+//void on_button_chatbot_icon_clicked();
     void on_button_envoyer_clicked();
     void receptionReponseGPT(QNetworkReply *reply);
       void on_button_fermer_chatbot_clicked();
     void afficherHistoriqueConnexions();
- // Pour envoyer la question
+      void on_button_chatbot_icon_clicked();
+
 
 
     //void actualiserStatistiquesAbsenteisme();
 
+      void on_pushButtonStat_15_clicked();
 
+      void on_pushButton_pdf_3_clicked();
 
+  protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 
 
@@ -102,6 +108,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Employe employe;
+    QPushButton *chatbotButton;
+
     QChartView *chartViewStatistique = nullptr;  // pour éviter plusieurs affichages
     QChartView *chartViewParPoste = nullptr;
     QNetworkAccessManager *manager;
@@ -109,6 +117,12 @@ private:
     QJsonArray faq;
     int tentativeConnexion = 0;
     bool connexionBloquee = false;
+//private:
+   // Ui::MainWindow *ui;
+    //QNetworkAccessManager *manager;
+    //QMap<QString, QString> faqMap;
+    //QJsonArray faq;
+    QMap<QString, QString> cacheGPT;  // ✅ Cache local pour les réponses GPT
 
 
 
@@ -128,6 +142,9 @@ private:
     QString chercherReponseFAQ(const QString &question);
     void enregistrerConnexion(const QString& login);
     void afficherDashboard(const QString& prenom, const QString& poste);
+    void afficherChatbot();
+    void convertirHTMLenPDF(const QString& cheminHTML);
+
 
 
 

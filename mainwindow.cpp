@@ -32,6 +32,13 @@
 //#include <QAbstractAnimation>
 //#include <QPropertyAnimation>
 #include <QEasingCurve>
+#include <QShortcut>
+#include <QToolBar>
+#include <QAction>     // aussi nécessaire si tu ajoutes des actions
+#include <QIcon>       // pour utiliser des icônes
+#include <QKeySequence>  // pour les raccourcis clavier
+#include <QProcess>
+
 
 
 
@@ -45,11 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-   // ui->frame_chatbox->hide(); // caché au départ
-    //ui->frame_chatbox->hide();  // ✅ Pas setVisible(false), mais bien hide()
-    connect(ui->button_chatbot_icon, &QPushButton::clicked, this, []() {
-        qDebug() << "Icône chatbot cliquée !";
-    });
+    ui->frame_chatbox->hide();    // ✅ Pas setVisible(false), mais bien hide()
+
 
     connect(ui->btn_toggle_password, &QPushButton::clicked, this, [=]() {
         if (ui->lineedit_password->echoMode() == QLineEdit::Password) {
@@ -168,7 +172,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->tableView->setStyleSheet("QTableView::item { padding: 10px; }");
         ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
+
         connect(ui->pushButton_supprimer_employe, &QPushButton::clicked, this, &MainWindow::on_pushButton_supprimer_employe_clicked);
+
+
     });
 
     connect(ui->produits, &QPushButton::clicked, this, [=]() {
@@ -207,12 +214,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTimer::singleShot(0, this, SLOT(chargerNomsDansComboBoxPDF()));  // pour bien le charger après l'UI
     connect(ui->btn_stats_employes, &QPushButton::clicked, this, &MainWindow::afficherStatistiquesEmployes);
-
-
-    ui->button_chatbot_icon->setGraphicsEffect(nullptr); // assure aucun effet parasite*/
+    //ui->button_chatbot_icon->setGraphicsEffect(nullptr); // assure aucun effet parasite*/
 
     manager = new QNetworkAccessManager(this);
-    connect(ui->button_chatbot_icon, &QPushButton::clicked, this, &MainWindow::on_button_chatbot_icon_clicked);
+   // connect(ui->button_chatbot_icon, &QPushButton::clicked, this, &MainWindow::on_button_chatbot_icon_clicked);
     connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::receptionReponseGPT);
 
     connect(ui->button_fermer_chatbot, &QPushButton::clicked, this, &MainWindow::on_button_fermer_chatbot_clicked);
@@ -221,6 +226,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     ui->textEdit_chat->setWordWrapMode(QTextOption::WordWrap);
+
+   // connect(ui->button_chatbot_icon, &QPushButton::clicked, this, &MainWindow::on_button_chatbot_icon_clicked);
+
 
 
 
@@ -251,13 +259,94 @@ MainWindow::MainWindow(QWidget *parent)
         QJsonObject{{"keywords", QJsonArray{"connexion", "se connecter", "login employé"}},
                     {"response", "Les employés se connectent avec leur prénom + 4 derniers chiffres du CIN. Le poste détermine l'accès aux modules."}}
     };
+
+
+
     connect(ui->btn_historique_connexions, &QPushButton::clicked, this, &MainWindow::afficherHistoriqueConnexions);
+    chatbotButton = new QPushButton(this);
+    chatbotButton->setText("💬 Chatbot");
+
+    chatbotButton->setText("💬");
+    chatbotButton->setToolTip("💬 Ouvrir le Chat RH (Ctrl+M)");
+    chatbotButton->setCursor(Qt::PointingHandCursor);
+    chatbotButton->setFixedSize(50, 50);
+    chatbotButton->setStyleSheet(
+        "QPushButton {"
+        "  background-color: #3498db;"
+        "  color: white;"
+        "  border: none;"
+        "  border-radius: 25px;"  // bouton rond
+        "  font-size: 20px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: #2980b9;"
+        "}"
+        );
+    qApp->setStyleSheet(
+        "QToolTip {"
+        "  background-color: #3498db;"
+        "  color: white;"
+        "  font-size: 13px;"
+        "  border: none;"
+        "  padding: 8px;"
+        "  border-radius: 6px;"
+        "}"
+        );
+
+
+    chatbotButton->setToolTip("Ouvrir le Chat RH (Ctrl+M)");
+    chatbotButton->hide();
+    chatbotButton->move(this->width() - chatbotButton->width() - 20, this->height() - chatbotButton->height() - 120);
+
+
+
+    chatbotButton->raise(); // Par-dessus tout
+    connect(chatbotButton, &QPushButton::clicked, this, &MainWindow::on_button_chatbot_icon_clicked);
+
+
+
+
 
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+void MainWindow::on_button_chatbot_icon_clicked()
+{
+    if (ui->frame_chatbox->isHidden()) {
+        ui->frame_chatbox->show();
+
+        // 🎯 Animation rebond vers le haut
+        QPropertyAnimation *anim = new QPropertyAnimation(ui->frame_chatbox, "geometry");
+        QRect startRect = ui->frame_chatbox->geometry();
+        anim->setDuration(500);
+        anim->setStartValue(QRect(startRect.x(), startRect.y() + 100, startRect.width(), startRect.height()));
+        anim->setEndValue(startRect);
+        anim->setEasingCurve(QEasingCurve::OutBounce);
+        anim->start(QAbstractAnimation::DeleteWhenStopped);
+    } else {
+        ui->frame_chatbox->hide();
+    }
+}
+
+
+void MainWindow::afficherChatbot()
+{
+    if (ui->frame_chatbox->isVisible())
+        ui->frame_chatbox->hide();
+    else
+        ui->frame_chatbox->show();
+}
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+
+    int margin = 20;
+    int buttonWidth = chatbotButton->width();
+    int buttonHeight = chatbotButton->height();
+    chatbotButton->move(width() - buttonWidth - margin, height() - buttonHeight - margin);
 }
 
 void MainWindow::on_Affichage_currentChanged(int index)
@@ -692,6 +781,8 @@ void MainWindow::seConnecter()
 {
     static int tentativeConnexion = 0;
     static bool connexionBloquee = false;
+      // dans le constructeur
+
 
     if (connexionBloquee) {
         QMessageBox::critical(this, "Connexion bloquée", "Vous avez atteint le nombre maximal de tentatives.\nVeuillez patienter 30 secondes.");
@@ -710,8 +801,11 @@ void MainWindow::seConnecter()
     if (e.authentifier(login, cin)) {
         ui->label_tentatives->clear();  // Réinitialise l'affichage des tentatives
         tentativeConnexion = 0;
+        chatbotButton->show();
 
         QString poste = e.getPosteFromCIN(cin).toLower();
+        //chatbotButton->show();  // dans le constructeur
+
 
         // ✅ Animation rebond
         QPropertyAnimation *animation = new QPropertyAnimation(ui->frame_7, "geometry");
@@ -876,6 +970,13 @@ void MainWindow::chargerNomsDansComboBoxPDF()
 
 
 
+
+
+
+
+
+
+
 void MainWindow::exporterPlanningHoraireHTML()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Exporter Planning Hebdo", "", "Fichier HTML (*.html)");
@@ -896,34 +997,73 @@ void MainWindow::exporterPlanningHoraireHTML()
         {"vaccin", "9h-12h"}, {"admin", "8h-10h"}
     };
 
-    QString html = "<html><head><meta charset='utf-8'><title>Planning</title>"
-                   "<style>"
-                   "body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7fa; padding: 30px; }"
-                   "h2 { text-align: center; color: #2c3e50; font-size: 26px; }"
-                   "table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }"
-                   "th { background-color: #2980b9; color: white; padding: 12px; font-size: 15px; }"
-                   "td { padding: 10px; text-align: center; border-bottom: 1px solid #ccc; font-size: 14px; }"
-                   "tr:nth-child(even) { background-color: #ecf0f1; }"
-                   ".green { color: green; font-weight: bold; }"
-                   ".red { color: red; font-weight: bold; }"
-                   ".summary { margin-top: 20px; font-weight: bold; background: #ecf0f1; padding: 15px; border-radius: 8px; }"
-                   ".actions { text-align: center; margin-top: 20px; }"
-                   "button { padding: 10px 20px; font-size: 14px; border: none; background-color: #3498db; color: white; border-radius: 5px; cursor: pointer; }"
-                   "button:hover { background-color: #2980b9; }"
-                   "</style></head><body>";
+    QString html = R"(
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Planning Hebdomadaire</title>
+<style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .header img { width: 80px; height: 80px; }
+    .title-block { flex-grow: 1; text-align: center; }
+    .title-block h1 { font-size: 26px; margin-bottom: 5px; }
+    .title-block p { font-size: 16px; margin-bottom: 0; }
 
-    html += "<h2>📅 Planning Hebdomadaire des Employés</h2>";
-    html += "<p style='text-align:center; font-size:16px;'><strong>Période : </strong>" +
-            dateDebut.toString("dd/MM/yyyy") + " ➡️ " + dateFin.toString("dd/MM/yyyy") + "</p>";
+    .commentaire { text-align: center; margin: 5px 0 15px; font-size: 16px; }
 
-    // Tableau des jours
-    html += "<table border='1'><tr><th>CIN</th><th>Nom</th><th>Poste</th><th>Disponibilité</th><th>Absence</th>";
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th { background-color: #2980b9; color: white; padding: 10px; font-size: 14px; }
+    td { padding: 8px; text-align: center; border: 1px solid #ccc; font-size: 13px; }
+    tr:nth-child(even) { background-color: #f4f7fa; }
+
+    .green { color: green; font-weight: bold; }
+    .red { color: red; font-weight: bold; }
+
+    .summary { margin-top: 10px; font-size: 15px; padding: 10px; background: #ecf0f1; border-radius: 8px; }
+    .signature { margin-top: 40px; text-align: right; font-style: italic; font-size: 15px; padding-right: 40px; }
+    .signature-line { border-top: 1px solid #000; width: 300px; margin-top: 20px; float: right; }
+
+    .actions { text-align: center; margin-top: 40px; }
+    button { padding: 10px 20px; font-size: 15px; border: none; background-color: #3498db; color: white; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #2980b9; }
+</style>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'></script>
+<script>
+    function generatePDF() {
+        const element = document.body;
+        html2pdf().set({
+            margin: 0.2,
+            filename: 'planning_employes.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+        }).from(element).save();
+    }
+</script>
+</head>
+<body>
+<div class='header'>
+            <img src=':/images/logo.png'>
+    <div class='title-block'>
+        <h1>📅 Planning Hebdomadaire des Employés</h1>
+        <p><strong>Période :</strong> )" + dateDebut.toString("dd/MM/yyyy") + " ➡ " + dateFin.toString("dd/MM/yyyy") + R"(</p>
+    </div>
+</div>
+
+<div class='commentaire'><strong>Commentaire général RH :</strong> <span contenteditable='true'>-</span></div>
+)";
+
+    html += "<table><tr><th>CIN</th><th>Nom</th><th>Poste</th><th>Disponibilité</th><th>Absence</th>";
+
     QStringList jours;
     for (QDate d = dateDebut; d <= dateFin; d = d.addDays(1)) {
         jours << d.toString("dd/MM");
         html += "<th>" + d.toString("ddd<br>dd/MM") + "</th>";
     }
-    html += "</tr>";
+    html += "<th>Remarques RH</th></tr>";
 
     QSqlQuery query;
     if (nomSelectionne == "Tous") {
@@ -954,45 +1094,88 @@ void MainWindow::exporterPlanningHoraireHTML()
         QString disponibilite = query.value("DISPONIBILITE").toInt() == 1 ? "Oui" : "Non";
         QString absence = query.value("TYPE_ABSENCES").toString();
         QString horaire = query.value("HORAIRE").toString().trimmed();
-        if (horaire.isEmpty()) horaire = horairesParPoste.value(poste, "Non défini");
-
+        if (horaire.isEmpty()) horaire = horairesParPoste.value(poste, "modifiable");
         if (disponibilite == "Oui") dispo++;
 
         html += "<tr>";
         html += "<td>" + cin + "</td>";
         html += "<td>" + nom + " " + prenom + "</td>";
         html += "<td>" + poste + "</td>";
-        html += QString("<td class='%1'>%2</td>").arg((disponibilite == "Oui" ? "green" : "red"), disponibilite);
-
+        html += QString("<td class='%1'>%2</td>").arg(disponibilite == "Oui" ? "green" : "red", disponibilite);
         html += "<td>" + absence + "</td>";
         for (int i = 0; i < jours.size(); ++i)
-            html += "<td>" + horaire + "</td>";
+            html += "<td contenteditable='true'>" + horaire + "</td>";
+        html += "<td contenteditable='true'>-</td>";
         html += "</tr>";
     }
 
-    double taux = total > 0 ? (double)dispo / total * 100 : 0.0;
+    double taux = total > 0 ? dispo * 100.0 / total : 0.0;
 
     html += "</table>";
-    html += "<div class='summary'>Total d'employés : " + QString::number(total) +
+    html += "<div class='summary'>Total : " + QString::number(total) +
             " | Disponibles : " + QString::number(dispo) +
-            " | Taux de disponibilité : " + QString::number(taux, 'f', 1) + "%</div>";
+            " | Taux : " + QString::number(taux, 'f', 1) + "%</div>";
 
-    html += "<div class='actions'><button onclick='window.print()'>🖨️ Imprimer / Exporter en PDF</button></div>";
-    html += "</body></html>";
+    html += R"(
+    <div class='signature'>
+        <p>Signé par le responsable RH</p>
+        <div class='signature-line'></div>
+    </div>
+
+    <p style="text-align:center; font-style:italic; margin-top: 30px; color: gray;">
+        🖊️ Vous pouvez modifier les horaires ou les remarques ci-dessus.<br>
+        Ensuite, cliquez sur le bouton ci-dessous pour générer un PDF.
+    </p>
+
+    <div class='actions'>
+        <button onclick=" generatePDF() ">📥 Télécharger une copie PDF personnalisée</button>
+    </div>
+
+</body>
+</html>
+)";
 
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream stream(&file);
         stream << html;
         file.close();
-        QMessageBox::information(this, "Succès", "Planning exporté avec succès !");
+
+        QMessageBox::information(this, "Succès", "Planning HTML généré avec succès !");
         QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
+
+        convertirHTMLenPDF(fileName);
     } else {
         QMessageBox::warning(this, "Erreur", "Impossible d'écrire le fichier.");
     }
 }
 
 
+void MainWindow::convertirHTMLenPDF(const QString& cheminHTML)
+{
+    QString cheminPDF = cheminHTML;
+    cheminPDF.replace(".html", ".pdf");
+
+    QString wkhtmlPath = "C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe";
+
+    if (!QFile::exists(wkhtmlPath)) {
+        QMessageBox::warning(this, "Erreur", "wkhtmltopdf n'est pas installé !");
+        return;
+    }
+
+    QStringList arguments;
+    arguments << "--enable-local-file-access" << cheminHTML << cheminPDF;
+
+    QProcess *process = new QProcess(this);
+    process->start(wkhtmlPath, arguments);
+    process->waitForFinished();
+
+    if (QFile::exists(cheminPDF)) {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(cheminPDF));
+    } else {
+        QMessageBox::warning(this, "Erreur", "La génération du PDF a échoué.");
+    }
+}
 
 
 
@@ -1001,8 +1184,7 @@ void MainWindow::exporterPlanningHoraireHTML()
 void MainWindow::afficherStatistiquesEmployes()
 {
     int total = 0, dispo = 0, indispo = 0;
-    QMap<QString, int> absentsParPoste;
-    QMap<QString, int> totalParPoste;
+    QMap<QString, int> absentsParPoste, totalParPoste;
     QVector<QPair<QString, QDate>> anciens;
 
     QSqlQuery query("SELECT POSTE, DISPONIBILITE, DATE_EMBAUCHE, NOM, PRENOM FROM SMARTVACC.EMPLOYES");
@@ -1025,10 +1207,7 @@ void MainWindow::afficherStatistiquesEmployes()
     }
 
     double taux = total > 0 ? ((double)indispo / total) * 100 : 0;
-
-    std::sort(anciens.begin(), anciens.end(), [](auto &a, auto &b) {
-        return a.second < b.second;
-    });
+    std::sort(anciens.begin(), anciens.end(), [](auto &a, auto &b) { return a.second < b.second; });
 
     QString top3;
     for (int i = 0; i < anciens.size() && i < 3; ++i) {
@@ -1044,29 +1223,33 @@ void MainWindow::afficherStatistiquesEmployes()
 
     for (auto it = absentsParPoste.begin(); it != absentsParPoste.end(); ++it) {
         double tauxPoste = (double)it.value() / totalParPoste[it.key()] * 100;
-        if (tauxPoste > 50.0) {
+        if (tauxPoste > 50.0)
             statistiques += "<br><span style='color:orange;'>⚠️ " + it.key() + " : " + QString::number(tauxPoste, 'f', 1) + "% absents</span>";
-        }
     }
 
     statistiques += "<br><br>📈 <b>Taux d’absentéisme :</b> <span style='color:" + QString(taux > 50 ? "red" : "green") + ";'>" + QString::number(taux, 'f', 1) + "%</span>";
     statistiques += "<br><br>👴 <b>Top 3 Anciens Employés :</b><br>" + top3;
     ui->label_statistiques->setText(statistiques);
 
-    // 🔵 Camembert Disponibilité
+    // 🔵 Création du camembert avec % et flèches
     QPieSeries *series = new QPieSeries();
-    series->append("Disponibles", dispo);
-    series->append("Absents", indispo);
-    series->setLabelsVisible();
+    if (total > 0) {
+        double dispoPct = (double)dispo / total * 100.0;
+        double absPct = (double)indispo / total * 100.0;
 
-    QPieSlice *dispoSlice = series->slices().at(0);
-    QPieSlice *absentSlice = series->slices().at(1);
-    dispoSlice->setBrush(QColor("#2ecc71"));
-    absentSlice->setBrush(QColor("#e74c3c"));
-    absentSlice->setExploded(true);
-    absentSlice->setExplodeDistanceFactor(0.10);
-    dispoSlice->setLabelColor(Qt::white);
-    absentSlice->setLabelColor(Qt::white);
+        QPieSlice *sliceDispo = series->append("Disponibles (" + QString::number(dispoPct, 'f', 1) + "%)", dispo);
+        QPieSlice *sliceIndispo = series->append("Absents (" + QString::number(absPct, 'f', 1) + "%)", indispo);
+
+        sliceDispo->setBrush(QColor("#2ecc71"));
+        sliceIndispo->setBrush(QColor("#e74c3c"));
+        sliceIndispo->setExploded(true);
+        sliceIndispo->setExplodeDistanceFactor(0.12);
+
+        sliceDispo->setLabelVisible(true);
+        sliceIndispo->setLabelVisible(true);
+        sliceDispo->setLabelColor(Qt::white);
+        sliceIndispo->setLabelColor(Qt::white);
+    }
 
     QChart *chart = new QChart();
     chart->addSeries(series);
@@ -1092,13 +1275,12 @@ void MainWindow::afficherStatistiquesEmployes()
             if (child->widget()) child->widget()->deleteLater();
             delete child;
         }
-
         layout->addWidget(chartViewStatistique);
     }
 
-    // 👉 Afficher aussi le tableau d'absences détaillées
     afficherTableauAbsencesDetaillees();
 }
+
 
 
 
@@ -1174,22 +1356,32 @@ void MainWindow::afficherTableauAbsencesDetaillees()
     ui->table_absences->resizeColumnsToContents();
     ui->table_absences->horizontalHeader()->setStretchLastSection(true);
 }
-void MainWindow::on_button_chatbot_icon_clicked()
+
+
+/*void MainWindow::on_button_chatbot_icon_clicked()
 {
-    if (ui->frame_chatbox->isHidden()) {
-        ui->frame_chatbox->show();  // ✅ Affiche correctement
-        qDebug() << "Chatbot affiché";
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->frame_chatbox, "maximumHeight");
+    animation->setDuration(300);
+    animation->setEasingCurve(QEasingCurve::OutCubic);
+
+    if (ui->frame_chatbox->isVisible()) {
+        animation->setStartValue(ui->frame_chatbox->height());
+        animation->setEndValue(0);
+        connect(animation, &QPropertyAnimation::finished, ui->frame_chatbox, &QWidget::hide);
     } else {
-        ui->frame_chatbox->hide();  // ✅ Cache s’il est déjà visible
-        qDebug() << "Chatbot caché";
+        ui->frame_chatbox->show();
+        animation->setStartValue(0);
+        animation->setEndValue(200); // ou la taille désirée
     }
-}
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
+}*/
 
 
 void MainWindow::on_button_fermer_chatbot_clicked()
 {
     ui->frame_chatbox->hide();
 }
+
 
 void MainWindow::on_button_envoyer_clicked()
 {
@@ -1200,34 +1392,23 @@ void MainWindow::on_button_envoyer_clicked()
     ui->lineEdit_question->clear();
 
     QString reponseFAQ = chercherReponseFAQ(question);
-
     if (!reponseFAQ.isEmpty()) {
         ui->textEdit_chat->append("🤖 <b>RHBot</b> : " + reponseFAQ);
         return;
     }
 
-    envoyerRequeteChatGPT(question);  // Sinon GPT4All
+    // ⚡ Animation et cache
+    ui->textEdit_chat->append("⏳ <i>RHBot réfléchit...</i>");
+    if (cacheGPT.contains(question)) {
+        ui->textEdit_chat->append("🤖 RHBot (⚡ cache) : " + cacheGPT.value(question));
+        return;
+    }
+
+    envoyerRequeteChatGPT(question);
 }
 
 void MainWindow::envoyerRequeteChatGPT(const QString &message)
 {
-    QString question = message.toLower();
-
-    // Chercher dans la FAQ intégrée
-    for (const QJsonValue &entry : faq) {
-        QJsonObject obj = entry.toObject();
-        QJsonArray keywords = obj["keywords"].toArray();
-        for (const QJsonValue &kw : keywords) {
-            QString keyword = kw.toString().toLower();
-            if (question.contains(keyword)) {
-                QString rep = obj["response"].toString();
-                ui->textEdit_chat->append("🤖 RHBot : " + rep);
-                return;
-            }
-        }
-    }
-
-    // Si aucune réponse dans la FAQ, faire appel à GPT (en français)
     QJsonObject json;
     QJsonArray messages;
 
@@ -1240,59 +1421,45 @@ void MainWindow::envoyerRequeteChatGPT(const QString &message)
         {"content", message}
     });
 
-    json["model"] = "Mistral Instruct";  // ou celui que tu utilises localement
+    json["model"] = "mistral-7b-instruct.Q4_K_M";
     json["messages"] = messages;
-
-    QJsonDocument doc(json);
-    QByteArray data = doc.toJson();
+    json["max_tokens"] = 150;
 
     QNetworkRequest request(QUrl("http://localhost:4891/v1/chat/completions"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    manager->post(request, data);
+    QJsonDocument doc(json);
+    manager->post(request, doc.toJson());
 }
-
 
 
 void MainWindow::receptionReponseGPT(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError) {
-        QString erreur = reply->errorString();
-        ui->textEdit_chat->append("❌ Erreur API : " + erreur);
+        ui->textEdit_chat->append("❌ Erreur API : " + reply->errorString());
         reply->deleteLater();
         return;
     }
 
-    QByteArray response = reply->readAll();
-    QJsonParseError parseError;
-    QJsonDocument doc = QJsonDocument::fromJson(response, &parseError);
-
-    if (parseError.error != QJsonParseError::NoError) {
-        ui->textEdit_chat->append("❌ Erreur JSON : " + parseError.errorString());
-        reply->deleteLater();
-        return;
-    }
-
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     if (!doc.isObject()) {
-        ui->textEdit_chat->append("❌ Erreur : Réponse inattendue.");
+        ui->textEdit_chat->append("❌ Réponse inattendue.");
         reply->deleteLater();
         return;
     }
 
-    QJsonObject obj = doc.object();
-    QJsonArray choices = obj["choices"].toArray();
-
+    QJsonArray choices = doc.object()["choices"].toArray();
     if (!choices.isEmpty()) {
-        QJsonObject message = choices[0].toObject()["message"].toObject();
-        QString content = message["content"].toString().trimmed();
-
+        QString content = choices[0].toObject()["message"].toObject()["content"].toString().trimmed();
         ui->textEdit_chat->append("🤖 RHBot : " + content);
+        cacheGPT.insert(ui->lineEdit_question->text().trimmed(), content);  // cache
     } else {
-        ui->textEdit_chat->append("❌ Erreur : Réponse vide.");
+        ui->textEdit_chat->append("❌ Réponse vide.");
     }
 
     reply->deleteLater();
 }
+
 
 QString MainWindow::chercherReponseFAQ(const QString &question)
 {
@@ -1322,5 +1489,17 @@ void MainWindow::afficherHistoriqueConnexions() {
         ui->textEdit_historique->setPlainText(contenu);
         file.close();
     }
+}
+
+void MainWindow::on_pushButtonStat_15_clicked()
+{
+    // 🔄 Affiche la page "Statistique" dans l'onglet employé
+    ui->Affichage->setCurrentWidget(ui->Statistique);  // Page nommée "Statistique"
+}
+
+void MainWindow::on_pushButton_pdf_3_clicked()
+{
+    // 🔄 Affiche la page "PDF" dans l'onglet employé
+    ui->Affichage->setCurrentWidget(ui->pdf);  // Page nommée "pdf"
 }
 

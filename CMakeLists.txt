@@ -9,59 +9,48 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Base Qt modules
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts WebEngineWidgets)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
+    mainwindow.ui
+    images/images.qrc
+    connection.cpp
+    connection.h
 )
-find_package(Qt6 REQUIRED COMPONENTS Charts)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Charts)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Integartion
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        images/images.qrc
-        connection.cpp
-        connection.h
-
-
-        Integration.pro
-        Integration.pro
-        Integration.pro
-        Integration.pro
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET Integartion APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(Integartion SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+        add_library(Integartion SHARED ${PROJECT_SOURCES})
     else()
-        add_executable(Integartion
-            ${PROJECT_SOURCES}
-        )
+        add_executable(Integartion ${PROJECT_SOURCES})
     endif()
 endif()
 
-target_link_libraries(Integartion PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+# Liens aux modules Qt
+target_link_libraries(Integartion
+    PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Charts
+    Qt${QT_VERSION_MAJOR}::WebEngineWidgets
+)
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
+# Propriétés du projet
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Integartion)
+    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Integartion)
 endif()
+
 set_target_properties(Integartion PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
