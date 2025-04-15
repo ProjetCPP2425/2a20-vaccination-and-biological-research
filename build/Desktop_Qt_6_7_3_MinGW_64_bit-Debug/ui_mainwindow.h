@@ -3442,10 +3442,10 @@ public:
         lirect_10->setObjectName("lirect_10");
         comboTrierCarnets = new QComboBox(lirect_10);
         comboTrierCarnets->setObjectName("comboTrierCarnets");
-        comboTrierCarnets->setGeometry(QRect(160, 195, 351, 41));
+        comboTrierCarnets->setGeometry(QRect(90, 200, 351, 41));
         label_170 = new QLabel(lirect_10);
         label_170->setObjectName("label_170");
-        label_170->setGeometry(QRect(90, 210, 191, 21));
+        label_170->setGeometry(QRect(10, 210, 191, 21));
         label_170->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -3454,7 +3454,7 @@ public:
 ""));
         label_171 = new QLabel(lirect_10);
         label_171->setObjectName("label_171");
-        label_171->setGeometry(QRect(570, 200, 91, 20));
+        label_171->setGeometry(QRect(450, 210, 91, 20));
         label_171->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -3463,7 +3463,7 @@ public:
 ""));
         rechercheC = new QLineEdit(lirect_10);
         rechercheC->setObjectName("rechercheC");
-        rechercheC->setGeometry(QRect(670, 195, 351, 41));
+        rechercheC->setGeometry(QRect(540, 200, 351, 41));
         widget_15 = new QWidget(lirect_10);
         widget_15->setObjectName("widget_15");
         widget_15->setGeometry(QRect(490, 40, 361, 91));
@@ -3497,7 +3497,7 @@ public:
         btnGeneratePDF->setIconSize(QSize(50, 50));
         modifierC = new QPushButton(lirect_10);
         modifierC->setObjectName("modifierC");
-        modifierC->setGeometry(QRect(1160, 370, 51, 41));
+        modifierC->setGeometry(QRect(1170, 200, 51, 41));
         modifierC->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #28A745;  /* Bright green background */\n"
 "    color: white;               /* White text */\n"
@@ -3519,10 +3519,10 @@ public:
         modifierC->setIcon(icon4);
         tableView = new QTableView(lirect_10);
         tableView->setObjectName("tableView");
-        tableView->setGeometry(QRect(20, 260, 1041, 481));
+        tableView->setGeometry(QRect(20, 260, 1261, 481));
         nom_2 = new QLabel(lirect_10);
         nom_2->setObjectName("nom_2");
-        nom_2->setGeometry(QRect(1070, 260, 291, 41));
+        nom_2->setGeometry(QRect(890, 150, 291, 41));
         nom_2->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
@@ -3533,7 +3533,7 @@ public:
 ""));
         suppid = new QLineEdit(lirect_10);
         suppid->setObjectName("suppid");
-        suppid->setGeometry(QRect(1070, 310, 191, 41));
+        suppid->setGeometry(QRect(900, 200, 191, 41));
         suppid->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir normal */\n"
@@ -3545,7 +3545,7 @@ public:
 "}"));
         supprimerC = new QPushButton(lirect_10);
         supprimerC->setObjectName("supprimerC");
-        supprimerC->setGeometry(QRect(1090, 370, 51, 41));
+        supprimerC->setGeometry(QRect(1110, 200, 51, 41));
         supprimerC->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #DC3545;  /* Bright red background */\n"
 "    color: white;               /* White text */\n"
@@ -3682,7 +3682,7 @@ public:
         tab->setObjectName("tab");
         stat_carnet = new QWidget(tab);
         stat_carnet->setObjectName("stat_carnet");
-        stat_carnet->setGeometry(QRect(120, 80, 881, 471));
+        stat_carnet->setGeometry(QRect(120, 80, 961, 571));
         tab_2->addTab(tab, QString());
         stackedWidget->addWidget(pageCarnet);
         pagelogin = new QWidget();

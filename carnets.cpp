@@ -236,11 +236,11 @@ QString Carnets::analyserRisqueParCIN(QString cin)
 
     // 📝 Rapport détaillé
     QString prediction = QString("📊 **Évaluation Médicale du Patient : M. %1 %2**\n\n"
-                                 "🔹 **Âge** : %3 ans\n"
-                                 "🔹 **Poids** : %4 kg\n"
-                                 "🔹 **Statut Vaccinal** : %5\n\n"
-                                 "➡️ **Score de Risque Médical (SRM) : %6 / 100**\n"
-                                 "➡️ **Niveau de Risque Identifié** : %7\n\n")
+                                 "🔹 Âge : %3 ans\n"
+                                 "🔹 Poids : %4 kg\n"
+                                 "🔹 Statut Vaccinal : %5\n\n"
+                                 "➡️ Score de Risque Médical (SRM) : %6 / 100\n"
+                                 "➡️ Niveau de Risque Identifié: %7\n\n")
                              .arg(nom)
                              .arg(prenom)
                              .arg(age)
@@ -266,34 +266,34 @@ QString Carnets::analyserRisqueParCIN(QString cin)
         alerteVaccin += "⚠️Après la vaccination, le patient doit se reposer strictement et éviter toute prise d'anti-inflammatoires sans avis médical.\n";
     }
     else if (categorieRisque == "⚠️ Élevé") {
-        prediction += "**⚠️ RISQUE ÉLEVÉ IDENTIFIÉ**\n\n"
+        prediction += "⚠️ RISQUE ÉLEVÉ IDENTIFIÉ\n\n"
                       "Ce patient présente des facteurs de risque qui nécessitent une surveillance accrue après la vaccination.\n"
                       "Les effets secondaires peuvent inclure **fatigue excessive, maux de tête prolongés, douleurs musculaires sévères**.\n\n"
                       "👉 **Conseils recommandés :**\n"
-                      "   - **Évitez le stress et reposez-vous suffisamment après l’injection.**\n"
-                      "   - **Hydratez-vous régulièrement pour prévenir les risques de déshydratation.**\n"
-                      "   - **Surveillez la température corporelle pendant les prochaines 48 heures.**\n";
-        alerteVaccin += "⚠️ **Évitez l’exposition prolongée au soleil et ne prenez pas d’aspirine immédiatement après la vaccination.**\n";
+                      "   - Évitez le stress et reposez-vous suffisamment après l’injection.\n"
+                      "   - Hydratez-vous régulièrement pour prévenir les risques de déshydratation\n"
+                      "   - Surveillez la température corporelle pendant les prochaines 48 heures.\n";
+        alerteVaccin += "⚠️ Évitez l’exposition prolongée au soleil et ne prenez pas d’aspirine immédiatement après la vaccination.**\n";
     }
     else if (categorieRisque == "🟡 Modéré") {
         prediction += "**🟡 RISQUE MODÉRÉ : SUIVI RECOMMANDÉ**\n\n"
                       "Bien que ce patient ne présente pas de risque critique, certaines précautions doivent être prises.\n"
                       "Les symptômes post-vaccination peuvent inclure **légère fatigue, rougeur au site d’injection, ou fièvre modérée**.\n\n"
-                      "👉 **Précautions suggérées :**\n"
-                      "   - **Évitez les efforts physiques intenses pendant 24 heures.**\n"
-                      "   - **Adoptez une alimentation équilibrée pour optimiser la réponse immunitaire.**\n"
-                      "   - **En cas de fièvre légère, privilégiez le paracétamol plutôt que les anti-inflammatoires.**\n";
-        alerteVaccin += "🔹 **Restez hydraté et surveillez votre état général durant les premiers jours suivant la vaccination.**\n";
+                      "👉 Précautions suggérées :\n"
+                      "   - Évitez les efforts physiques intenses pendant 24 heures.\n"
+                      "   - Adoptez une alimentation équilibrée pour optimiser la réponse immunitaire.\n"
+                      "   - En cas de fièvre légère, privilégiez le paracétamol plutôt que les anti-inflammatoires.\n";
+        alerteVaccin += "🔹Restez hydraté et surveillez votre état général durant les premiers jours suivant la vaccination.\n";
     }
     else {
         prediction += "**✅ ÉTAT DE SANTÉ SATISFAISANT**\n\n"
                       "Aucun facteur de risque majeur n’a été détecté chez ce patient.\n"
                       "Toutefois, il est toujours recommandé de suivre quelques précautions générales après la vaccination.\n\n"
-                      "👉 **Recommandations générales :**\n"
-                      "   - **Surveillez tout effet secondaire éventuel (maux de tête, fatigue).**\n"
-                      "   - **Assurez-vous d’avoir un suivi médical régulier.**\n"
-                      "   - **Maintenez un mode de vie sain et équilibré.**\n";
-        alerteVaccin += "✅ **Aucune précaution particulière à prendre après la vaccination.**\n";
+                      "👉 Recommandations générales :**\n"
+                      "   - Surveillez tout effet secondaire éventuel (maux de tête, fatigue).\n"
+                      "   - Assurez-vous d’avoir un suivi médical régulier.\n"
+                      "   - Maintenez un mode de vie sain et équilibré.\n";
+        alerteVaccin += "✅ Aucune précaution particulière à prendre après la vaccination.\n";
     }
 
     return prediction + alerteVaccin;

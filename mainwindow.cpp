@@ -142,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
     //testSMS();
     // envoyerRappelSMS();
 
-    /*  smsTimer = new QTimer(this);
+    /* smsTimer = new QTimer(this);
     connect(smsTimer, &QTimer::timeout, this, &MainWindow::envoyerRappelSMS);
     smsTimer->start(60000); // 60 000 ms = toutes les 60 secondes*///--->correcte
     connect(ui->comboTrierCarnets, &QComboBox::currentTextChanged, this, &MainWindow::trierCarnets);
@@ -160,6 +160,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 )");
 
+    ui->tab_2->setTabText(3, "Statistiques");
 
 
 }
@@ -350,15 +351,25 @@ void MainWindow::on_ajout_carnet_clicked()
     ui->statut_vaccinal->setCurrentIndex(0);
 }
 
-// 🔹 Afficher la liste des carnets
 void MainWindow::displayCarnet()
 {
     QSqlQueryModel *model = carnetTmp.afficher();
-    if (model) {
-        ui->tableView->setModel(model);
-        ui->tableView->resizeColumnsToContents();
-    } else {
+    if (!model) {
         QMessageBox::warning(this, "Erreur", "Échec du chargement des carnets.");
+        return;
+    }
+
+    ui->tableView->setModel(model);
+    ui->tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableView->setAlternatingRowColors(true);
+    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->resizeRowsToContents();
+
+    for (int i = 0; i < model->columnCount(); ++i) {
+        ui->tableView->horizontalHeader()->setSectionResizeMode(i,
+                                                                i <= 2 ? QHeaderView::ResizeToContents : QHeaderView::Stretch);
     }
 }
 
@@ -778,95 +789,114 @@ void MainWindow::on_btnGeneratePDF_clicked()
     QTextDocument doc;
 
     QString html = R"(
-    <html>
-    <head>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 42pt; }
-        .header { width: 100%; margin-bottom: 50px; }
-        .header img { vertical-align: middle; width:180px; height:180px; }
-        .title { color: #800000; font-weight:bold; display:inline-block; vertical-align: middle; margin-left:15px; font-size: 48pt; }
+<html>
+<head>
+<style>
+    body { font-family: Arial, sans-serif; font-size: 42pt; }
+    .header { width: 100%; margin-bottom: 50px; }
+    .header img { vertical-align: middle; width:180px; height:180px; }
+    .title { color: #800000; font-weight:bold; display:inline-block; vertical-align: middle; margin-left:15px; font-size: 48pt; }
 
-        /* Structure principale en tableau - Augmenté largeur à 100% */
-        .main-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: none;
-        }
+    .main-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+    }
 
-        .main-table td {
-            vertical-align: top;
-            border: none;
-            padding: 0;
-        }
+    .main-table td {
+        vertical-align: top;
+        border: none;
+        padding: 0;
+    }
 
-        /* Colonne gauche pour les données - Réduit à 65% pour donner plus d'espace à la colonne droite */
-        .data-column {
-            width: 80%;
-            padding-right: 30px;
-        }
+.data-column { width: 60%; padding-right: 20px; }
+.rdv-column { width: 40%; }
 
-        /* Colonne droite pour le rendez-vous - Augmenté à 35% */
-        .rdv-column {
-            width: 70%;
-        }
+    .patient-table, .rdv-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
 
-        /* Tableau des données patient - Largeur augmentée à 100% */
-        .patient-table {
-            border-collapse: collapse;
-            width: 120%;
-        }
+    .patient-table td, .patient-table th,
+    .rdv-table td, .rdv-table th {
+        border: 4px solid black;
+        padding: 35px;
+        font-size: 42pt;
+    }
 
-        .patient-table td, .patient-table th {
-            border: 4px solid black; /* Bordure plus épaisse */
-            padding: 25px; /* Padding augmenté pour plus de hauteur */
-            font-size: 42pt; /* Taille de police augmentée */
-        }
+.signature {
+    color: #800000;
+    font-style: italic;
+    margin-top: 120px;
+    font-size: 38pt;
+    text-align: right; /* ✅ Aligner à droite */
+}
 
-        .signature {
-            color: #800000;
-            font-style: italic;
-            margin-top: 120px;
-            font-size: 38pt;
-        }
+</style>
+</head>
+<body>
+    <div class='header'>
+        <img src=':/images/logo.png'>
+        <span class='title'>🩺 Carnet de Vaccination - Patient</span>
+    </div>
+
+    <table class='main-table'>
+        <tr>
+            <td class='data-column'>
+                <table class='patient-table'>
+                    <tr><th>Nom</th><td>)" + nom + R"(</td></tr>
+                    <tr><th>Prénom</th><td>)" + prenom + R"(</td></tr>
+                    <tr><th>CIN</th><td>)" + cin + R"(</td></tr>
+                    <tr><th>Âge</th><td>)" + age + R"( ans</td></tr>
+                    <tr><th>Sexe</th><td>)" + sexe + R"(</td></tr>
+                    <tr><th>Téléphone</th><td>)" + num + R"(</td></tr>
+                    <tr><th>Poids</th><td>)" + poids + R"( kg</td></tr>
+                    <tr><th>Statut Vaccinal</th><td>)" + statut + R"(</td></tr>
+                    <tr><th>Remarques</th><td>)" + remarques + R"(</td></tr>
+                </table>
+                <div class='signature'>
+                    ✒️ Signature & Cachet du Centre de vaccination
+                </div>
+            </td>
+            <td class='rdv-column'>
+<table class='rdv-table'>
+    <tr>
+        <th colspan='2' style="border: 4px solid black;">📅 <strong>Prochain Rendez-vous</strong></th>
+    </tr>
+    <tr>
+        <td colspan='2' style='text-align:center; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'>)" + dateRdv + R"(</td>
+    </tr>
+    <tr>
+        <td colspan='2' style='height:60px; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'></td>
+    </tr>
+    <tr>
+        <td colspan='2' style='height:60px; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'></td>
+    </tr>
+    <tr>
+        <td colspan='2' style='height:60px; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'></td>
+    </tr>
+    <tr>
+        <td colspan='2' style='height:60px; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'></td>
+    </tr>
+    <tr>
+        <td colspan='2' style='height:60px; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'></td>
+    </tr>
+    <tr>
+        <td colspan='2' style='height:60px; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'></td>
+    </tr>
+    <tr>
+        <td colspan='2' style='height:60px; border-left: 4px solid black; border-right: 4px solid black; border-bottom: 4px solid black;'></td>
+    </tr>
+</table>
 
 
-    </style>
-    </head>
-    <body>
-        <div class='header'>
-            <img src=':/images/logo.png'>
-            <span class='title'>🩺 Carnet de Vaccination - Patient</span>
-        </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+)";
 
-        <table class='main-table'>
-            <tr>
-                <td class='data-column'>
-                    <table class='patient-table'>
-                        <tr><th>Nom</th><td>)" + nom + R"(</td></tr>
-                        <tr><th>Prénom</th><td>)" + prenom + R"(</td></tr>
-                        <tr><th>CIN</th><td>)" + cin + R"(</td></tr>
-                        <tr><th>Âge</th><td>)" + age + R"( ans</td></tr>
-                        <tr><th>Sexe</th><td>)" + sexe + R"(</td></tr>
-                        <tr><th>Téléphone</th><td>)" + num + R"(</td></tr>
-                        <tr><th>Poids</th><td>)" + poids + R"( kg</td></tr>
-                        <tr><th>Statut Vaccinal</th><td>)" + statut + R"(</td></tr>
-                        <tr><th>Remarques</th><td>)" + remarques + R"(</td></tr>
-                    </table>
-                    <div class='signature'>
-                        ✒️ Signature & Cachet du Centre de vaccination
-                    </div>
-                </td>
-                <td class='rdv-column'>
-                    <div class='rdv-box'>
-                        📅 <strong>Prochain Rendez-vous</strong><br><br>
-                        )" + dateRdv + R"(
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </body>
-    </html>
-    )";
 
     doc.setHtml(html);
     doc.setPageSize(QSizeF(pdf.width(), pdf.height()));
@@ -878,14 +908,13 @@ void MainWindow::on_btnGeneratePDF_clicked()
 }
 void MainWindow::on_btnStat_clicked()
 {
-    ui->tab_2->setCurrentIndex(3);  // Change l’index si nécessaire
+    ui->tab_2->setCurrentIndex(3);
 
     if (!ui->stat_carnet) {
         qDebug() << "Erreur : L'onglet stat_carnet n'existe pas";
         return;
     }
 
-    // Nettoyer l’ancien layout
     QLayout *oldLayout = ui->stat_carnet->layout();
     if (oldLayout) {
         QLayoutItem *item;
@@ -897,56 +926,60 @@ void MainWindow::on_btnStat_clicked()
         ui->stat_carnet->setLayout(nullptr);
     }
 
-    // Requête SQL pour compter les vaccinés/non vaccinés
-    int totalV = 0, totalNV = 0, total = 0;
+    int totalV = 0, totalNV = 0;
     QSqlQuery query("SELECT STATUT_VACCINAL FROM CARNETS");
     while (query.next()) {
-        QString statut = query.value(0).toString().toLower();
+        QString statut = query.value(0).toString().toLower().trimmed();
         if (statut == "vacciné" || statut == "vacciner" || statut == "vaccine")
             totalV++;
         else
             totalNV++;
     }
-    total = totalV + totalNV;
 
-    // Calcul des pourcentages
+    int total = totalV + totalNV;
     double pourcentageV = total > 0 ? (double(totalV) / total) * 100 : 0;
     double pourcentageNV = total > 0 ? (double(totalNV) / total) * 100 : 0;
 
-    // Création du graphique camembert avec pourcentages
     QPieSeries *series = new QPieSeries();
-    series->append(QString("Vaccinés (%1%)").arg(QString::number(pourcentageV, 'f', 1)), totalV);
-    series->append(QString("Non Vaccinés (%1%)").arg(QString::number(pourcentageNV, 'f', 1)), totalNV);
+    series->append("", totalV);
+    series->append("", totalNV);
+    series->setLabelsVisible(true);
 
     QPieSlice *sliceV = series->slices().at(0);
     QPieSlice *sliceNV = series->slices().at(1);
     sliceV->setBrush(Qt::green);
     sliceNV->setBrush(Qt::red);
-    series->setLabelsVisible(true);
+
+    // 🎯 Appliquer les labels personnalisés avec taille + gras
+    QFont sliceFont("Arial", 16, QFont::Bold);
+    sliceV->setLabel(QString("Vaccinés (%1%)").arg(QString::number(pourcentageV, 'f', 1)));
+    sliceNV->setLabel(QString("Non Vaccinés (%1%)").arg(QString::number(pourcentageNV, 'f', 1)));
+    sliceV->setLabelFont(sliceFont);
+    sliceNV->setLabelFont(sliceFont);
 
     QChart *chart = new QChart();
     chart->addSeries(series);
     chart->setTitle("📊 Couverture vaccinale totale (en %)");
-    chart->legend()->setAlignment(Qt::AlignBottom);
+    chart->setTitleFont(QFont("Arial", 18, QFont::Bold));
+    chart->legend()->hide();  // ✅ Supprime la légende du bas
 
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setMinimumSize(500, 400);
+    chartView->setMinimumSize(800, 500);
 
-    // Résumé en bas avec pourcentages
+    // ✅ Résumé simple en bas (plus de redondance)
     QLabel *summary = new QLabel(
-        QString("🟢 Vaccinés : %1% | 🔴 Non Vaccinés : %2%")
+        QString("<span style='color:green; font-size: 22px; font-weight:bold;'>🟢 Vaccinés : %1%</span>"
+                "&nbsp;&nbsp;&nbsp;"
+                "<span style='color:red; font-size: 22px; font-weight:bold;'>🔴 Non Vaccinés : %2%</span>")
             .arg(QString::number(pourcentageV, 'f', 1))
             .arg(QString::number(pourcentageNV, 'f', 1)));
     summary->setAlignment(Qt::AlignCenter);
-    summary->setStyleSheet("font-style: italic; font-size: 16px;");
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(chartView);
     layout->addWidget(summary);
-
     ui->stat_carnet->setLayout(layout);
-    ui->stat_carnet->update();
 }
 
 
@@ -967,5 +1000,5 @@ void MainWindow::trierCarnets(const QString &critere)
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();
 
-    // ✅ Plus besoin de hideColumn(0), car l’ID n’est même pas sélectionné
+
 }
