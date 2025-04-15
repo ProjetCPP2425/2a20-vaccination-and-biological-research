@@ -18,66 +18,12 @@
 
 #include <QCompleter>
 
-
-/*#include <QListWidget>
-#include <QListWidgetItem>
-#include <QDropEvent>
-#include <QMimeData>
-#include <QDebug>*/
-
 //statistique
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QPieSlice>
 
-
-
-
-
-
-/*class DragDropListWidget : public QListWidget {
-public:
-    int id_compagne;
-
-    DragDropListWidget(QWidget *parent, int compagneId)
-        : QListWidget(parent), id_compagne(compagneId) {
-        setAcceptDrops(true);
-        setDefaultDropAction(Qt::CopyAction);
-    }
-
-protected:
-    void dragEnterEvent(QDragEnterEvent *event) override {
-        if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist")) {
-            event->acceptProposedAction();
-        }
-    }
-
-    void dropEvent(QDropEvent *event) override {
-        QListWidget::dropEvent(event);  // ajoute visuellement
-
-        QListWidgetItem *item = currentItem();
-        if (!item) return;
-
-        int id_employe = item->data(Qt::UserRole).toInt();
-
-        // Empêcher les doublons dans la campagne
-        for (int i = 0; i < count(); ++i) {
-            if (item == this->item(i)) continue;
-            if (this->item(i)->data(Qt::UserRole).toInt() == id_employe)
-                return;
-        }
-
-        // Cloner l'item
-        QListWidgetItem *copie = new QListWidgetItem(*item);
-        addItem(copie);
-    }
-};*/
-
-
-
-
-
-
+#include <QRandomGenerator>
 
 
 
@@ -125,11 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->button_supprimer, &QPushButton::clicked, this, &MainWindow::on_Button_supprimer_clicked);
 
 
-    // Connexion du bouton d'ajout de campagne
-    // connect(ui->pushButton_ajouter, &QPushButton::clicked, this, &MainWindow::on_pushButton_ajouter_clicked);
 
-
-    //connect(ui->button_modifier, &QPushButton::clicked, this, &MainWindow::on_button_modifier_clicked);
 
 
 
@@ -141,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //metiers1
     connect(ui->search_date, &QDateEdit::dateChanged, this, &MainWindow::rechercherParDate);
-    // connect(ui->btn_export_campaigns, &QPushButton::clicked, this, &MainWindow::on_btn_export_campaigns_clicked);
+
 
 
 
@@ -158,6 +100,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
 
         genererPDFApprovisionnement(compagneTmp);
+
     });
 
     //metier 2
@@ -177,6 +120,22 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btn_stat_vaccination_zone, &QPushButton::clicked, this, &MainWindow::afficherStatistiquesVaccinationParZone);
 
     connect(ui->btn_valider_affectations, &QPushButton::clicked, this, &MainWindow::validerAffectations);
+
+
+//trie
+    connect(ui->comboBox_tri, &QComboBox::currentTextChanged, this, &MainWindow::trierCompagnes);
+
+//recherche
+    ui->lineEdit_recherche->setPlaceholderText("🔎 Rechercher par nom, vaccin ou zone...");
+
+    connect(ui->lineEdit_recherche, &QLineEdit::textChanged, this, &MainWindow::rechercherCompagnes);
+
+
+//Annuler
+   // connect(ui->pushButton_annuler, &QPushButton::clicked, this, &MainWindow::on_pushButton_annuler_clicked);
+
+
+
 
 
 
@@ -213,7 +172,6 @@ void MainWindow::displayCompagne()
 
 
 
-
 bool MainWindow::estValide()
 {
     QString nom_compagne = ui->nom_compagne->text().trimmed();
@@ -223,45 +181,90 @@ bool MainWindow::estValide()
     QDate date_debut = ui->date_debut->date();
     QDate date_fin = ui->date_fin->date();
 
-    // 🔹 Vérifier que les champs ne sont pas vides
-    if (nom_compagne.isEmpty() || zone_geographique.isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Le nom de la compagne et la zone géographique ne peuvent pas être vides !");
-        return false;
+    bool valide = true;
+    QString styleErreur = "color: red; font-weight: bold; background: transparent;";
+    QString styleOk = "color: green; font-weight: bold; background: transparent;";
+
+
+    // 🔹 Champ : nom de la compagne
+    if (nom_compagne.isEmpty()) {
+        ui->labelErreurNomCompagne->setText("❌ Ce champ est requis.");
+        ui->labelErreurNomCompagne->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->labelErreurNomCompagne->setText("✔️ Valide");
+        ui->labelErreurNomCompagne->setStyleSheet(styleOk);
     }
 
-    // 🔹 Vérifier que les doses sont des nombres positifs
-    if (objectif_doses <= 0 || doses_administrees < 0) {
-        QMessageBox::warning(this, "Erreur", "Les doses doivent être des nombres positifs !");
-        return false;
+    // 🔹 Champ : zone géographique
+    if (zone_geographique.isEmpty()) {
+        ui->labelErreurZone->setText("❌ Ce champ est requis.");
+        ui->labelErreurZone->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->labelErreurZone->setText("✔️ Valide");
+        ui->labelErreurZone->setStyleSheet(styleOk);
     }
 
-    // 🔹 Vérifier que les doses administrées ne dépassent pas l'objectif
-    if (doses_administrees > objectif_doses) {
-        QMessageBox::warning(this, "Erreur", "Les doses administrées ne peuvent pas dépasser l'objectif !");
-        return false;
+    // 🔹 Champ : objectif_doses
+    if (objectif_doses <= 0) {
+        ui->labelErreurObjectif->setText("❌ Doit être un nombre strictement positif.");
+        ui->labelErreurObjectif->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->labelErreurObjectif->setText("✔️ Valide");
+        ui->labelErreurObjectif->setStyleSheet(styleOk);
     }
 
-    // 🔹 Vérifier que la date de fin est après ou égale à la date de début
+    // 🔹 Champ : doses_administrees
+    if (doses_administrees < 0) {
+        ui->labelErreurAdministrees->setText("❌ Doit être un nombre positif.");
+        ui->labelErreurAdministrees->setStyleSheet(styleErreur);
+        valide = false;
+    } else if (doses_administrees > objectif_doses) {
+        ui->labelErreurAdministrees->setText("❌ Ne peut pas dépasser l'objectif.");
+        ui->labelErreurAdministrees->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->labelErreurAdministrees->setText("✔️ Valide");
+        ui->labelErreurAdministrees->setStyleSheet(styleOk);
+    }
+
+    // 🔹 Champ : dates
     if (date_fin < date_debut) {
-        QMessageBox::warning(this, "Erreur", "La date de fin doit être supérieure ou égale à la date de début !");
-        return false;
+        ui->labelErreurDates->setText("❌ La date de fin doit être après la date de début.");
+        ui->labelErreurDates->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->labelErreurDates->setText("✔️ Valide");
+        ui->labelErreurDates->setStyleSheet(styleOk);
     }
 
+    // 🔹 Champ : fournitures
     if (ui->fournitures->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez entrer les fournitures nécessaires !");
-        return false;
+        ui->labelErreurFournitures->setText("❌ Ce champ est requis.");
+        ui->labelErreurFournitures->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->labelErreurFournitures->setText("✔️ Valide");
+        ui->labelErreurFournitures->setStyleSheet(styleOk);
     }
 
+    // 🔹 Champ : coût des fournitures
     bool conversionOk = false;
-    ui->cout_fournitures->text().toFloat(&conversionOk);
-    if (!conversionOk || ui->cout_fournitures->text().toFloat() < 0) {
-        QMessageBox::warning(this, "Erreur", "Veuillez entrer un coût estimé valide !");
-        return false;
+    float cout = ui->cout_fournitures->text().toFloat(&conversionOk);
+    if (!conversionOk || cout < 0) {
+        ui->labelErreurCout->setText("❌ Entrez un coût valide.");
+        ui->labelErreurCout->setStyleSheet(styleErreur);
+        valide = false;
+    } else {
+        ui->labelErreurCout->setText("✔️ Valide");
+        ui->labelErreurCout->setStyleSheet(styleOk);
     }
 
-
-    return true; // ✅ Toutes les conditions sont remplies
+    return valide;
 }
+
 
 
 
@@ -617,11 +620,11 @@ void MainWindow::on_btn_export_campaigns_clicked()
 
 //PDF
 
+
 void MainWindow::genererPDFApprovisionnement(const Compagne& compagne)
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Exporter Rapport Approvisionnement", "", "Fichiers PDF (*.pdf)");
-    if (fileName.isEmpty())
-        return;
+    if (fileName.isEmpty()) return;
 
     QPdfWriter pdf(fileName);
     pdf.setPageSize(QPageSize(QPageSize::A4));
@@ -643,10 +646,17 @@ void MainWindow::genererPDFApprovisionnement(const Compagne& compagne)
     int y = 180;
     int lineSpacing = 90;
 
+    // ✅ 🔹 Logo SmartVacc
+    QPixmap logo(":/images/logo.png");  // ton logo dans resources.qrc
+    if (!logo.isNull()) {
+        QRect targetRect(60, 20, 180, 180);  // position (x,y) et taille (w,h)
+        painter.drawPixmap(targetRect, logo);
+    }
+
     // 🔹 Titre centré
     painter.setFont(titleFont);
-    painter.drawText(QRect(0, 20, pdf.width(), 90), Qt::AlignHCenter, "📦 Rapport d'Approvisionnement - Compagne Vaccination");
-    y += 150;
+    painter.drawText(QRect(0, 150, pdf.width(), 90), Qt::AlignHCenter, "📦 Rapport d'Approvisionnement - Compagne Vaccination");
+    y += 270;
 
     // 🔹 Nom de la compagne
     painter.setFont(sectionFont);
@@ -659,39 +669,41 @@ void MainWindow::genererPDFApprovisionnement(const Compagne& compagne)
     painter.setFont(sectionFont);
     painter.drawText(xLeft, y, "💉 Vaccins utilisés :");
     painter.setFont(contentFont);
-    painter.drawText(xRight -170, y, compagne.getVaccinsUtilises());
+    painter.drawText(xRight - 170, y, compagne.getVaccinsUtilises());
     y += lineSpacing;
 
     // 🔹 Doses
     painter.setFont(sectionFont);
     painter.drawText(xLeft, y, "📊 Doses :");
     painter.setFont(contentFont);
-    painter.drawText(xRight -400, y, QString("%1 / %2").arg(compagne.getDosesAdministrees()).arg(compagne.getObjectifDoses()));
+    painter.drawText(xRight - 400, y, QString("%1 / %2").arg(compagne.getDosesAdministrees()).arg(compagne.getObjectifDoses()));
     y += lineSpacing;
 
     // 🔹 Fournitures nécessaires
     painter.setFont(sectionFont);
     painter.drawText(xLeft, y, "📋 Fournitures nécessaires :");
     painter.setFont(contentFont);
-    painter.drawText(xRight +40, y, compagne.getFournitures());
+    painter.drawText(xRight + 40, y, compagne.getFournitures());
     y += lineSpacing;
 
     // 🔹 Coût estimé
     painter.setFont(sectionFont);
     painter.drawText(xLeft, y, "💵 Coût estimé :");
     painter.setFont(contentFont);
-    painter.drawText(xRight -260, y, QString::number(compagne.getCoutFournitures(), 'f', 2) + " TND");
+    painter.drawText(xRight - 260, y, QString::number(compagne.getCoutFournitures(), 'f', 2) + " TND");
     y += lineSpacing;
 
     // 🔹 Footer
-    y += 40;
+    y += 100;
     painter.setFont(contentFont);
-    painter.drawText(xLeft, y, "Document généré automatiquement depuis SmartVacc - Merci pour votre travail.");
+    painter.drawText(xLeft, y, "✒️ Signature & Cachet du Centre de Vaccination");
 
     painter.end();
 
     QMessageBox::information(this, "✅ PDF Exporté", "Le rapport d'approvisionnement a été exporté avec succès !");
 }
+
+
 
 
 
@@ -736,8 +748,6 @@ void MainWindow::chargerCompagnes() {
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->line_compagne->setCompleter(completer);
 }
-
-
 
 
 
@@ -904,7 +914,7 @@ void MainWindow::validerAffectations() {
     for (DragDropListWidget* liste : listes) {
         int id_compagne = liste->id_compagne;
 
-        // Récupérer les dates de la compagne
+        // Obtenir les dates de cette compagne
         QSqlQuery dateQuery;
         dateQuery.prepare("SELECT date_debut, date_fin FROM COMPAGNE WHERE id_compagne = :id");
         dateQuery.bindValue(":id", id_compagne);
@@ -917,16 +927,7 @@ void MainWindow::validerAffectations() {
             QListWidgetItem* item = liste->item(i);
             int id_employe = item->data(Qt::UserRole).toInt();
 
-            if (id_employe == 0) continue;  // Ignore les items vides
-
-            if (aConflitAvecCompagne(id_employe, dateDebut, dateFin)) {
-                conflitsTrouves = true;
-                listeConflits += "❌ Employé ID " + QString::number(id_employe)
-                                 + " déjà affecté à une compagne durant cette période.\n";
-                continue;
-            }
-
-            // Vérifier s’il existe déjà une affectation
+            // 🔁 Vérifie si l'affectation existe déjà
             QSqlQuery checkQuery;
             checkQuery.prepare("SELECT COUNT(*) FROM CONTRIBUER WHERE id_employe = :e AND id_compagne = :c");
             checkQuery.bindValue(":e", id_employe);
@@ -935,6 +936,15 @@ void MainWindow::validerAffectations() {
             checkQuery.next();
 
             if (checkQuery.value(0).toInt() == 0) {
+                // ✅ Nouvel employé à ajouter → Vérifier conflit
+                if (aConflitAvecCompagne(id_employe, dateDebut, dateFin)) {
+                    conflitsTrouves = true;
+                    listeConflits += "❌ Employé ID " + QString::number(id_employe)
+                                     + " déjà affecté à une compagne durant cette période.\n";
+                    continue;
+                }
+
+                // ✅ Pas de conflit, on l’insère
                 QSqlQuery insert;
                 insert.prepare("INSERT INTO CONTRIBUER (id_employe, id_compagne) VALUES (:e, :c)");
                 insert.bindValue(":e", id_employe);
@@ -958,13 +968,20 @@ void MainWindow::validerAffectations() {
 
 
 
-
-
 //statistique
 
 void MainWindow::afficherStatistiquesVaccinationParZone() {
+    qDebug() << "👉 Statistiques vaccination par zone : lancement";
+
+    if (!ui->chartVaccZone || !ui->resume_vaccination_zone) {
+        qDebug() << "❌ Widgets manquants.";
+        return;
+    }
+
     QPieSeries *series = new QPieSeries();
-    QString resume = "📊 Résumé par zone :\n\n";
+    qDebug() << "Étape 1 : QPieSeries OK";
+
+    QString resume = "📊 Résumé par zone :<br><br>";
 
     QSqlQuery query;
     query.prepare(R"(
@@ -974,75 +991,177 @@ void MainWindow::afficherStatistiquesVaccinationParZone() {
     )");
 
     if (!query.exec()) {
-        qDebug() << "Erreur SQL pour les statistiques : " << query.lastError().text();
+        qDebug() << "❌ Erreur SQL : " << query.lastError().text();
         return;
     }
+
+    qDebug() << "Étape 2 : Requête exécutée avec succès";
 
     while (query.next()) {
         QString zone = query.value(0).toString();
         int administrees = query.value(1).toInt();
         int objectif = query.value(2).toInt();
 
-        float taux = (objectif > 0) ? (administrees * 100.0 / objectif) : 0.0;
+        qDebug() << "-> Zone : " << zone << "| Doses : " << administrees << "/" << objectif;
+
+        if (objectif == 0) {
+            qDebug() << "‼️ Objectif = 0 → Ignorer la zone : " << zone;
+            continue;
+        }
+
+        float taux = (administrees * 100.0 / objectif);
         QString statut = (taux >= 100) ? "✅ Objectif atteint" : "⚠️ Non atteint";
 
-        // Ajout au graphique
-        series->append(zone, taux);
+        QPieSlice *slice = series->append(zone + " (" + QString::number(taux, 'f', 1) + "%)", taux);
+        slice->setLabelVisible(true);
+        QColor color = QColor::fromHsv(QRandomGenerator::global()->bounded(360), 200, 255);
+        slice->setBrush(color);
 
-        // Résumé textuel
-        resume += QString("🌍 %1 : %2% (%3)\n")
+        if (taux < 50.0) {
+            slice->setExploded(true);
+            slice->setLabelColor(Qt::red);
+        }
+
+        resume += QString("🌍 <b>%1</b> : <span style='color:%2;'>%3%</span> (%4)<br>")
                       .arg(zone)
+                      .arg((taux >= 100) ? "green" : (taux >= 60) ? "orange" : "red")
                       .arg(QString::number(taux, 'f', 1))
                       .arg(statut);
     }
 
+
+    qDebug() << "Étape 4 : Top 3 calculé";
+
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("Taux de Couverture Vaccinale par Zone (%)");
+    chart->setTitle("📊 Taux de Couverture Vaccinale par Zone (%)");
     chart->legend()->setAlignment(Qt::AlignRight);
+    chart->setAnimationOptions(QChart::AllAnimations);
 
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
 
-    // Nettoyer l'ancien contenu
     if (ui->chartVaccZone->layout()) {
         QLayoutItem *item;
         while ((item = ui->chartVaccZone->layout()->takeAt(0)) != nullptr) {
             delete item->widget();
             delete item;
         }
+        ui->chartVaccZone->layout()->addWidget(chartView);
     } else {
-        ui->chartVaccZone->setLayout(new QVBoxLayout());
+        QVBoxLayout *layout = new QVBoxLayout();
+        layout->addWidget(chartView);
+        ui->chartVaccZone->setLayout(layout);
     }
 
-    ui->chartVaccZone->layout()->addWidget(chartView);
-    ui->resume_vaccination_zone->setText(resume);
+    ui->resume_vaccination_zone->setHtml(resume);
+
+    qDebug() << "✅ Fin du calcul des statistiques";
 }
 
 
 
-/*void MainWindow::on_btn_add_campaign_clicked()
+
+void MainWindow::trierCompagnes(const QString &critere)
 {
-    qDebug() << "Ajout campagne (à implémenter)";
+    QString orderBy;
+
+    if (critere == "Date_debut") {
+        orderBy = "DATE_DEBUT";
+    } else if (critere == "statut") {
+        orderBy = "STATUT";
+    } else if (critere == "doses_administrees") {
+        orderBy = "DOSES_ADMINISTREES";
+    } else {
+        orderBy = "ID_COMPAGNE";
+    }
+
+    QString queryString = "SELECT * FROM COMPAGNE ORDER BY " + orderBy;
+    qDebug() << "🔍 Requête SQL triée :" << queryString;
+
+    QSqlQueryModel *model = new QSqlQueryModel(this);
+    model->setQuery(queryString);
+
+    if (model->lastError().isValid()) {
+        qDebug() << "❌ Erreur SQL :" << model->lastError().text();
+        QMessageBox::critical(this, "Erreur", "Erreur de tri !");
+        return;
+    }
+
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();
 }
 
-void MainWindow::on_btn_edit_campaign_clicked()
+
+
+//recherche
+
+void MainWindow::rechercherCompagnes(const QString &texte)
 {
-    qDebug() << "Modification campagne (à implémenter)";
+    QSqlQueryModel *model = new QSqlQueryModel(this);
+    QSqlQuery query;
+
+    QString filtre = "%" + texte + "%";
+
+    query.prepare(R"(
+        SELECT * FROM COMPAGNE
+        WHERE LOWER(NOM_COMPAGNE) LIKE LOWER(:filtre)
+           OR LOWER(VACCINS_UTILISES) LIKE LOWER(:filtre)
+           OR LOWER(ZONE_GEOGRAPHIQUE) LIKE LOWER(:filtre)
+    )");
+
+    query.bindValue(":filtre", filtre);
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur recherche :" << query.lastError().text();
+        return;
+    }
+
+    model->setQuery(std::move(query));
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();
 }
 
-void MainWindow::on_btn_delete_campaign_clicked()
+
+
+//Annuler
+
+void MainWindow::on_pushButton_annuler_clicked()
 {
-    qDebug() << "Suppression campagne (à implémenter)";
+    if (modeModification) {
+        // 🔁 Recharger les données d'origine
+        if (compagneTmp.chargerCompagne(nomOriginal)) {
+            ui->nom_compagne->setText(compagneTmp.getNomCompagne());
+            ui->date_debut->setDate(compagneTmp.getDateDebut());
+            ui->date_fin->setDate(compagneTmp.getDateFin());
+            ui->zone_geographique->setText(compagneTmp.getZoneGeographique());
+            ui->objectif_doses->setText(QString::number(compagneTmp.getObjectifDoses()));
+            ui->doses_administrees->setText(QString::number(compagneTmp.getDosesAdministrees()));
+            ui->vaccins_utilises->setCurrentText(compagneTmp.getVaccinsUtilises());
+            ui->statut->setCurrentText(compagneTmp.getStatut());
+            ui->fournitures->setText(compagneTmp.getFournitures());
+            ui->cout_fournitures->setText(QString::number(compagneTmp.getCoutFournitures(), 'f', 2));
+
+            QMessageBox::information(this, "Restauré", "Les anciennes données de la compagne ont été restaurées.");
+        } else {
+            QMessageBox::warning(this, "Erreur", "Impossible de recharger les données de la compagne.");
+        }
+    } else {
+        // 🧹 Vider tous les champs
+        ui->nom_compagne->clear();
+        ui->date_debut->setDate(QDate::currentDate());
+        ui->date_fin->setDate(QDate::currentDate());
+        ui->zone_geographique->clear();
+        ui->objectif_doses->clear();
+        ui->doses_administrees->clear();
+        ui->vaccins_utilises->setCurrentIndex(0);
+        ui->statut->setCurrentIndex(0);
+        ui->fournitures->clear();
+        ui->cout_fournitures->clear();
+
+        QMessageBox::information(this, "Réinitialisé", "Le formulaire a été vidé.");
+    }
 }
-
-void MainWindow::on_btn_export_campaigns_clicked()
-{
-    qDebug() << "Export campagne (à implémenter)";
-}
-*/
-
-
 
 
 

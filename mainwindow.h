@@ -145,9 +145,7 @@ private slots:
 
     //metier1
     void on_calendar_campaigns_clicked(const QDate &date);
-    //void on_btn_add_campaign_clicked();
-    //void on_btn_edit_campaign_clicked();
-    //void on_btn_delete_campaign_clicked();
+
 
     void on_btn_export_campaigns_clicked();
 
@@ -156,10 +154,22 @@ private slots:
 
     void genererPDFApprovisionnement(const Compagne& compagne);
 
+
+
+
     void afficherStatistiquesVaccinationParZone();
 
     void validerAffectations();
 
+
+    //trie
+    void trierCompagnes(const QString &critere);
+
+    //recherche
+    void rechercherCompagnes(const QString &texte);
+
+    //Annuler
+    void on_pushButton_annuler_clicked();
 
 
 private:
