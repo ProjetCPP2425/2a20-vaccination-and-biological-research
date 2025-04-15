@@ -40,11 +40,10 @@ constexpr auto qt_meta_stringdata_CLASSMedAnalysisENDCLASS = QtMocHelpers::strin
     "dataFetched",
     "",
     "country",
-    "cases",
+    "confirmed",
     "deaths",
     "recovered",
-    "population",
-    "vaccinationRate",
+    "active",
     "errorOccurred",
     "error",
     "onNetworkReply",
@@ -70,18 +69,18 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMedAnalysisENDCLASS[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    6,   32,    2, 0x06,    1 /* Public */,
-       9,    1,   45,    2, 0x06,    8 /* Public */,
+       1,    5,   32,    2, 0x06,    1 /* Public */,
+       8,    1,   43,    2, 0x06,    7 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-      11,    1,   48,    2, 0x08,   10 /* Private */,
+      10,    1,   46,    2, 0x08,    9 /* Private */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Double,    3,    4,    5,    6,    7,    8,
-    QMetaType::Void, QMetaType::QString,   10,
+    QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,    3,    4,    5,    6,    7,
+    QMetaType::Void, QMetaType::QString,    9,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 12,   13,
+    QMetaType::Void, 0x80000000 | 11,   12,
 
        0        // eod
 };
@@ -102,7 +101,6 @@ Q_CONSTINIT const QMetaObject MedAnalysis::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        QtPrivate::TypeAndForceComplete<double, std::false_type>,
         // method 'errorOccurred'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<QString, std::false_type>,
@@ -119,7 +117,7 @@ void MedAnalysis::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         auto *_t = static_cast<MedAnalysis *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->dataFetched((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[5])),(*reinterpret_cast< std::add_pointer_t<double>>(_a[6]))); break;
+        case 0: _t->dataFetched((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[5]))); break;
         case 1: _t->errorOccurred((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 2: _t->onNetworkReply((*reinterpret_cast< std::add_pointer_t<QNetworkReply*>>(_a[1]))); break;
         default: ;
@@ -138,7 +136,7 @@ void MedAnalysis::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (MedAnalysis::*)(QString , int , int , int , int , double );
+            using _t = void (MedAnalysis::*)(QString , int , int , int , int );
             if (_t _q_method = &MedAnalysis::dataFetched; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 0;
                 return;
@@ -185,9 +183,9 @@ int MedAnalysis::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void MedAnalysis::dataFetched(QString _t1, int _t2, int _t3, int _t4, int _t5, double _t6)
+void MedAnalysis::dataFetched(QString _t1, int _t2, int _t3, int _t4, int _t5)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t5))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t6))) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t5))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 

@@ -36,7 +36,8 @@ private slots:
 
     void on_lineEdit_recherche_2_textChanged(const QString &arg1);
     void verifierVaccinsExpires();
-    void updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate);
+    //void updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate);
+    void updateCovidStats(QString country, int confirmed, int deaths, int recovered, int active);
     void showError(QString error);
     void updatePrediction(const QString &predictionResult);
     void lancerPrediction();

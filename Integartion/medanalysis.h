@@ -1,22 +1,20 @@
+#ifndef MEDANALYSIS_H
+#define MEDANALYSIS_H
+
 #include <QObject>
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDebug>
-#include <QUrl>
 
-
-class MedAnalysis : public QObject {
+class MedAnalysis : public QObject
+{
     Q_OBJECT
 
 public:
     explicit MedAnalysis(QObject *parent = nullptr);
-    void fetchCovidData(const QString &country);
+    void fetchCovidData(const QString &isoCode); // Ex: "FRA", "ITA", etc.
 
 signals:
-    void dataFetched(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate);
+    void dataFetched(QString country, int confirmed, int deaths, int recovered, int active);
     void errorOccurred(QString error);
 
 private slots:
@@ -24,6 +22,7 @@ private slots:
 
 private:
     QNetworkAccessManager *networkManager;
-
 };
+
+#endif // MEDANALYSIS_H
 

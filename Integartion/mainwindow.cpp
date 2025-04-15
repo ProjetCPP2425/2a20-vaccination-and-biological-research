@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->lineEdit_recherche_2->setToolTip("Tapez un mot-clé présent dans : nom, type ou certification du vaccin.");
+    ui->lineEdit_recherche_2->setPlaceholderText("Rechercher par nom, type ou certification...");
     ui->stackedWidget->setCurrentIndex(6);
     ui->frame->setVisible(false);
     ui->labelErrorNom->clear(); // Supprimer le texte
@@ -480,7 +482,7 @@ void MainWindow::verifierVaccinsExpires() {
         qDebug() << "✅ Aucun vaccin expiré.";
     }
 }
-void MainWindow::updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate)
+/*void MainWindow::updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate)
 {
     QString message = QString(
                           "<div style='background-color: #ffffff; padding: 15px; border-radius: 10px; border: 2px solid #B22222; font-size: 14px; color: #333;'>"
@@ -506,7 +508,28 @@ void MainWindow::updateCovidStats(QString country, int cases, int deaths, int re
     ui->tab->setCurrentIndex(3);  // ✅ Sélectionne l'onglet Prediction
     ui->predictionLabel->setText(message);  // ✅ Affiche les données dans QLabel
 
+}*/
+void MainWindow::updateCovidStats(QString country, int confirmed, int deaths, int recovered, int active)
+{
+    QString message = QString(
+                          "<div style='background-color: #ffffff; padding: 15px; border-radius: 10px; border: 2px solid #B22222; font-size: 14px; color: #333;'>"
+                          "<h3 style='color:#B22222;'>📊 Données COVID-19 pour %1</h3>"
+                          "<p><b>✅ Cas confirmés :</b> <span style='color: #008000;'>%2</span></p>"
+                          "<p><b>❌ Décès :</b> <span style='color: #FF0000;'>%3</span></p>"
+                          "<p><b>💪 Guérisons :</b> <span style='color: #008000;'>%4</span></p>"
+                          "<p><b>🔥 Cas actifs :</b> <span style='color: #B22222;'>%5</span></p>"
+                          "</div>")
+                          .arg(country)
+                          .arg(confirmed)
+                          .arg(deaths)
+                          .arg(recovered)
+                          .arg(active);
+
+    ui->predictionLabel->setTextFormat(Qt::RichText);
+    ui->predictionLabel->setText(message);
+    ui->tab->setCurrentIndex(3);
 }
+
 void MainWindow::showError(QString error)
 {
     QMessageBox::warning(this, "Erreur API", "Impossible de récupérer les données : " + error);
@@ -518,35 +541,52 @@ void MainWindow::updatePrediction(const QString &predictionResult) {
     ui->predictionLabel->setText(predictionResult);  // ✅ Met à jour le texte dans un QLabel
 
 }
-void MainWindow::lancerPrediction() {
-    QString paysChoisi = ui->comboBoxPays->currentText(); // Récupérer le pays sélectionné
+
+void MainWindow::lancerPrediction()
+{
+    QString paysChoisi = ui->comboBoxPays->currentText(); // Nom visible dans la combo
     qDebug() << "📡 Lancement de la prédiction pour : " << paysChoisi;
 
-    // Vérifier si un pays est sélectionné
     if (paysChoisi.isEmpty()) {
         QMessageBox::warning(this, "⚠ Sélectionner un pays", "Veuillez choisir un pays avant de lancer la prédiction.");
         return;
     }
 
-    // Vérifier si `medApi` est bien initialisé avant de l'utiliser
     if (!medApi) {
         qDebug() << "❌ ERREUR : medApi est NULL, impossible de récupérer les données.";
         return;
     }
-    // ✅ Correction : Convertir les noms des pays en anglais pour l'API
-    QMap<QString, QString> countryMap = {
-        {"Tunisie", "Tunisia"}, {"France", "France"}, {"Italie", "Italy"},
-        {"Espagne", "Spain"}, {"Allemagne", "Germany"}, {"États-Unis", "USA"},
-        {"Canada", "Canada"}, {"Maroc", "Morocco"}, {"Algérie", "Algeria"},
-        {"Chine", "China"}
+
+    // Nouvelle map avec codes ISO 3 lettres
+    QMap<QString, QString> countryISOMap = {
+        {"Tunisie", "TUN"}, {"France", "FRA"}, {"Italie", "ITA"},
+        {"Espagne", "ESP"}, {"Allemagne", "DEU"}, {"États-Unis", "USA"},
+        {"Canada", "CAN"}, {"Maroc", "MAR"}, {"Algérie", "DZA"},
+        {"Chine", "CHN"}
     };
 
-    if (countryMap.contains(paysChoisi)) {
-        paysChoisi = countryMap[paysChoisi];  // Convertir en anglais
+    QString isoCode = countryISOMap.value(paysChoisi, "");
+
+    if (isoCode.isEmpty()) {
+        QMessageBox::warning(this, "🌍 Pays non supporté", "Aucun code ISO trouvé pour ce pays.");
+        return;
     }
-    qDebug() << "📩 Envoi de la requête à l'API pour : " << paysChoisi;
-    medApi->fetchCovidData(paysChoisi); // Envoyer la requête API
+
+    qDebug() << "📩 Envoi de la requête à l'API avec code ISO : " << isoCode;
+
+    ui->predictionLabel->setTextFormat(Qt::RichText);
+    ui->predictionLabel->setText(
+        "<div style='text-align:center; color:#444; font-size:16px;'>"
+        "⏳ <b>Récupération des données en cours...</b><br>"
+        "<img src=':/loader.gif' width='64' height='64'/>"
+        "</div>"
+        );
+    ui->tab->setCurrentIndex(3); // aller à l’onglet prédiction
+
+
+    medApi->fetchCovidData(isoCode); // Appel avec le bon code
 }
+
 
 void MainWindow::verifierNom() {
     QString nom = ui->lineEdit_nom_2->text().trimmed();
