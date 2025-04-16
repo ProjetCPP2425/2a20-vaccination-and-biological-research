@@ -777,6 +777,9 @@ void MainWindow::on_annuler_clicked()
 
 }
 
+
+////////
+
 void MainWindow::seConnecter()
 {
     static int tentativeConnexion = 0;
@@ -868,6 +871,8 @@ void MainWindow::seConnecter()
 
 
 
+
+
 void MainWindow::redirectTo(const QString &poste, int pageIndex, bool fullAccess)
 {
     ui->stackedWidget->setCurrentIndex(pageIndex);
@@ -880,6 +885,12 @@ void MainWindow::redirectTo(const QString &poste, int pageIndex, bool fullAccess
     }
 }
 
+
+
+
+
+
+
 void MainWindow::disableOtherModulesExcept(const QStringList &allowed)
 {
     ui->employe->setEnabled(allowed.contains("employe"));
@@ -889,6 +900,10 @@ void MainWindow::disableOtherModulesExcept(const QStringList &allowed)
     ui->compagne->setEnabled(allowed.contains("compagne"));
     ui->carnet->setEnabled(allowed.contains("carnet"));
 }
+
+
+
+
 
 
 
@@ -911,6 +926,13 @@ void MainWindow::appliquerTriEmployes()
         break;
     }
 }
+
+
+
+
+
+
+
 void MainWindow::lancerRechercheEmploye()
 {
     QString critere = ui->comboBox_recherche->currentText().toLower().trimmed();
@@ -945,6 +967,11 @@ void MainWindow::lancerRechercheEmploye()
 
 
 
+
+
+
+
+
 void MainWindow::reinitialiserTableEmployes()
 {
     Employe e;
@@ -953,6 +980,16 @@ void MainWindow::reinitialiserTableEmployes()
     ui->comboBox_recherche->setCurrentIndex(-1); // désélectionne recherche
     ui->lineEdit_recherche->clear(); // vide le champ
 }
+
+
+
+
+
+
+
+
+
+
 void MainWindow::chargerNomsDansComboBoxPDF()
 {
     QSqlQuery query("SELECT CIN, NOM, PRENOM FROM SMARTVACC.EMPLOYES ORDER BY NOM ASC");
@@ -1151,6 +1188,18 @@ void MainWindow::exporterPlanningHoraireHTML()
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 void MainWindow::convertirHTMLenPDF(const QString& cheminHTML)
 {
     QString cheminPDF = cheminHTML;
@@ -1176,6 +1225,12 @@ void MainWindow::convertirHTMLenPDF(const QString& cheminHTML)
         QMessageBox::warning(this, "Erreur", "La génération du PDF a échoué.");
     }
 }
+
+
+
+
+
+
 
 
 
@@ -1207,31 +1262,57 @@ void MainWindow::afficherStatistiquesEmployes()
     }
 
     double taux = total > 0 ? ((double)indispo / total) * 100 : 0;
-    std::sort(anciens.begin(), anciens.end(), [](auto &a, auto &b) { return a.second < b.second; });
+    std::sort(anciens.begin(), anciens.end(), [](auto &a, auto &b) {
+        return a.second < b.second;
+    });
 
     QString top3;
     for (int i = 0; i < anciens.size() && i < 3; ++i) {
         top3 += QString::number(i + 1) + ". " + anciens[i].first + " (" + anciens[i].second.toString("dd/MM/yyyy") + ")<br>";
     }
 
-    QString statistiques = "📊 <b>Total :</b> " + QString::number(total) +
-                           "<br>✅ <b>Disponibles :</b> " + QString::number(dispo) +
-                           "<br>❌ <b>Absents :</b> " + QString::number(indispo);
+    QString statistiques = R"(
+<div style='font-family:"Segoe UI", sans-serif;
+            font-size:14px;
+            color:#ecf0f1;
+            line-height:1.5;
+            text-align:left;
+            padding:10px;
+            background: transparent;'>
+
+    <h2 style='color:#e74c3c; text-align:center; font-size:16px; margin-bottom:10px;'>📊 Statistiques RH des Employés</h2>
+
+    <p><b>Total :</b> )" + QString::number(total) + R"(</p>
+    <p><b>✅ Disponibles :</b> )" + QString::number(dispo) + R"(</p>
+    <p><b>❌ Absents :</b> )" + QString::number(indispo) + R"(</p>
+)";
 
     if (taux > 50.0)
-        statistiques += "<br><br><span style='color:red; font-weight:bold;'>🚨 Plus de 50% des employés sont absents !</span>";
+        statistiques += "<p style='color:red; font-weight:bold;'>🚨 Plus de 50% des employés sont absents !</p>";
 
     for (auto it = absentsParPoste.begin(); it != absentsParPoste.end(); ++it) {
         double tauxPoste = (double)it.value() / totalParPoste[it.key()] * 100;
         if (tauxPoste > 50.0)
-            statistiques += "<br><span style='color:orange;'>⚠️ " + it.key() + " : " + QString::number(tauxPoste, 'f', 1) + "% absents</span>";
+            statistiques += "<p style='color:orange;'>⚠️ " + it.key() + " : " + QString::number(tauxPoste, 'f', 1) + "% absents</p>";
     }
 
-    statistiques += "<br><br>📈 <b>Taux d’absentéisme :</b> <span style='color:" + QString(taux > 50 ? "red" : "green") + ";'>" + QString::number(taux, 'f', 1) + "%</span>";
-    statistiques += "<br><br>👴 <b>Top 3 Anciens Employés :</b><br>" + top3;
-    ui->label_statistiques->setText(statistiques);
+    statistiques += "<p><b>📈 Taux d’absentéisme :</b> <span style='color:" + QString(taux > 50 ? "red" : "limegreen") + "; font-weight:bold;'>" +
+                    QString::number(taux, 'f', 1) + "%</span></p>";
 
-    // 🔵 Création du camembert avec % et flèches
+    statistiques += "<h3 style='margin-top:15px;'>👴 <b>Top 3 Anciens Employés :</b></h3><p>" + top3 + "</p></div>";
+
+    ui->label_statistiques->setText(statistiques);
+    ui->label_statistiques->setAlignment(Qt::AlignCenter);
+    ui->label_statistiques->setStyleSheet(R"(
+        QLabel {
+            background: transparent;
+            font-size: 14px;
+            color: #ecf0f1;
+            font-family: 'Segoe UI', sans-serif;
+        }
+    )");
+
+    // 🔵 Camembert
     QPieSeries *series = new QPieSeries();
     if (total > 0) {
         double dispoPct = (double)dispo / total * 100.0;
@@ -1240,8 +1321,8 @@ void MainWindow::afficherStatistiquesEmployes()
         QPieSlice *sliceDispo = series->append("Disponibles (" + QString::number(dispoPct, 'f', 1) + "%)", dispo);
         QPieSlice *sliceIndispo = series->append("Absents (" + QString::number(absPct, 'f', 1) + "%)", indispo);
 
-        sliceDispo->setBrush(QColor("#2ecc71"));
-        sliceIndispo->setBrush(QColor("#e74c3c"));
+        sliceDispo->setBrush(QColor("#2ecc71"));         // Vert
+        sliceIndispo->setBrush(QColor("#e74c3c"));       // Rouge
         sliceIndispo->setExploded(true);
         sliceIndispo->setExplodeDistanceFactor(0.12);
 
@@ -1256,7 +1337,7 @@ void MainWindow::afficherStatistiquesEmployes()
     chart->setTitle("📊 Répartition des employés par disponibilité");
     chart->setTitleFont(QFont("Segoe UI", 14, QFont::Bold));
     chart->setTitleBrush(Qt::white);
-    chart->setBackgroundBrush(QColor("#2c3e50"));
+    chart->setBackgroundBrush(QColor("#2c3e50"));  // Fond foncé
     chart->legend()->setLabelColor(Qt::white);
     chart->legend()->setAlignment(Qt::AlignBottom);
 
@@ -1280,7 +1361,6 @@ void MainWindow::afficherStatistiquesEmployes()
 
     afficherTableauAbsencesDetaillees();
 }
-
 
 
 
@@ -1358,23 +1438,10 @@ void MainWindow::afficherTableauAbsencesDetaillees()
 }
 
 
-/*void MainWindow::on_button_chatbot_icon_clicked()
-{
-    QPropertyAnimation *animation = new QPropertyAnimation(ui->frame_chatbox, "maximumHeight");
-    animation->setDuration(300);
-    animation->setEasingCurve(QEasingCurve::OutCubic);
 
-    if (ui->frame_chatbox->isVisible()) {
-        animation->setStartValue(ui->frame_chatbox->height());
-        animation->setEndValue(0);
-        connect(animation, &QPropertyAnimation::finished, ui->frame_chatbox, &QWidget::hide);
-    } else {
-        ui->frame_chatbox->show();
-        animation->setStartValue(0);
-        animation->setEndValue(200); // ou la taille désirée
-    }
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
-}*/
+
+
+
 
 
 void MainWindow::on_button_fermer_chatbot_clicked()
@@ -1407,6 +1474,18 @@ void MainWindow::on_button_envoyer_clicked()
     envoyerRequeteChatGPT(question);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 void MainWindow::envoyerRequeteChatGPT(const QString &message)
 {
     QJsonObject json;
@@ -1431,6 +1510,19 @@ void MainWindow::envoyerRequeteChatGPT(const QString &message)
     QJsonDocument doc(json);
     manager->post(request, doc.toJson());
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void MainWindow::receptionReponseGPT(QNetworkReply *reply)
@@ -1461,6 +1553,20 @@ void MainWindow::receptionReponseGPT(QNetworkReply *reply)
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 QString MainWindow::chercherReponseFAQ(const QString &question)
 {
     QString questionMin = question.toLower();
@@ -1472,6 +1578,12 @@ QString MainWindow::chercherReponseFAQ(const QString &question)
     return ""; // Rien trouvé
 }
 
+
+
+
+
+
+
 void MainWindow::enregistrerConnexion(const QString& login) {
     QFile file("historique_connexions.txt");
     if (file.open(QIODevice::Append | QIODevice::Text)) {
@@ -1481,15 +1593,56 @@ void MainWindow::enregistrerConnexion(const QString& login) {
         file.close();
     }
 }
+
+
+
+
+
+
+
 void MainWindow::afficherHistoriqueConnexions() {
     QFile file("historique_connexions.txt");
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&file);
-        QString contenu = in.readAll();
-        ui->textEdit_historique->setPlainText(contenu);
-        file.close();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "Erreur", "Impossible d'ouvrir le fichier d'historique !");
+        return;
     }
+
+    QTextStream in(&file);
+    ui->tableWidget_historique->clear();  // Nettoyage
+    ui->tableWidget_historique->setRowCount(0);
+    ui->tableWidget_historique->setColumnCount(2);
+    ui->tableWidget_historique->setHorizontalHeaderLabels({"Utilisateur", "Date & Heure"});
+
+    int row = 0;
+    while (!in.atEnd()) {
+        QString ligne = in.readLine().trimmed();
+        if (ligne.isEmpty()) continue;
+
+        QStringList parts = ligne.split("|");
+        if (parts.size() == 2) {
+            ui->tableWidget_historique->insertRow(row);
+            ui->tableWidget_historique->setItem(row, 0, new QTableWidgetItem(parts[0].trimmed()));
+            ui->tableWidget_historique->setItem(row, 1, new QTableWidgetItem(parts[1].trimmed()));
+            row++;
+        }
+    }
+
+    file.close();
+
+    ui->tableWidget_historique->resizeColumnsToContents();
+    ui->tableWidget_historique->horizontalHeader()->setStretchLastSection(true);
 }
+
+
+
+
+
+
+
+
+
+
+
 
 void MainWindow::on_pushButtonStat_15_clicked()
 {
