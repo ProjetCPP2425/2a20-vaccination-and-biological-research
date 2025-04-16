@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Planning Hebdomadaire</title>
+<style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .header img { width: 80px; height: 80px; }
+    .title-block { flex-grow: 1; text-align: center; }
+    .title-block h1 { font-size: 26px; margin-bottom: 5px; }
+    .title-block p { font-size: 16px; margin-bottom: 0; }
+
+    .commentaire { text-align: center; margin: 5px 0 15px; font-size: 16px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th { background-color: #2980b9; color: white; padding: 10px; font-size: 14px; }
+    td { padding: 8px; text-align: center; border: 1px solid #ccc; font-size: 13px; }
+    tr:nth-child(even) { background-color: #f4f7fa; }
+
+    .green { color: green; font-weight: bold; }
+    .red { color: red; font-weight: bold; }
+
+    .summary { margin-top: 10px; font-size: 15px; padding: 10px; background: #ecf0f1; border-radius: 8px; }
+    .signature { margin-top: 40px; text-align: right; font-style: italic; font-size: 15px; padding-right: 40px; }
+    .signature-line { border-top: 1px solid #000; width: 300px; margin-top: 20px; float: right; }
+
+    .actions { text-align: center; margin-top: 40px; }
+    button { padding: 10px 20px; font-size: 15px; border: none; background-color: #3498db; color: white; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #2980b9; }
+</style>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'></script>
+<script>
+    function generatePDF() {
+        const element = document.body;
+        html2pdf().set({
+            margin: 0.2,
+            filename: 'planning_employes.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+        }).from(element).save();
+    }
+</script>
+</head>
+<body>
+<div class='header'>
+            <img src=':/images/logo.png'>
+    <div class='title-block'>
+        <h1>📅 Planning Hebdomadaire des Employés</h1>
+        <p><strong>Période :</strong> 01/01/2000 ➡ 01/01/2000</p>
+    </div>
+</div>
+
+<div class='commentaire'><strong>Commentaire général RH :</strong> <span contenteditable='true'>-</span></div>
+<table><tr><th>CIN</th><th>Nom</th><th>Poste</th><th>Disponibilité</th><th>Absence</th><th>Sat<br>01/01</th><th>Remarques RH</th></tr><tr><td>10000018</td><td>Rania Masmoudi</td><td>medecin</td><td class='red'>Non</td><td>Congé annuel</td><td contenteditable='true'>10h-14h</td><td contenteditable='true'>-</td></tr><tr><td>10110001</td><td>Ali Bouzid</td><td>médecin</td><td class='red'>Non</td><td>Congé maladie</td><td contenteditable='true'>08:00-16:00</td><td contenteditable='true'>-</td></tr><tr><td>10110002</td><td>Sara Hammami</td><td>infirmier</td><td class='red'>Non</td><td>Accident travail</td><td contenteditable='true'>08:00-16:00</td><td contenteditable='true'>-</td></tr><tr><td>10110003</td><td>Omar Ben Ali</td><td>secrétaire</td><td class='green'>Oui</td><td></td><td contenteditable='true'>09:00-17:00</td><td contenteditable='true'>-</td></tr><tr><td>10110004</td><td>Leila Sassi</td><td>médecin</td><td class='red'>Non</td><td>Maternité</td><td contenteditable='true'>08:00-16:00</td><td contenteditable='true'>-</td></tr><tr><td>10110005</td><td>Youssef Trabelsi</td><td>infirmier</td><td class='green'>Oui</td><td></td><td contenteditable='true'>08:00-16:00</td><td contenteditable='true'>-</td></tr><tr><td>10110006</td><td>Hana Mokni</td><td>technicien</td><td class='red'>Non</td><td>Congé sans solde</td><td contenteditable='true'>07:00-15:00</td><td contenteditable='true'>-</td></tr><tr><td>10110007</td><td>Walid Ammar</td><td>technicien</td><td class='green'>Oui</td><td></td><td contenteditable='true'>07:00-15:00</td><td contenteditable='true'>-</td></tr><tr><td>10110008</td><td>Ameni Zribi</td><td>infirmier</td><td class='red'>Non</td><td>Congé</td><td contenteditable='true'>08:00-16:00</td><td contenteditable='true'>-</td></tr><tr><td>10110009</td><td>Mohamed Kefi</td><td>médecin</td><td class='red'>Non</td><td>Longue maladie</td><td contenteditable='true'>08:00-16:00</td><td contenteditable='true'>-</td></tr><tr><td>10000000</td><td>mayar ben ghars</td><td>carnet</td><td class='green'>Oui</td><td>Medicales</td><td contenteditable='true'>9h-11h</td><td contenteditable='true'>-</td></tr><tr><td>02315697</td><td>ben ghedifa habib</td><td>medecin</td><td class='green'>Oui</td><td>Prévues</td><td contenteditable='true'>10h-14h</td><td contenteditable='true'>-</td></tr><tr><td>10000001</td><td>Farid Docteur</td><td>medecin</td><td class='green'>Oui</td><td></td><td contenteditable='true'>10h-14h</td><td contenteditable='true'>-</td></tr><tr><td>10000002</td><td>Amira Ines</td><td>infirmier</td><td class='green'>Oui</td><td></td><td contenteditable='true'>8h-12h</td><td contenteditable='true'>-</td></tr><tr><td>10000003</td><td>Yassmine HR</td><td>hr</td><td class='green'>Oui</td><td>Medicales</td><td contenteditable='true'>14h-17h</td><td contenteditable='true'>-</td></tr><tr><td>10000004</td><td>Sami Prod</td><td>produits</td><td class='green'>Oui</td><td></td><td contenteditable='true'>13h-16h</td><td contenteditable='true'>-</td></tr><tr><td>10000005</td><td>Hanen Carnet</td><td>carnet</td><td class='green'>Oui</td><td></td><td contenteditable='true'>9h-11h</td><td contenteditable='true'>-</td></tr><tr><td>10000006</td><td>Rim Camp</td><td>compagne</td><td class='green'>Oui</td><td></td><td contenteditable='true'>11h-15h</td><td contenteditable='true'>-</td></tr><tr><td>10000007</td><td>Nada Vacc</td><td>vaccin</td><td class='green'>Oui</td><td>Prévues</td><td contenteditable='true'>9h-12h</td><td contenteditable='true'>-</td></tr><tr><td>10000008</td><td>Maya Root</td><td>admin</td><td class='green'>Oui</td><td></td><td contenteditable='true'>8h-10h</td><td contenteditable='true'>-</td></tr></table><div class='summary'>Total : 20 | Disponibles : 13 | Taux : 65.0%</div>
+    <div class='signature'>
+        <p>Signé par le responsable RH</p>
+        <div class='signature-line'></div>
+    </div>
+
+    <p style="text-align:center; font-style:italic; margin-top: 30px; color: gray;">
+        🖊️ Vous pouvez modifier les horaires ou les remarques ci-dessus.<br>
+        Ensuite, cliquez sur le bouton ci-dessous pour générer un PDF.
+    </p>
+
+    <div class='actions'>
+        <button onclick=" generatePDF() ">📥 Télécharger une copie PDF personnalisée</button>
+    </div>
+
+</body>
+</html>

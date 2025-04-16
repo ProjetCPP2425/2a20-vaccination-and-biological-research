@@ -110,13 +110,13 @@ public:
     QPushButton *btn_rechercher;
     QPushButton *btn_reset_table;
     QWidget *Statistique;
-    QLabel *label_10;
     QPushButton *btn_stats_employes;
     QLabel *label_statistiques;
     QFrame *frame_stats;
     QVBoxLayout *verticalLayout;
     QWidget *widget_4;
     QTableWidget *table_absences;
+    QLabel *label_11;
     QWidget *pdf;
     QComboBox *comboBox_employe_pdf;
     QDateEdit *dateEdit_debut_pdf;
@@ -127,10 +127,9 @@ public:
     QLineEdit *lineEdit_question;
     QPushButton *button_envoyer;
     QPushButton *button_fermer_chatbot;
-    QPushButton *button_chatbot_icon;
     QWidget *tab;
     QPushButton *btn_historique_connexions;
-    QTextEdit *textEdit_historique;
+    QTableWidget *tableWidget_historique;
     QWidget *pageProd;
     QWidget *widget_5;
     QLabel *label_48;
@@ -1128,18 +1127,15 @@ public:
         Affichage->addTab(lirect, QString());
         Statistique = new QWidget();
         Statistique->setObjectName("Statistique");
-        label_10 = new QLabel(Statistique);
-        label_10->setObjectName("label_10");
-        label_10->setGeometry(QRect(380, 10, 271, 20));
         btn_stats_employes = new QPushButton(Statistique);
         btn_stats_employes->setObjectName("btn_stats_employes");
-        btn_stats_employes->setGeometry(QRect(20, 80, 231, 29));
+        btn_stats_employes->setGeometry(QRect(20, 10, 211, 29));
         label_statistiques = new QLabel(Statistique);
         label_statistiques->setObjectName("label_statistiques");
-        label_statistiques->setGeometry(QRect(90, 130, 331, 291));
+        label_statistiques->setGeometry(QRect(10, 50, 601, 351));
         frame_stats = new QFrame(Statistique);
         frame_stats->setObjectName("frame_stats");
-        frame_stats->setGeometry(QRect(630, 40, 571, 401));
+        frame_stats->setGeometry(QRect(790, 80, 441, 291));
         frame_stats->setFrameShape(QFrame::Shape::StyledPanel);
         frame_stats->setFrameShadow(QFrame::Shadow::Raised);
         verticalLayout = new QVBoxLayout(frame_stats);
@@ -1151,7 +1147,20 @@ public:
 
         table_absences = new QTableWidget(Statistique);
         table_absences->setObjectName("table_absences");
-        table_absences->setGeometry(QRect(180, 460, 721, 201));
+        table_absences->setGeometry(QRect(20, 420, 1221, 291));
+        label_11 = new QLabel(Statistique);
+        label_11->setObjectName("label_11");
+        label_11->setGeometry(QRect(370, -10, 491, 51));
+        label_11->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"        color: #c0392b;               /* Rouge fonc\303\251 \303\251l\303\251gant */\n"
+"        font-size: 24px;              /* Grande taille de police */\n"
+"        font-weight: bold;            /* Texte en gras */\n"
+"        text-align: center;\n"
+"        padding: 10px;                /* Espace int\303\251rieur */\n"
+"        border-bottom: 2px solid #e74c3c;  /* Ligne d\303\251corative en bas */\n"
+"        border-radius: 8px;           /* Coins arrondis */\n"
+"        font-family: 'Segoe UI', sans-serif; /* Police moderne */\n"
+"    }"));
         Affichage->addTab(Statistique, QString());
         pdf = new QWidget();
         pdf->setObjectName("pdf");
@@ -1191,18 +1200,15 @@ public:
         button_fermer_chatbot = new QPushButton(frame_chatbox);
         button_fermer_chatbot->setObjectName("button_fermer_chatbot");
         button_fermer_chatbot->setGeometry(QRect(280, 10, 31, 21));
-        button_chatbot_icon = new QPushButton(pdf);
-        button_chatbot_icon->setObjectName("button_chatbot_icon");
-        button_chatbot_icon->setGeometry(QRect(970, 560, 50, 50));
         Affichage->addTab(pdf, QString());
         tab = new QWidget();
         tab->setObjectName("tab");
         btn_historique_connexions = new QPushButton(tab);
         btn_historique_connexions->setObjectName("btn_historique_connexions");
         btn_historique_connexions->setGeometry(QRect(30, 20, 291, 29));
-        textEdit_historique = new QTextEdit(tab);
-        textEdit_historique->setObjectName("textEdit_historique");
-        textEdit_historique->setGeometry(QRect(110, 80, 911, 481));
+        tableWidget_historique = new QTableWidget(tab);
+        tableWidget_historique->setObjectName("tableWidget_historique");
+        tableWidget_historique->setGeometry(QRect(10, 60, 1241, 641));
         Affichage->addTab(tab, QString());
         stackedWidget->addWidget(pageEmp);
         pageProd = new QWidget();
@@ -3909,7 +3915,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 2096, 26));
+        menubar->setGeometry(QRect(0, 0, 2096, 25));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -3917,7 +3923,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        Affichage->setCurrentIndex(4);
+        Affichage->setCurrentIndex(3);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
@@ -4008,17 +4014,16 @@ public:
         btn_rechercher->setText(QCoreApplication::translate("MainWindow", "Rechercher", nullptr));
         btn_reset_table->setText(QCoreApplication::translate("MainWindow", "reset", nullptr));
         Affichage->setTabText(Affichage->indexOf(lirect), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
-        label_10->setText(QCoreApplication::translate("MainWindow", "Statistiques d'absent\303\251isme des employ\303\251s", nullptr));
         btn_stats_employes->setText(QCoreApplication::translate("MainWindow", "Calculer le taux d'absent\303\251isme", nullptr));
         label_statistiques->setText(QString());
+        label_11->setText(QCoreApplication::translate("MainWindow", "Statistiques d'absent\303\251isme des employ\303\251s", nullptr));
         Affichage->setTabText(Affichage->indexOf(Statistique), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
         btn_planning_pdf->setText(QCoreApplication::translate("MainWindow", "Generer pdf", nullptr));
         button_envoyer->setText(QCoreApplication::translate("MainWindow", "envoyer", nullptr));
         button_fermer_chatbot->setText(QCoreApplication::translate("MainWindow", "X", nullptr));
-        button_chatbot_icon->setText(QString());
-        Affichage->setTabText(Affichage->indexOf(pdf), QCoreApplication::translate("MainWindow", "Page", nullptr));
+        Affichage->setTabText(Affichage->indexOf(pdf), QCoreApplication::translate("MainWindow", "PDF", nullptr));
         btn_historique_connexions->setText(QCoreApplication::translate("MainWindow", "Afficher l'historique des connexions", nullptr));
-        Affichage->setTabText(Affichage->indexOf(tab), QCoreApplication::translate("MainWindow", "Page", nullptr));
+        Affichage->setTabText(Affichage->indexOf(tab), QCoreApplication::translate("MainWindow", "Historique des connexions", nullptr));
         label_48->setText(QCoreApplication::translate("MainWindow", "Bienvenue dans la section de gestion de produits", nullptr));
         groupBox_5->setTitle(QString());
         label_38->setText(QCoreApplication::translate("MainWindow", "         Id_Produit:", nullptr));

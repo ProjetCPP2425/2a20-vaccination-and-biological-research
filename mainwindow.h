@@ -55,8 +55,9 @@
 #include <QTimer>
 #include <QDate>
 #include <QTimer>
+#include <QPushButton> // pour QPushButton
+#include <QResizeEvent> // pour resizeEvent
 
-//QT_CHARTS_USE_NAMESPACE
 
 
 
@@ -95,7 +96,11 @@ private slots:
     void receptionReponseGPT(QNetworkReply *reply);
       void on_button_fermer_chatbot_clicked();
     void afficherHistoriqueConnexions();
+      void on_pushButtonStat_15_clicked();
+
+      void on_pushButton_pdf_3_clicked();
  // Pour envoyer la question
+
 
 
     //void actualiserStatistiquesAbsenteisme();
@@ -120,6 +125,8 @@ private slots:
 
 
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 
 
@@ -154,6 +161,9 @@ private:
 
 
     Employe employe;
+    QMap<QString, QString> cacheGPT;
+    QPushButton *chatbotButton;
+
     QChartView *chartViewStatistique = nullptr;  // pour éviter plusieurs affichages
     QChartView *chartViewParPoste = nullptr;
     QNetworkAccessManager *manager;
@@ -180,6 +190,9 @@ private:
     QString chercherReponseFAQ(const QString &question);
     void enregistrerConnexion(const QString& login);
     void afficherDashboard(const QString& prenom, const QString& poste);
+    void afficherChatbot();
+    void convertirHTMLenPDF(const QString& cheminHTML);
+
 
 
 
