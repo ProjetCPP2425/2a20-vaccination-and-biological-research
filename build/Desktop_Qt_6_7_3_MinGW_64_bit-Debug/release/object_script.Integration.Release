@@ -1,0 +1,10 @@
+release/carnets.o
+release/compagne.o
+release/employes.o
+release/laboratoire.o
+release/main.o
+release/mainwindow.o
+release/connection.o
+release/smsnotif.o
+release/qrc_images.o
+release/moc_mainwindow.o

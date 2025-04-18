@@ -7,7 +7,8 @@
 QT       += core gui sql
 
 QT += network
-
+QT +=  charts
+QT += axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,6 +32,7 @@ SOURCES += \
     carnets.cpp \
     compagne.cpp \
     employes.cpp \
+    laboratoire.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp \
@@ -40,6 +42,7 @@ HEADERS += \
     carnets.h \
     compagne.h \
     employes.h \
+    laboratoire.h \
         mainwindow.h \
     connection.h \
     smsnotif.h

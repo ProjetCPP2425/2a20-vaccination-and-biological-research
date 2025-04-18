@@ -84,6 +84,25 @@
 #include <QSqlError>
 #include <QMessageBox>
 
+
+//mayssem
+
+#include "laboratoire.h"
+
+#include<QtNetwork/QTcpSocket>
+#include<QtNetwork/QTcpServer>
+
+#include <QtNetwork/QHostAddress>
+#include <QDataStream>
+#include <QString>
+#include <QByteArray>
+#include <QList>
+#include <QTcpSocket>
+
+
+
+
+
 class DragDropListWidget : public QListWidget {
     Q_OBJECT
 public:
@@ -169,6 +188,15 @@ namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
+
+//mayssem
+struct LaboStats {
+    int nbProjets;
+    int personnel;
+    int matriels;
+    float depense;
+};
+
 
 
 class MainWindow : public QMainWindow
@@ -263,6 +291,26 @@ private slots:
 
 
     void on_pushButtonStat_14_clicked();
+
+
+
+    //mayssem
+    void on_pushButton_32_clicked();
+    void displayLaboratoires();
+    void on_pushButton_37_clicked();
+    void on_pushButton_34_clicked();
+    void validateFields();
+    void  populateResponsableComboBox();
+    void rechercherLabo(const QString &searchText);
+    void on_comboBox_Tri_currentIndexChanged_M();
+    void onTabWidgetPageChanged(int index);
+    void onExcelClicked();
+    void populateNomlabComboBox();
+    void showMap();
+    void on_selectLab_clicked();   // Slot to handle lab selection
+    void on_sendMessage_clicked(); // Slot to handle send message button click
+    void Read_Data_From_Socket();
+    void clearAjoutFields();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -359,7 +407,14 @@ private:
     QList<DragDropListWidget*> listeWidgetsCampagnes; // Colonnes des campagnes
 
 
-
+   //mayssem
+    Laboratoire labTmp;
+    void goToStatistiques();
+    bool exporterLabsVersExcel(const QString& cheminFichier);
+    QMap<QString, LaboStats> fetchLaboStatistics();
+    void displayStatisticsChart();
+    QTcpSocket *TCPSocket;
+    void populateLabNameComboBox();
 
 
 

@@ -1,0 +1,10 @@
+debug/carnets.o
+debug/compagne.o
+debug/employes.o
+debug/laboratoire.o
+debug/main.o
+debug/mainwindow.o
+debug/connection.o
+debug/smsnotif.o
+debug/qrc_images.o
+debug/moc_mainwindow.o
