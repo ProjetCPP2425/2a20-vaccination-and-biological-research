@@ -45,11 +45,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     connect(ui->nomProduit, &QLineEdit::textChanged, this, &MainWindow::verifierNomProduit);
-    connect(ui->nomFournisseur, &QLineEdit::textChanged, this, &MainWindow::validerChamps);
-    connect(ui->dateExpiration, &QDateEdit::dateChanged, this, &MainWindow::validerChamps);
-    connect(ui->quantite, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::validerChamps);
-    connect(ui->rechercher, &QPushButton::clicked, this, &MainWindow::on_rechercher_clicked);
-    connect(ui->Stat, &QPushButton::clicked, this, &MainWindow::on_Stat_clicked);
+    connect(ui->nomFournisseur, &QLineEdit::textChanged, this, &MainWindow::validerChampsP);
+    connect(ui->dateExpiration, &QDateEdit::dateChanged, this, &MainWindow::validerChampsP);
+    connect(ui->quantite, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::validerChampsP);
+    connect(ui->rechercher, &QPushButton::clicked, this, &MainWindow::on_rechercherP_clicked);
+    connect(ui->Stat, &QPushButton::clicked, this, &MainWindow::on_StatP_clicked);
 
     auto updateSidebarVisibility = [=](int index) {
         ui->frame->setVisible(index != 6);
@@ -78,7 +78,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->produits, &QPushButton::clicked, this, [=](){
         ui->stackedWidget->setCurrentIndex(1);
         ui->frame->setVisible(true);
+
     });
+
 
     connect(ui->labo, &QPushButton::clicked, this, [=](){
         ui->stackedWidget->setCurrentIndex(2);
@@ -152,7 +154,7 @@ void MainWindow::verifierNomProduit()
         ui->nomProduit->setStyleSheet("border: 2px solid green;");
     }
 }
-void MainWindow::validerChamps()
+void MainWindow::validerChampsP()
 {
     QString nom = ui->nomProduit->text().trimmed();
     QString nomFournisseur = ui->nomFournisseur->text().trimmed();
@@ -211,9 +213,9 @@ void MainWindow::validerChamps()
 
 
 
-void MainWindow::on_supprimer_clicked()
+void MainWindow::on_supprimer_clickedP()
 {
-    QString nomProduit = ui->lineEdit_20->text().trimmed();
+    QString nomProduit = ui->champRecherche->text().trimmed();
 
     if (nomProduit.isEmpty()) {
         QMessageBox::warning(this, "Erreur", "Veuillez entrer un nom de produit à supprimer.");
@@ -243,12 +245,12 @@ void MainWindow::on_supprimer_clicked()
         QMessageBox::information(this, "Succès", "Produit supprimé avec succès !");
 
         // 🔄 Mettre à jour l'affichage après suppression
-        ui->tableView->setModel(nullptr);
-        ui->tableView->setModel(produit.afficher());
-        ui->tableView->resizeColumnsToContents();
+        ui->TableViewP->setModel(nullptr);
+        ui->TableViewP->setModel(produit.afficher());
+        ui->TableViewP->resizeColumnsToContents();
 
         // 🔄 Nettoyer le champ de saisie
-        ui->lineEdit_20->clear();
+        ui->champRecherche->clear();
     } else {
         QMessageBox::critical(this, "Erreur", "Échec de la suppression du produit !");
     }
@@ -259,13 +261,22 @@ void MainWindow::on_Affichage_2_currentChanged(int index)
 {
     if (index == 1) {
         Produit produit;
-        ui->tableView->setModel(produit.afficher());
+         // Exemple : largeur 1000px, hauteur 600px
+
+        ui->TableViewP->setModel(produit.afficher());
+        ui->TableViewP->setMinimumSize(1000, 600);
+        ui->TableViewP->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+        // 📐 Ajustement des colonnes et lignes
+        ui->TableViewP->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        ui->TableViewP->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     }
 }
 
 
 
-void MainWindow::on_ajouter_clicked()
+void MainWindow::on_ajouterP_clicked()
 { if (!QSqlDatabase::database().isOpen()) {
         qDebug() << "Base de données non connectée !";
 
@@ -327,9 +338,9 @@ void MainWindow::on_ajouter_clicked()
     }
     ui->stackedWidget->setCurrentIndex(1);
     ui->Affichage_2->setCurrentIndex(1);
-    ui->tableView->setModel(nullptr);
-    ui->tableView->setModel(produit.afficher());
-    ui->tableView->resizeColumnsToContents();
+    ui->TableViewP->setModel(nullptr);
+    ui->TableViewP->setModel(produit.afficher());
+    ui->TableViewP->resizeColumnsToContents();
 
     ui->nomProduit->clear();
     ui->categorie->setCurrentIndex(0);
@@ -342,9 +353,9 @@ void MainWindow::on_ajouter_clicked()
 
 
 
-void MainWindow::on_modifier_clicked()
+void MainWindow::on_modifierP_clicked()
 {
-    QString nomProduit = ui->lineEdit_20->text().trimmed();
+    QString nomProduit = ui->champRecherche->text().trimmed();
 
     if (nomProduit.isEmpty()) {
         QMessageBox::warning(this, "Erreur", "Veuillez entrer un nom de produit valide !");
@@ -367,19 +378,19 @@ void MainWindow::on_modifier_clicked()
         QMessageBox::warning(this, "Erreur", "Le produit '" + nomProduit + "' n'existe pas !");
         ui->stackedWidget->setCurrentIndex(1);
         ui->Affichage_2->setCurrentIndex(1);
-        ui->lineEdit_20->clear();
+        ui->champRecherche->clear();
         return;
 
     }
 
-    remplirChampsModification(nomProduit);
+    remplirChampsModificationP(nomProduit);
 
     ui->stackedWidget->setCurrentIndex(1);
     ui->Affichage_2->setCurrentIndex(0);
-    ui->lineEdit_20->clear();
+    ui->champRecherche->clear();
 }
 
-void MainWindow::remplirChampsModification(QString nomProduit)
+void MainWindow::remplirChampsModificationP(QString nomProduit)
 {
     QString categorie, nomFournisseur;
     int quantite;
@@ -429,14 +440,14 @@ void MainWindow::on_pushButton_11_clicked()
 
 
 
-void MainWindow::on_rechercher_clicked()
+void MainWindow::on_rechercherP_clicked()
 { QString critere = ui->champRecherche->text().trimmed();
 
     Produit produit;
     QSqlQueryModel *model = produit.rechercherTout(critere);
 
-    ui->tableView->setModel(model);
-    ui->tableView->resizeColumnsToContents();
+    ui->TableViewP->setModel(model);
+    ui->TableViewP->resizeColumnsToContents();
     if (model->rowCount()==0){
         QMessageBox::information(this, "Recherche","Aucun resultat trouvé ");
     }
@@ -454,14 +465,14 @@ void MainWindow::on_pushButton_clicked()
     QSqlQueryModel* model = produit.trierPar("EXP_DESC");
 
     if (model) {
-        ui->tableView->setModel(model);
-        ui->tableView->resizeColumnsToContents();
+        ui->TableViewP->setModel(model);
+        ui->TableViewP->resizeColumnsToContents();
     }312
 
 }
 */
 
-void MainWindow::on_comboBox_6_activated(int index)
+void MainWindow::on_comboBox_6P_activated(int index)
 {
     Produit produit;
     QSqlQueryModel* model = nullptr;
@@ -477,14 +488,14 @@ void MainWindow::on_comboBox_6_activated(int index)
     }
 
     if (model) {
-        //ui->tableView->setSortingEnabled(false);
-        ui->tableView->setModel(model);
-        ui->tableView->resizeColumnsToContents();
+        //ui->TableViewP->setSortingEnabled(false);
+        ui->TableViewP->setModel(model);
+        ui->TableViewP->resizeColumnsToContents();
     }
 }
 
 
-void MainWindow::on_pdf_clicked()
+void MainWindow::on_pdfP_clicked()
 {
     Produit produit;
     QSqlQueryModel* model = produit.rapportStockSecurite();
@@ -517,7 +528,7 @@ void MainWindow::on_pdf_clicked()
 
     // 🧾 Titre du rapport bien centré et en plus grand
     html += "<p style='font-size:65pt; font-weight:bold; color:#1B5E20; text-align:center; margin:10px;'>"
-            "📋 Rapport : Quantité de produits à acheter </p>";
+            "📋  produits à acheter </p>";
 
     // 🕓 Date alignée à droite
     html += "<p style='text-align:right; font-size:50pt; color:#000; margin-top:-10px;'>"
@@ -545,9 +556,7 @@ void MainWindow::on_pdf_clicked()
             if (j == 4 || j == 5) { // Date fabrication ou expiration
                 QDate date = model->data(model->index(i, j)).toDate();
                 value = date.isValid() ? date.toString("dd-MM-yyyy") : "—";
-            } else if (j == 3) { // Colonne Quantité
-                value = "50"; // 🔁 Remplacer 1 par 50 dans l'affichage
-            } else {
+            }  else {
                 value = model->data(model->index(i, j)).toString();
             }
 
@@ -572,9 +581,9 @@ void MainWindow::on_pdf_clicked()
 
 
 
-void MainWindow::on_tableView_clicked(const QModelIndex &index)
+void MainWindow::on_TableViewP_clicked(const QModelIndex &index)
 {
-    QAbstractItemModel* model = ui->tableView->model();
+    QAbstractItemModel* model = ui->TableViewP->model();
 
         int row = index.row();
 
@@ -662,7 +671,7 @@ void MainWindow::on_telecharger_qr_code_clicked()
         QMessageBox::warning(this, tr("Error"), tr("No QR Code to save."));
     }
 }
-void MainWindow::on_Stat_clicked()
+void MainWindow::on_StatP_clicked()
 {
     // 👉 Afficher l'onglet Statistiques
     ui->Affichage_2->setCurrentIndex(2);
@@ -726,7 +735,23 @@ void MainWindow::on_Stat_clicked()
         delete child->widget();
         delete child;
     }
-
+    chartView->setMinimumSize(800, 600);
     // ➕ Ajouter le nouveau graphique dans l'interface
     ui->layoutStatistiques->addWidget(chartView);
+    QFont fontLabel;
+    fontLabel.setPointSize(12);
+    for (auto slice : series->slices()) {
+        slice->setLabelFont(fontLabel);
+    }
+
+    // 🏷️ Police du titre
+    QFont fontTitre;
+    fontTitre.setPointSize(14);
+    fontTitre.setBold(true);
+    chart->setTitleFont(fontTitre);
+
+    // 📜 Police de la légende
+    QFont fontLegende;
+    fontLegende.setPointSize(12);
+    chart->legend()->setFont(fontLegende);
 }

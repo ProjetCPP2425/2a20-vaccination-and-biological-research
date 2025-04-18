@@ -26,22 +26,22 @@ public:
 private slots:
 
 
-    void on_ajouter_clicked();
-    void validerChamps();
+    void on_ajouterP_clicked();
+    void validerChampsP();
 
-    void on_supprimer_clicked();
+    void on_supprimer_clickedP();
 
     void on_Affichage_2_currentChanged(int index);
 
 
-    void remplirChampsModification(QString nomProduit);
+    void remplirChampsModificationP(QString nomProduit);
 
 
     void verifierNomProduit();
 
 
 
-    void on_modifier_clicked();
+    void on_modifierP_clicked();
 
 
 
@@ -49,22 +49,22 @@ private slots:
 
 
 
-    void on_rechercher_clicked();
+    void on_rechercherP_clicked();
 
 
 
 
 
 
-    void on_comboBox_6_activated(int index);
+    void on_comboBox_6P_activated(int index);
 
     //void on_pushButton_clicked();
 
-    void on_pdf_clicked();
+    void on_pdfP_clicked();
 
-    void on_Stat_clicked();
+    void on_StatP_clicked();
 
-    void on_tableView_clicked(const QModelIndex &index);
+    void on_TableViewP_clicked(const QModelIndex &index);
 
     void on_telecharger_qr_code_clicked();
 

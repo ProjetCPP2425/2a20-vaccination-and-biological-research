@@ -310,6 +310,7 @@ if(query.exec())
        message=message+text;
    }
 
+
 }
 return message;
 
