@@ -29,6 +29,7 @@ CONFIG += c++11
 
 SOURCES += \
     carnets.cpp \
+    compagne.cpp \
     employes.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
 
 HEADERS += \
     carnets.h \
+    compagne.h \
     employes.h \
         mainwindow.h \
     connection.h \

@@ -61,6 +61,107 @@
 
 
 
+//daoussar
+
+
+
+#include "compagne.h"
+
+#include <QListWidget>
+#include <QDropEvent>
+#include <QMimeData>
+
+
+#include <QListWidgetItem>
+
+
+
+
+#include <QListWidget>
+#include <QMenu>
+#include <QAction>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QMessageBox>
+
+class DragDropListWidget : public QListWidget {
+    Q_OBJECT
+public:
+    int id_compagne;
+
+    DragDropListWidget(QWidget *parent, int compagneId)
+        : QListWidget(parent), id_compagne(compagneId) {
+        setAcceptDrops(true);
+        setDragEnabled(true);
+        setDefaultDropAction(Qt::CopyAction);
+        setContextMenuPolicy(Qt::CustomContextMenu);  // 🎯 important !
+        connect(this, &QListWidget::customContextMenuRequested, this, &DragDropListWidget::afficherMenuContextuel);
+    }
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override {
+        if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist")) {
+            event->acceptProposedAction();
+        }
+    }
+
+    void dropEvent(QDropEvent *event) override {
+        QListWidget::dropEvent(event);
+
+        QListWidgetItem *item = currentItem();
+        if (!item) return;
+
+        int id_employe = item->data(Qt::UserRole).toInt();
+
+        // Éviter les doublons
+        for (int i = 0; i < count(); ++i) {
+            if (item == this->item(i)) continue;
+            if (this->item(i)->data(Qt::UserRole).toInt() == id_employe)
+                return;
+        }
+
+        // Cloner l'item
+        QListWidgetItem *copie = new QListWidgetItem(*item);
+        addItem(copie);
+    }
+
+private slots:
+    void afficherMenuContextuel(const QPoint &pos) {
+        QListWidgetItem *item = itemAt(pos);
+        if (!item || item->flags() == Qt::NoItemFlags) return;  // ⛔ ne pas afficher le menu pour les items non déplaçables
+
+        QMenu menu;
+        QAction *supprimerAction = menu.addAction("❌ Retirer de la compagne");
+
+        QAction *choix = menu.exec(mapToGlobal(pos));
+        if (choix == supprimerAction) {
+            int id_employe = item->data(Qt::UserRole).toInt();
+
+            // ✅ Supprimer de la base
+            QSqlQuery query;
+            query.prepare("DELETE FROM CONTRIBUER WHERE ID_EMPLOYE = :e AND ID_COMPAGNE = :c");
+            query.bindValue(":e", id_employe);
+            query.bindValue(":c", id_compagne);
+
+            if (!query.exec()) {
+                QMessageBox::critical(this, "Erreur", "❌ Échec suppression : " + query.lastError().text());
+                return;
+            }
+
+            // ✅ Supprimer visuellement
+            delete takeItem(row(item));
+        }
+    }
+};
+
+
+
+
+
+
+
+
+
 
 class ButtonDelegate;
 QT_BEGIN_NAMESPACE
@@ -69,6 +170,7 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -76,6 +178,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+
+    //daoussar
+
+    void afficherAffectations(); // Affiche le tableau des affectations dynamique (style Trello)
+
+
 private slots:
 
     void on_pushButton_supprimer_employe_clicked();
@@ -124,6 +233,36 @@ private slots:
     void on_btnStat_clicked();
 
 
+
+    //daoussar
+
+    // === 🔁 Gestion CRUD des compagnes ===
+    void on_pushButton_ajouter_clicked();     // ➕ Ajouter ou modifier une compagne
+    void on_button_modifierD_clicked();        // ✏️ Charger une compagne dans le formulaire pour modification
+    void on_Button_supprimer_clicked();       // 🗑️ Supprimer une compagne
+    void on_pushButton_annuler_clicked();     // 🔁 Réinitialiser ou restaurer le formulaire
+
+    void displayCompagne();                   // 📋 Afficher la liste des compagnes
+    void navigateToCampaigns();               // 🧭 Aller vers la page des campagnes
+
+    // === 📅 Métier 1 - Gestion calendrier et PDF campagne ===
+    void on_calendar_campaigns_clicked(const QDate &date);    // 📆 Clic sur calendrier
+    void rechercherParDate(const QDate &date);                // 🔍 Recherche campagnes actives à une date
+    void on_btn_export_campaigns_clicked();                   // 🧾 Exporter les campagnes affichées en PDF
+    void genererPDFApprovisionnement(const Compagne& compagne); // 📦 Générer un PDF pour une compagne spécifique
+
+    // === 👨‍⚕️ Métier 2 - Affectation des employés ===
+    void validerAffectations();                 // ✅ Valider les affectations (glisser-déposer)
+
+    // === 📊 Statistiques ===
+    void afficherStatistiquesVaccinationParZone();  // 📈 Générer statistiques (camembert)
+
+    // === 🔍 Recherche et tri dynamique ===
+    void rechercherCompagnes(const QString &texte); // 🔍 Filtrer les compagnes
+    void trierCompagnes(const QString &critere);    // ↕️ Trier les compagnes
+
+
+    void on_pushButtonStat_14_clicked();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -194,6 +333,30 @@ private:
     void convertirHTMLenPDF(const QString& cheminHTML);
 
 
+
+
+//daoussar
+
+    // === 🧩 Données internes ===
+    Compagne compagneTmp;          // Objet temporaire pour ajout/modification
+    bool modeModification_d = false; // True si on modifie une campagne existante
+    QString nomOriginal;           // Nom de la campagne avant modification
+
+    // === 🔐 Validation ===
+    bool estValide_d(); // Vérifie que tous les champs sont correctement remplis
+
+    // === ⏰ Métier 1 - Fonctions internes ===
+    void chargerCompagnesParDate(const QDate &date);  // Campagnes actives à une date
+    void alerterCompagnesImminentes();                // Affiche un message si une campagne commence bientôt
+
+    // === 📦 Métier 2 - Affectation
+
+    bool aConflitAvecCompagne(int id_employe, QDate nouvelleDebut, QDate nouvelleFin); // Vérifie les conflits
+
+    // === 🗺️ Structures de données utilisées ===
+
+    QMap<QString, QList<QString>> mapAffectations;  // Compagne → Liste employés
+    QList<DragDropListWidget*> listeWidgetsCampagnes; // Colonnes des campagnes
 
 
 
