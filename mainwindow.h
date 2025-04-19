@@ -45,7 +45,8 @@
 #include <QNetworkReply>
 #include <QJsonArray>
 #include <QMap>
-
+#include "produit.h"
+#include "email.h"
 
 #include <QStyledItemDelegate>
 
@@ -312,6 +313,48 @@ private slots:
     void Read_Data_From_Socket();
     void clearAjoutFields();
 
+    void on_ajouter_6_clicked();
+    void validerChampsP();
+
+    void on_supprimer_6_clicked();
+
+    void on_Affichage_31_currentChanged(int index);
+
+
+    void remplirChampsModificationP(QString nomProduit);
+
+
+    void verifierNomProduit();
+
+
+
+    void on_modifier_6_clicked();
+
+
+
+    void on_pushButton_26_clicked();
+
+
+
+    void on_rechercherP_clicked();
+
+
+
+
+
+
+    void on_comboBox_11_activated(int index);
+
+    //void on_pushButton_clicked();
+
+    void on_pdf_6_clicked();
+
+    void on_StatP_clicked();
+
+    void on_TableViewP_6_clicked(const QModelIndex &index);
+
+    void on_telecharger_qr_code_clicked();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 
@@ -415,7 +458,10 @@ private:
     void displayStatisticsChart();
     QTcpSocket *TCPSocket;
     void populateLabNameComboBox();
-
+    Produit produitTmp;
+    QString produitAModifier;
+    bool modeModificationP = false;
+    mailer email;
 
 
 };

@@ -1,10 +1,13 @@
 release/carnets.o
 release/compagne.o
+release/email.o
 release/employes.o
 release/laboratoire.o
 release/main.o
 release/mainwindow.o
 release/connection.o
+release/produit.o
+release/qrcode.o
 release/smsnotif.o
 release/qrc_images.o
 release/moc_mainwindow.o

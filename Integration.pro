@@ -31,21 +31,27 @@ CONFIG += c++11
 SOURCES += \
     carnets.cpp \
     compagne.cpp \
+    email.cpp \
     employes.cpp \
     laboratoire.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp \
+    produit.cpp \
+    qrcode.cpp \
     smsnotif.cpp
 
 HEADERS += \
     carnets.h \
     compagne.h \
+    email.h \
     employes.h \
     laboratoire.h \
         mainwindow.h \
     connection.h \
-    smsnotif.h
+    produit.h \
+    smsnotif.h\
+     Qrcode.hpp
 
 FORMS += \
         mainwindow.ui
