@@ -6,8 +6,11 @@ release/laboratoire.o
 release/main.o
 release/mainwindow.o
 release/connection.o
+release/medanalysis.o
 release/produit.o
 release/qrcode.o
 release/smsnotif.o
+release/vaccin.o
 release/qrc_images.o
 release/moc_mainwindow.o
+release/moc_medanalysis.o

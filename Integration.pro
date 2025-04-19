@@ -9,6 +9,7 @@ QT       += core gui sql
 QT += network
 QT +=  charts
 QT += axcontainer
+QT += printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -37,9 +38,11 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     connection.cpp \
+    medanalysis.cpp \
     produit.cpp \
     qrcode.cpp \
-    smsnotif.cpp
+    smsnotif.cpp \
+    vaccin.cpp
 
 HEADERS += \
     carnets.h \
@@ -49,9 +52,11 @@ HEADERS += \
     laboratoire.h \
         mainwindow.h \
     connection.h \
+    medanalysis.h \
     produit.h \
     smsnotif.h\
-     Qrcode.hpp
+     Qrcode.hpp \
+    vaccin.h
 
 FORMS += \
         mainwindow.ui

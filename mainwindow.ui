@@ -4165,23 +4165,64 @@ QLabel:hover {
      </widget>
     </widget>
     <widget class="QWidget" name="pageVacc">
-     <widget class="QTabWidget" name="Affichage_4">
+     <widget class="QWidget" name="widget_12" native="true">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>0</y>
+        <width>901</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QWidget {
+    background-color: #9b0e0a;  /* Rouge foncé */
+    border-radius: 15px;        /* Coins arrondis */
+}
+</string>
+      </property>
+      <widget class="QLabel" name="label_124">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>20</y>
+         <width>651</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+    font-size: 20px;    /* Set font size */
+    font-weight: bold;  /* Make text bold */
+    color: #FFFFFF;     /* Black text */
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Bienvenue dans la section de gestion de vaccination</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QTabWidget" name="tab_5">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>70</y>
-        <width>1271</width>
-        <height>801</height>
+        <y>80</y>
+        <width>1361</width>
+        <height>861</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
         <width>50</width>
         <height>60</height>
        </size>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>true</bool>
       </property>
       <widget class="QWidget" name="ajoutct_8">
        <attribute name="title">
@@ -4236,55 +4277,11 @@ QGroupBox::title {
          <property name="title">
           <string/>
          </property>
-         <widget class="QLabel" name="label_id_2">
-          <property name="geometry">
-           <rect>
-            <x>-10</x>
-            <y>50</y>
-            <width>151</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLabel {
-    background-color: transparent; /* Fond transparent */
-    color: #000000;                /* Texte noir */
-    border: none;                  /* Pas de bordure */
-    font-weight: bold;             /* Texte en gras */
-    font-size: 18px;               /* Taille de police de 18px */
-}
-</string>
-          </property>
-          <property name="text">
-           <string>Id_vaccination:</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="lineEdit_id_2">
-          <property name="geometry">
-           <rect>
-            <x>160</x>
-            <y>50</y>
-            <width>221</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLineEdit {
-    background-color: transparent; /* Fond transparent */
-    color: #000000;                /* Texte noir normal */
-    font-size: 14px;               /* Taille de la police */
-    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
-    border-radius: 5px;            /* Coins légèrement arrondis */
-    padding: 8px;                  /* Espacement interne pour le texte */
-    border-style: dashed;          /* Style en pointillés */
-}</string>
-          </property>
-         </widget>
          <widget class="QDateEdit" name="dateEdit_expiration_2">
           <property name="geometry">
            <rect>
             <x>640</x>
-            <y>210</y>
+            <y>160</y>
             <width>261</width>
             <height>31</height>
            </rect>
@@ -4321,8 +4318,8 @@ QGroupBox::title {
          <widget class="QPushButton" name="pushButton_ajouter_2">
           <property name="geometry">
            <rect>
-            <x>320</x>
-            <y>490</y>
+            <x>240</x>
+            <y>420</y>
             <width>161</width>
             <height>51</height>
            </rect>
@@ -4355,7 +4352,7 @@ QPushButton:hover {
           <property name="geometry">
            <rect>
             <x>560</x>
-            <y>490</y>
+            <y>420</y>
             <width>161</width>
             <height>51</height>
            </rect>
@@ -4388,8 +4385,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_nom_2">
           <property name="geometry">
            <rect>
-            <x>-20</x>
-            <y>130</y>
+            <x>-10</x>
+            <y>50</y>
             <width>141</width>
             <height>41</height>
            </rect>
@@ -4412,7 +4409,7 @@ QPushButton:hover {
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>220</y>
+            <y>140</y>
             <width>131</width>
             <height>51</height>
            </rect>
@@ -4457,8 +4454,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_expiration_2">
           <property name="geometry">
            <rect>
-            <x>470</x>
-            <y>200</y>
+            <x>450</x>
+            <y>150</y>
             <width>181</width>
             <height>41</height>
            </rect>
@@ -4480,8 +4477,8 @@ QPushButton:hover {
          <widget class="QLabel" name="label_cration_2">
           <property name="geometry">
            <rect>
-            <x>420</x>
-            <y>120</y>
+            <x>-40</x>
+            <y>270</y>
             <width>251</width>
             <height>41</height>
            </rect>
@@ -4526,29 +4523,8 @@ QPushButton:hover {
          <widget class="QLineEdit" name="lineEdit_nom_2">
           <property name="geometry">
            <rect>
-            <x>140</x>
-            <y>130</y>
-            <width>221</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLineEdit {
-    background-color: transparent; /* Fond transparent */
-    color: #000000;                /* Texte noir normal */
-    font-size: 14px;               /* Taille de la police */
-    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
-    border-radius: 5px;            /* Coins légèrement arrondis */
-    padding: 8px;                  /* Espacement interne pour le texte */
-    border-style: dashed;          /* Style en pointillés */
-}</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="lineEdit_typev_2">
-          <property name="geometry">
-           <rect>
-            <x>140</x>
-            <y>230</y>
+            <x>130</x>
+            <y>50</y>
             <width>221</width>
             <height>41</height>
            </rect>
@@ -4568,8 +4544,8 @@ QPushButton:hover {
          <widget class="QDateEdit" name="dateEdit_creation_2">
           <property name="geometry">
            <rect>
-            <x>630</x>
-            <y>130</y>
+            <x>190</x>
+            <y>270</y>
             <width>261</width>
             <height>31</height>
            </rect>
@@ -4578,26 +4554,84 @@ QPushButton:hover {
            <bool>true</bool>
           </property>
          </widget>
-         <widget class="QLineEdit" name="lineEdit_certification_2">
+         <widget class="QLineEdit" name="labelErrorNom">
           <property name="geometry">
            <rect>
-            <x>650</x>
-            <y>50</y>
-            <width>221</width>
-            <height>41</height>
+            <x>110</x>
+            <y>100</y>
+            <width>261</width>
+            <height>20</height>
            </rect>
           </property>
           <property name="styleSheet">
-           <string notr="true">QLineEdit {
-    background-color: transparent; /* Fond transparent */
-    color: #000000;                /* Texte noir normal */
-    font-size: 14px;               /* Taille de la police */
-    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
-    border-radius: 5px;            /* Coins légèrement arrondis */
-    padding: 8px;                  /* Espacement interne pour le texte */
-    border-style: dashed;          /* Style en pointillés */
-}</string>
+           <string notr="true"/>
           </property>
+         </widget>
+         <widget class="QLineEdit" name="labelErrorType">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>200</y>
+            <width>311</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="labelErrorCertification">
+          <property name="geometry">
+           <rect>
+            <x>630</x>
+            <y>100</y>
+            <width>261</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="lineEdit_typev_2">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>160</y>
+            <width>261</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>corona</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>grippe</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="lineEdit_certification_2">
+          <property name="geometry">
+           <rect>
+            <x>640</x>
+            <y>60</y>
+            <width>261</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>oms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>sante</string>
+           </property>
+          </item>
          </widget>
         </widget>
         <widget class="QLabel" name="label_1">
@@ -4634,8 +4668,8 @@ QPushButton:hover {
        <widget class="QComboBox" name="comboBox_tri_2">
         <property name="geometry">
          <rect>
-          <x>160</x>
-          <y>195</y>
+          <x>100</x>
+          <y>190</y>
           <width>351</width>
           <height>41</height>
          </rect>
@@ -4659,9 +4693,9 @@ QPushButton:hover {
        <widget class="QLabel" name="label_tri_2">
         <property name="geometry">
          <rect>
-          <x>90</x>
-          <y>210</y>
-          <width>191</width>
+          <x>30</x>
+          <y>200</y>
+          <width>71</width>
           <height>21</height>
          </rect>
         </property>
@@ -4680,7 +4714,7 @@ QPushButton:hover {
        <widget class="QLabel" name="label_recherche_2">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>470</x>
           <y>200</y>
           <width>91</width>
           <height>20</height>
@@ -4701,111 +4735,12 @@ QPushButton:hover {
        <widget class="QLineEdit" name="lineEdit_recherche_2">
         <property name="geometry">
          <rect>
-          <x>670</x>
-          <y>195</y>
+          <x>560</x>
+          <y>190</y>
           <width>351</width>
           <height>41</height>
          </rect>
         </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget_8">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>250</y>
-          <width>1281</width>
-          <height>381</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QTableWidget {
-    border: 1px solid #B0B0B0; /* Light gray border */
-    gridline-color: #D3D3D3; /* Gridline color */
-    background-color: #FFFFFF; /* White background */
-    alternate-background-color: #F5F5F5; /* Alternate row color */
-    font-size: 14px; /* Font size */
-}
-
-QTableWidget::item {
-    padding: 10px; /* Padding for table cells */
-}
-
-QTableWidget::item:selected {
-    background-color: #FFCCCC; /* Light red background when selected */
-    color: #8B0000; /* Dark red text color */
-}
-
-QHeaderView::section {
-    background-color: #8B0000; /* Dark red for header background */
-    color: white; /* White text */
-    font-weight: bold; /* Bold font for headers */
-    padding: 5px; /* Padding inside headers */
-    border: 1px solid #FFFFFF; /* White border between header cells */
-}
-
-QTableCornerButton::section {
-    background-color: #8B0000; /* Dark red for the top-left corner */
-    border: 1px solid white; /* White border */
-}
-
-QScrollBar:vertical {
-    border: none;
-    background: #F0F0F0; /* Light gray background */
-    width: 10px;
-    margin: 0px 0px 0px 0px;
-}
-
-QScrollBar::handle:vertical {
-    background: #8B0000; /* Dark red handle */
-    min-height: 20px;
-    border-radius: 5px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #FF4500; /* Lighter red when hovered */
-}
-
-QScrollBar::add-line:vertical,
-QScrollBar::sub-line:vertical {
-    border: none;
-    background: none;
-}</string>
-        </property>
-        <row>
-         <property name="text">
-          <string>Corrona</string>
-         </property>
-        </row>
-        <column>
-         <property name="text">
-          <string>Id_vaccin</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Nom</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Date_creation</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Date_expiration</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>statut</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type_vaccin</string>
-         </property>
-        </column>
        </widget>
        <widget class="QWidget" name="widget_11" native="true">
         <property name="geometry">
@@ -4825,7 +4760,7 @@ QScrollBar::sub-line:vertical {
     stop:0.5 white,
     stop:1 white
 );
-border-radius: 30px;
+border-radius: 30px; 
 border: 2px solid black; </string>
         </property>
         <widget class="QPushButton" name="pushButtonStat_18">
@@ -4887,11 +4822,34 @@ border: 2px solid black; </string>
          </property>
         </widget>
        </widget>
+       <widget class="QTableView" name="tableView_2">
+        <property name="geometry">
+         <rect>
+          <x>150</x>
+          <y>250</y>
+          <width>961</width>
+          <height>401</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>930</x>
+          <y>160</y>
+          <width>181</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>entrez le nom du vaccin:</string>
+        </property>
+       </widget>
        <widget class="QPushButton" name="pushButton_modifier_2">
         <property name="geometry">
          <rect>
-          <x>1180</x>
-          <y>630</y>
+          <x>1110</x>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -4923,11 +4881,21 @@ QPushButton:pressed {
          <iconset theme="QIcon::ThemeIcon::MailMessageNew"/>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_supp_2">
+       <widget class="QLineEdit" name="lineEdit">
         <property name="geometry">
          <rect>
-          <x>1120</x>
-          <y>630</y>
+          <x>930</x>
+          <y>190</y>
+          <width>161</width>
+          <height>41</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_suppv">
+        <property name="geometry">
+         <rect>
+          <x>1170</x>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -4965,43 +4933,46 @@ QPushButton:pressed {
         <string>Statistique</string>
        </attribute>
       </widget>
-     </widget>
-     <widget class="QWidget" name="widget_12" native="true">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>0</y>
-        <width>901</width>
-        <height>71</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QWidget {
-    background-color: #9b0e0a;  /* Rouge foncé */
-    border-radius: 15px;        /* Coins arrondis */
-}
-</string>
-      </property>
-      <widget class="QLabel" name="label_124">
-       <property name="geometry">
-        <rect>
-         <x>170</x>
-         <y>20</y>
-         <width>651</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QLabel {
-    font-size: 20px;    /* Set font size */
-    font-weight: bold;  /* Make text bold */
-    color: #FFFFFF;     /* Black text */
-}
-</string>
-       </property>
-       <property name="text">
-        <string>Bienvenue dans la section de gestion de vaccination</string>
-       </property>
+      <widget class="QWidget" name="Prediction">
+       <attribute name="title">
+        <string>Prediction</string>
+       </attribute>
+       <widget class="QLabel" name="predictionLabel">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>20</y>
+          <width>1081</width>
+          <height>511</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxPays">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>60</y>
+          <width>261</width>
+          <height>31</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnPredire_2">
+        <property name="geometry">
+         <rect>
+          <x>320</x>
+          <y>60</y>
+          <width>93</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>valider</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>

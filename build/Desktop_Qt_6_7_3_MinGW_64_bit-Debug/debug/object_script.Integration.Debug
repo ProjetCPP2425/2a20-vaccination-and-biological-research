@@ -6,8 +6,11 @@ debug/laboratoire.o
 debug/main.o
 debug/mainwindow.o
 debug/connection.o
+debug/medanalysis.o
 debug/produit.o
 debug/qrcode.o
 debug/smsnotif.o
+debug/vaccin.o
 debug/qrc_images.o
 debug/moc_mainwindow.o
+debug/moc_medanalysis.o
