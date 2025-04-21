@@ -21,6 +21,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QChart>
 
+#include <QThread>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -163,6 +164,19 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tab_2->setTabText(3, "Statistiques");
 
 
+
+    int ret = A.connect_arduino();
+    switch (ret) {
+    case 0:
+        qDebug() << "Arduino connecté sur :" << A.getarduino_port_name();
+        break;
+    case 1:
+        qDebug() << "Port trouvé mais connexion impossible : " << A.getarduino_port_name();
+        break;
+    case -1:
+        qDebug() << "Arduino non détecté";
+        break;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -1002,3 +1016,22 @@ void MainWindow::trierCarnets(const QString &critere)
 
 
 }
+
+void MainWindow::on_pushButton_afficherRDV_clicked()
+{
+    QSqlQuery query;
+    query.prepare("SELECT nom FROM carnet WHERE date_rdv = :today");
+    query.bindValue(":today", QDate::currentDate().toString("yyyy-MM-dd"));
+
+    if (query.exec()) {
+        while (query.next()) {
+            QString nom = query.value(0).toString();
+            qDebug() << "Nom trouvé :" << nom;
+            A.write_to_arduino(nom.toUtf8() + "\n");
+            QThread::sleep(2);
+        }
+    } else {
+        qDebug() << "Erreur SQL :" << query.lastError().text();
+    }
+}
+

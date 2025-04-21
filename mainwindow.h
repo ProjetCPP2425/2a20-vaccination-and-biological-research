@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "carnets.h"
 #include "smsnotif.h"
+#include "arduinolcd.h"
+
 
 #include <QStyledItemDelegate>
 #include <QHBoxLayout>  // Pour QHBoxLayout
@@ -56,24 +58,28 @@ private slots:
     void on_btnStat_clicked();
 
 
+    void on_pushButton_afficherRDV_clicked();
+
 private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
+    Arduino A;
+
     QSortFilterProxyModel *proxyModel;
     QString idAModifier = "";
 
     bool modeModification = false; // Mode modification activé/désactivé
     void validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex,
                        const QString &errorMsg, bool checkZeros, bool allowOnlyNumbers, int minValue, int maxValue);
-        void validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
+    void validateTextEdit(QTextEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg);
     bool estValide();
-        void envoyerRappelSMS();
+    void envoyerRappelSMS();
 
 
-        void testSMS();
-        QTimer *smsTimer;
+    void testSMS();
+    QTimer *smsTimer;
 
-        void trierCarnets(const QString &critere);
+    void trierCarnets(const QString &critere);
 
 
 };

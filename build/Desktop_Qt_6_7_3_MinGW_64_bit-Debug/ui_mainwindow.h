@@ -309,6 +309,7 @@ public:
     QLabel *nom_2;
     QLineEdit *suppid;
     QPushButton *supprimerC;
+    QPushButton *pushButton_afficherRDV;
     QWidget *Statistique_10;
     QFrame *frame_21;
     QGroupBox *groupBox_20;
@@ -3565,6 +3566,9 @@ public:
 "}\n"
 ""));
         supprimerC->setIcon(icon5);
+        pushButton_afficherRDV = new QPushButton(lirect_10);
+        pushButton_afficherRDV->setObjectName("pushButton_afficherRDV");
+        pushButton_afficherRDV->setGeometry(QRect(160, 80, 181, 29));
         tab_2->addTab(lirect_10, QString());
         Statistique_10 = new QWidget();
         Statistique_10->setObjectName("Statistique_10");
@@ -3815,7 +3819,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        Affichage->setCurrentIndex(2);
+        Affichage->setCurrentIndex(1);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
         Affichage_4->setCurrentIndex(0);
@@ -4130,6 +4134,7 @@ public:
         modifierC->setText(QString());
         nom_2->setText(QCoreApplication::translate("MainWindow", "Entrer le CIN du patient:", nullptr));
         supprimerC->setText(QString());
+        pushButton_afficherRDV->setText(QCoreApplication::translate("MainWindow", "Afficher les rdv", nullptr));
         tab_2->setTabText(tab_2->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());
         label_172->setText(QCoreApplication::translate("MainWindow", "         Cin du patient:", nullptr));

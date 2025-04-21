@@ -8,6 +8,7 @@ QT       += core gui sql
 QT += printsupport
 QT += network
 QT += charts
+QT += core gui widgets serialport sql
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -29,6 +30,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    arduinolcd.cpp \
     carnets.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -36,6 +38,7 @@ SOURCES += \
     smsnotif.cpp
 
 HEADERS += \
+    arduinolcd.h \
     carnets.h \
         mainwindow.h \
     connection.h \
