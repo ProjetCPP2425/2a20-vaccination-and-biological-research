@@ -63,8 +63,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
-    Arduino A;
-
+    ArduinoLCD A;
     QSortFilterProxyModel *proxyModel;
     QString idAModifier = "";
 
