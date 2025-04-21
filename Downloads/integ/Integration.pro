@@ -6,7 +6,9 @@
 
 QT       += core gui sql
 QT +=  charts
-
+QT += axcontainer
+QT  += serialport
+QT += printsupport
 #QT += location positioning
 
 QT += network
@@ -30,12 +32,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    arduinorfid.cpp \
     laboratoire.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp
 
 HEADERS += \
+    arduinorfid.h \
     laboratoire.h \
         mainwindow.h \
     connection.h

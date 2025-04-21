@@ -43,6 +43,9 @@
 #include <QSqlDatabase>
 
 
+#include <QAxObject>
+#include <QVariant>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -62,6 +65,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
     };
 
+
+
+    connect(ui->pushButton_annulermay, &QPushButton::clicked, this, &MainWindow::clearAjoutFields);
+
+
     connect(ui->lineEdit_NomLab, &QLineEdit::textChanged, this, &MainWindow::validateFields);
     connect(ui->lineEdit_Adresse, &QLineEdit::textChanged, this, &MainWindow::validateFields);
     connect(ui->lineEdit_Type, &QLineEdit::textChanged, this, &MainWindow::validateFields);
@@ -71,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->rechercherLabo, &QLineEdit::textChanged, this, &MainWindow::rechercherLabo);
 
     //tri
-        connect(ui->comboBox_Tri, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboBox_Tri_currentIndexChanged);
+        connect(ui->comboBox_Tri, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboBox_Tri_currentIndexChanged_M);
     //stat
     connect(ui->Affichage_3, &QTabWidget::currentChanged, this, &MainWindow::onTabWidgetPageChanged);
 
@@ -158,7 +166,18 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(true);
     });
 
-
+    int ret = A.connect_arduino();
+    switch (ret) {
+    case 0:
+        qDebug() << "Arduino connecté sur :" << A.getarduino_port_name();
+        break;
+    case 1:
+        qDebug() << "Port trouvé mais connexion impossible : " << A.getarduino_port_name();
+        break;
+    case -1:
+        qDebug() << "Arduino non détecté";
+        break;
+    }
 
 
 }
@@ -219,6 +238,8 @@ void MainWindow::on_pushButton_32_clicked()
         }
     }
 
+    populateNomlabComboBox();
+    populateLabNameComboBox();
     // Update the table view
     ui->tableView->setModel(labTmp.afficher());
 
@@ -243,6 +264,19 @@ void MainWindow::on_pushButton_32_clicked()
 
 }
 
+void MainWindow::clearAjoutFields()
+{
+    ui->lineEdit_NomLab->clear();
+    ui->lineEdit_Adresse->clear();
+    ui->comboBox_Responsable->setCurrentIndex(-1); // or 0
+    ui->lineEdit_Type->clear();
+    ui->comboBox_Statut->setCurrentIndex(-1); // or 0
+    ui->spinBox_NbProjets->setValue(0);
+    ui->spinBox_NbProjets_2->setValue(0);
+    ui->spinBox_NbProjets_3->setValue(0);
+    ui->doubleSpinBox_7->setValue(0.0);
+    ui->dateEdit_7->setDate(QDate::currentDate());
+}
 
 void MainWindow::displayLaboratoires()
 {
@@ -461,19 +495,19 @@ void MainWindow::rechercherLabo(const QString &searchText) {
     ui->tableView->hideColumn(0);  // Optional: hide ID
     ui->tableView->resizeColumnsToContents();
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tableView->setVisible(true);  // 💥 Ensure table stays visible
+    ui->tableView->setVisible(true);
 }
 
 
  //tri
 
-void MainWindow::on_comboBox_Tri_currentIndexChanged()
+void MainWindow::on_comboBox_Tri_currentIndexChanged_M()
 {
     QString sortBy = ui->comboBox_Tri->currentText();
 
     QSqlQueryModel *model = new QSqlQueryModel();
 
-    QString query = "SELECT * FROM SMARTVACC.LABORATOIRES";  // Select all columns (includes ID_LAB and NOM_LAB)
+    QString query = "SELECT * FROM SMARTVACC.LABORATOIRES";
 
     if (sortBy == "Statut") {
         query += " ORDER BY CASE STATUT "
@@ -569,6 +603,11 @@ void MainWindow::displayStatisticsChart()
         QString labName = it.key();
         LaboStats stats = it.value();
 
+        // Only add labs with non-zero values for percentages
+        if (stats.nbProjets == 0 && stats.personnel == 0 && stats.matriels == 0 && stats.depense == 0) {
+            continue; // Skip lab if all values are zero
+        }
+
         labNames << labName;
 
         *setProjets   << (totalProjets   > 0 ? (100.0 * stats.nbProjets / totalProjets)   : 0);
@@ -602,7 +641,18 @@ void MainWindow::displayStatisticsChart()
     // Create chart
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("Statistiques des Laboratoires (% par catégorie)\n🏆 Meilleur labo : " + bestLabName);
+    QString titleText = "Statistiques des dépenses par chaque Laboratoires \n🏆 Meilleur labo : " + bestLabName;
+    chart->setTitle(titleText);
+
+    // Set font to bold and bigger
+    QFont titleFont;
+    titleFont.setBold(true);
+    titleFont.setPointSize(14); // You can increase or decrease as needed
+    chart->setTitleFont(titleFont);
+
+    // Set title color to red
+    chart->setTitleBrush(QBrush(Qt::red));
+
     chart->setAnimationOptions(QChart::SeriesAnimations);
     chart->legend()->setAlignment(Qt::AlignBottom);
 
@@ -624,9 +674,9 @@ void MainWindow::displayStatisticsChart()
     QChartView *chartView = new QChartView(chart, this);
     chartView->setRenderHint(QPainter::Antialiasing);
 
-    // Resize the chart view to make it smaller
-    chartView->setFixedWidth(1200);  // Set desired width (smaller than the original)
-    chartView->setFixedHeight(650); // Optional: Set a fixed height if needed
+    // Resize the chart view to make it bigger
+    chartView->setFixedWidth(1270);
+    chartView->setFixedHeight(710);
 
     // Inject chartView into Statistique_7 layout
     QLayout *layout = ui->Statistique_7->layout();
@@ -643,8 +693,9 @@ void MainWindow::displayStatisticsChart()
     }
     layout->addWidget(chartView);
 
-    // Display color legend next to the performance index
+    // Display color legend next to the performance index (updated with larger font size)
     QLabel *legendLabel = new QLabel("🟦 Projets | 🟩 Personnel | 🟨 Matériels | 🟥 Dépense");
+    legendLabel->setStyleSheet("font-size: 18px; font-weight: bold;");
     ui->Statistique_7->layout()->addWidget(legendLabel);
 
     // Print best performing lab
@@ -656,14 +707,14 @@ void MainWindow::displayStatisticsChart()
 
 void MainWindow::onTabWidgetPageChanged(int index)
 {
-    // Replace '2' with the actual index of Statistique_7 tab.
+
     if (index == 2) {
         displayStatisticsChart();
     }
 }
 void MainWindow::goToStatistiques()
 {
-    // Assuming 'Statistiques_7' is the widget for your statistics page.
+
     ui->Affichage_3->setCurrentWidget(ui->Statistique_7);
 
     // Optionally, refresh or display the chart if needed:
@@ -687,32 +738,101 @@ void MainWindow::onExcelClicked() {
 }
 bool MainWindow::exporterLabsVersExcel(const QString& cheminFichier) {
     QSqlQuery query("SELECT NOM_LAB, RESPONSABLE, DEPONSE, PERSONNEL, MATRIELS, NB_PROJETS, DATE_CREATION FROM SMARTVACC.LABORATOIRES");
-    QFile fichier(cheminFichier);
 
-    if (!fichier.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QAxObject *excel = new QAxObject("Excel.Application");
+    if (!excel)
         return false;
+
+    excel->setProperty("Visible", false);
+    QAxObject *workbooks = excel->querySubObject("Workbooks");
+    QAxObject *workbook = workbooks->querySubObject("Add");
+    QAxObject *sheet = workbook->querySubObject("Sheets(int)", 1);
+
+    QStringList headers = {
+        "Nom du Laboratoire", "Responsable", "Depenses", "Personnel", "Equipements", "Projets Actifs", "Date de Creation"
+    };
+
+    // === Insert title ===
+    QString title = "Liste des Laboratoires";
+    QAxObject *titleRange = sheet->querySubObject("Range(const QString&)", "A1:G1");
+    titleRange->setProperty("MergeCells", true);
+    titleRange->setProperty("Value", title);
+
+    QAxObject *titleFont = titleRange->querySubObject("Font");
+    titleFont->setProperty("Bold", true);
+    titleFont->setProperty("Size", 16);
+    delete titleFont;
+
+    QAxObject *titleAlign = titleRange->querySubObject("HorizontalAlignment");
+    titleRange->setProperty("HorizontalAlignment", -4108); // Center alignment
+    delete titleAlign;
+    delete titleRange;
+
+    // === Headers start at row 3 ===
+    int headerRow = 3;
+    for (int i = 0; i < headers.size(); ++i) {
+        QAxObject *cell = sheet->querySubObject("Cells(int,int)", headerRow, i + 1);
+        cell->setProperty("Value", headers[i]);
+
+        QAxObject *interior = cell->querySubObject("Interior");
+        interior->setProperty("Color", QColor(255, 200, 200).rgb()); // Light red background
+        delete interior;
+
+        QAxObject *font = cell->querySubObject("Font");
+        font->setProperty("Bold", true);
+        delete font;
     }
 
-    QTextStream flux(&fichier);
-
-    // En-têtes
-    flux << "Nom du Laboratoire:\tResponsable\tDepenses \tPersonnel \tEquipements \tProjets Actifs\tDate de Creation\n";
-
-    // Données
+    // === Fill table starting from row 4 ===
+    int row = headerRow + 1;
     while (query.next()) {
-        flux << query.value("NOM_LAB").toString() << "\t"
-             << query.value("RESPONSABLE").toString() << "\t"
-             << query.value("DEPONSE").toDouble() << "\t"
-             << query.value("PERSONNEL").toInt() << "\t"
-             << query.value("MATRIELS").toInt() << "\t"
-             << query.value("NB_PROJETS").toInt() << "\t"
-             << query.value("DATE_CREATION").toDate().toString("yyyy-MM-dd") << "\n";
+        sheet->querySubObject("Cells(int,int)", row, 1)->setProperty("Value", query.value("NOM_LAB").toString());
+        sheet->querySubObject("Cells(int,int)", row, 2)->setProperty("Value", query.value("RESPONSABLE").toString());
+        sheet->querySubObject("Cells(int,int)", row, 3)->setProperty("Value", query.value("DEPONSE").toDouble());
+        sheet->querySubObject("Cells(int,int)", row, 4)->setProperty("Value", query.value("PERSONNEL").toInt());
+        sheet->querySubObject("Cells(int,int)", row, 5)->setProperty("Value", query.value("MATRIELS").toInt());
+        sheet->querySubObject("Cells(int,int)", row, 6)->setProperty("Value", query.value("NB_PROJETS").toInt());
+        sheet->querySubObject("Cells(int,int)", row, 7)->setProperty("Value", query.value("DATE_CREATION").toDate().toString("yyyy-MM-dd"));
+        row++;
     }
 
-    fichier.close();
-    return true;
+    int totalRows = row - 1;
 
+    // === Create Excel table ===
+    QString startCol = "A";
+    QString endCol = QString(QChar('A' + static_cast<int>(headers.size()) - 1));
+    QString excelRange = QString("%1%2:%3%4").arg(startCol).arg(headerRow).arg(endCol).arg(totalRows);
+
+    QAxObject *rangeObj = sheet->querySubObject("Range(const QString&)", excelRange);
+    QAxObject *listObjects = sheet->querySubObject("ListObjects");
+
+    if (rangeObj && listObjects) {
+        QAxObject *table = listObjects->querySubObject(
+            "Add(int, QVariant, QVariant, int, QVariant)",
+            1, QVariant::fromValue(rangeObj), QVariant(), 1, QVariant());
+        delete table;
+    }
+
+    // === Autofit columns ==
+    QAxObject *columns = sheet->querySubObject("Columns");
+    columns->dynamicCall("AutoFit()");
+    delete columns;
+
+    // === Save and clean up ===
+    workbook->dynamicCall("SaveAs(const QString&)", QDir::toNativeSeparators(cheminFichier));
+    workbook->dynamicCall("Close()");
+    excel->dynamicCall("Quit()");
+
+    delete rangeObj;
+    delete listObjects;
+    delete sheet;
+    delete workbook;
+    delete workbooks;
+    delete excel;
+
+    return true;
 }
+
 
  //n3abi el el box mta3 nom lab lil localisation (map)
 void MainWindow::populateNomlabComboBox()
@@ -725,7 +845,7 @@ void MainWindow::populateNomlabComboBox()
 
     if (query.exec()) {
         while (query.next()) {
-            QString nom = query.value(0).toString();  // Use NOM_LAB only
+            QString nom = query.value(0).toString();
             ui->comboBox_nomlab->addItem(nom);
         }
     } else {
@@ -737,9 +857,6 @@ void MainWindow::populateNomlabComboBox()
 
 
 
-
-
- //map
 void MainWindow::showMap() {
     QString nom = ui->comboBox_nomlab->currentText();
 
@@ -819,8 +936,10 @@ void MainWindow::showMap() {
 
 
 
+
+
  //chatrom
-// Function to populate the combo box with lab names (NOM_LAB) from the database
+
 void MainWindow::populateLabNameComboBox()
 {
     ui->comboBox_labName->clear();  // Clear any existing items
@@ -845,7 +964,7 @@ void MainWindow::populateLabNameComboBox()
     ui->comboBox_labName->setCurrentIndex(0);  // Set the default selection to the first item
 }
 
-// Function to handle the lab selection button click
+
 void MainWindow::on_selectLab_clicked()
 {
     // Check if a valid lab is selected
@@ -856,10 +975,6 @@ void MainWindow::on_selectLab_clicked()
         QMessageBox::warning(this, "Erreur de sélection", " Veuillez choisir un laboratoire dans la liste.");
     }
 }
-
-// Function to handle the send message button click
-// Function to handle the send message button click
-// Function to handle the send message button click
 void MainWindow::on_sendMessage_clicked()
 {
     // Get the selected lab and message to send

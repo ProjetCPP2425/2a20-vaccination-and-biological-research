@@ -146,7 +146,7 @@ public:
     QDateEdit *dateEdit_7;
     QComboBox *comboBox_Statut;
     QPushButton *pushButton_32;
-    QPushButton *pushButton_33;
+    QPushButton *pushButton_annulermay;
     QLabel *label_Matriels;
     QLabel *label_108;
     QLineEdit *lineEdit_Adresse;
@@ -1673,10 +1673,10 @@ public:
 "    border: none;               /* Pas de bordure au survol */\n"
 "}\n"
 ""));
-        pushButton_33 = new QPushButton(groupBox_13);
-        pushButton_33->setObjectName("pushButton_33");
-        pushButton_33->setGeometry(QRect(560, 490, 161, 51));
-        pushButton_33->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        pushButton_annulermay = new QPushButton(groupBox_13);
+        pushButton_annulermay->setObjectName("pushButton_annulermay");
+        pushButton_annulermay->setGeometry(QRect(560, 490, 161, 51));
+        pushButton_annulermay->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #007FFF;  /* Couleur de fond bleue */\n"
 "    color: #FFFFFF;             /* Texte blanc */\n"
 "    font-size: 18px;            /* Augmentation de la taille de la police */\n"
@@ -2091,7 +2091,7 @@ public:
 ""));
         label_113 = new QLabel(loginButton);
         label_113->setObjectName("label_113");
-        label_113->setGeometry(QRect(200, 20, 731, 51));
+        label_113->setGeometry(QRect(230, 20, 551, 51));
         label_113->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    color: white;\n"
 "    background-color: #C1121F;  /* deep red */\n"
@@ -3905,7 +3905,7 @@ public:
 
         Affichage->setCurrentIndex(0);
         Affichage_2->setCurrentIndex(0);
-        Affichage_3->setCurrentIndex(4);
+        Affichage_3->setCurrentIndex(1);
         Affichage_4->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
         Affichage_5->setCurrentIndex(0);
@@ -4041,7 +4041,7 @@ public:
         comboBox_Statut->setItemText(2, QCoreApplication::translate("MainWindow", "Non-fonctionnel", nullptr));
 
         pushButton_32->setText(QCoreApplication::translate("MainWindow", "Ajouter", nullptr));
-        pushButton_33->setText(QCoreApplication::translate("MainWindow", "Annuler", nullptr));
+        pushButton_annulermay->setText(QCoreApplication::translate("MainWindow", "Annuler", nullptr));
         label_Matriels->setText(QCoreApplication::translate("MainWindow", "         Matriels:", nullptr));
         label_108->setText(QCoreApplication::translate("MainWindow", "         Date:", nullptr));
         label_109->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
@@ -4073,7 +4073,7 @@ public:
         Affichage_3->setTabText(Affichage_3->indexOf(lirect_7), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         Affichage_3->setTabText(Affichage_3->indexOf(Statistique_7), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
         loginButton->setTitle(QString());
-        label_113->setText(QCoreApplication::translate("MainWindow", "       Explorez la localisation des laboratoires sur une carte interactive \360\237\224\215\360\237\247\252  \360\237\227\272\357\270\217\360\237\223\215 :", nullptr));
+        label_113->setText(QCoreApplication::translate("MainWindow", "       Explorez la localisation des laboratoires  \360\237\224\215\360\237\247\252  \360\237\227\272\357\270\217\360\237\223\215 :", nullptr));
         pushButton_search->setText(QCoreApplication::translate("MainWindow", "Rechercher \360\237\224\216", nullptr));
         label_10->setText(QCoreApplication::translate("MainWindow", "\360\237\221\211\360\237\223\215 Cliquez pour d\303\251couvrir l'emplacement exact du laboratoire \360\237\247\252", nullptr));
         label_map->setText(QString());

@@ -20,7 +20,7 @@
 
 #include <QTimer>
 
-
+#include "arduinorfid.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -54,7 +54,7 @@ private slots:
 
     void rechercherLabo(const QString &searchText);
 
-    void on_comboBox_Tri_currentIndexChanged();
+    void on_comboBox_Tri_currentIndexChanged_M();
     void onTabWidgetPageChanged(int index);
     void onExcelClicked();
     void populateNomlabComboBox();
@@ -63,7 +63,7 @@ private slots:
     void on_sendMessage_clicked(); // Slot to handle send message button click
     void Read_Data_From_Socket();
 
-
+    void clearAjoutFields();
    private:
     Ui::MainWindow *ui;
     Laboratoire labTmp;
@@ -78,6 +78,7 @@ private slots:
     QTcpSocket *TCPSocket;
 
     void populateLabNameComboBox();
+    ArduinoRFID A;
 
 };
 #endif // MAINWINDOW_H

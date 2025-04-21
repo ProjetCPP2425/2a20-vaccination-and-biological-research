@@ -2380,7 +2380,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="ajoutct_7">
        <attribute name="title">
@@ -2575,7 +2575,7 @@ QPushButton:hover {
            <string>Ajouter</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton_33">
+         <widget class="QPushButton" name="pushButton_annulermay">
           <property name="geometry">
            <rect>
             <x>560</x>
@@ -3444,9 +3444,9 @@ QGroupBox::title {
          <widget class="QLabel" name="label_113">
           <property name="geometry">
            <rect>
-            <x>200</x>
+            <x>230</x>
             <y>20</y>
-            <width>731</width>
+            <width>551</width>
             <height>51</height>
            </rect>
           </property>
@@ -3468,7 +3468,7 @@ QLabel:hover {
 </string>
           </property>
           <property name="text">
-           <string>       Explorez la localisation des laboratoires sur une carte interactive 🔍🧪  🗺️📍 :</string>
+           <string>       Explorez la localisation des laboratoires  🔍🧪  🗺️📍 :</string>
           </property>
          </widget>
          <widget class="QComboBox" name="comboBox_nomlab">
