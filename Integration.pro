@@ -6,6 +6,7 @@
 
 QT       += core gui sql
 QT += charts network
+QT += core gui widgets serialport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,6 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    arduinotension.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp \
@@ -34,6 +36,7 @@ SOURCES += \
     email.cpp
 
 HEADERS += \
+    arduinotension.h \
         mainwindow.h \
     connection.h \
     produit.h \

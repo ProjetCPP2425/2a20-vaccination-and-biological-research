@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QDebug>
 #include "email.h"
+#include "arduinotension.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -53,7 +54,7 @@ private slots:
 
 
 
-
+    void lireDonneesSerie();
 
 
     void on_comboBox_6P_activated(int index);
@@ -74,5 +75,6 @@ private:
     QString produitAModifier;
     bool modeModification = false;
 mailer email;
+    arduinotension A ;
 };
 #endif // MAINWINDOW_H

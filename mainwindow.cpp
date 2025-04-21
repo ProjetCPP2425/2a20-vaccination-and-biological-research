@@ -106,6 +106,18 @@ if(message!="")
 {
      email.sendEmail("najoua.dahmen18@gmail.com", "Notification d'Expiration",message );
 }
+int ret = A.connect_arduino();
+switch (ret) {
+case 0:
+    qDebug() << "Arduino connecté sur :" << A.getarduino_port_name();
+    break;
+case 1:
+    qDebug() << "Port trouvé mais connexion impossible : " << A.getarduino_port_name();
+    break;
+case -1:
+    qDebug() << "Arduino non détecté";
+    break;
+}
 }
 
 MainWindow::~MainWindow()
@@ -754,4 +766,26 @@ void MainWindow::on_StatP_clicked()
     QFont fontLegende;
     fontLegende.setPointSize(12);
     chart->legend()->setFont(fontLegende);
+}
+void MainWindow::lireDonneesSerie() {
+    QByteArray data = A.read_from_arduino();
+
+
+    if (data.contains("ALERTE_COURANT=0")) {
+        // Lancer la requête SQL pour les vaccins
+        QSqlQuery query;
+        if (query.exec("SELECT NOM_PRODUIT, QUANTITE FROM PRODUITS WHERE CATEGORIE = 'vaccin'")) {
+            QString message = "⚠️ Coupure de courant détectée !\n\nLes produits suivants nécessitent une réfrigération :\n\n";
+
+            while (query.next()) {
+                QString nom = query.value(0).toString();
+                QString quantite = query.value(1).toString();
+                message += "Produit : " + nom + " - Quantité : " + quantite + "\n";
+            }
+
+            QMessageBox::critical(this, "Alerte Produits Sensibles", message);
+        } else {
+            QMessageBox::warning(this, "Erreur SQL", "Échec lors de la requête SQL !");
+        }
+    }
 }
