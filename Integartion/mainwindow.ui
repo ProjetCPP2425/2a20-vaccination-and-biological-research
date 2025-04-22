@@ -286,7 +286,7 @@ QPushButton:hover {
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="images/images.qrc">:/images/logo.png</pixmap>
+      <pixmap resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">:/images/logo.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -305,7 +305,7 @@ QPushButton:hover {
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="images/images.qrc">:/images/nom.png</pixmap>
+      <pixmap resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">:/images/nom.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -831,7 +831,7 @@ QPushButton:pressed {
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="images/images.qrc">
+           <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
             <normaloff>:/images/0ef43bc7-99f0-43ec-8ab9-fcfcd5ce7fe8.jpeg</normaloff>:/images/0ef43bc7-99f0-43ec-8ab9-fcfcd5ce7fe8.jpeg</iconset>
           </property>
           <property name="iconSize">
@@ -871,7 +871,7 @@ QPushButton:pressed {
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="images/images.qrc">
+           <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
             <normaloff>:/images/5b1112d6-b483-42ab-99e9-7d366e3644ae.jpeg</normaloff>:/images/5b1112d6-b483-42ab-99e9-7d366e3644ae.jpeg</iconset>
           </property>
           <property name="iconSize">
@@ -1374,7 +1374,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/stat.png</normaloff>:/images/stat.png</iconset>
          </property>
          <property name="iconSize">
@@ -1403,7 +1403,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/doc.png</normaloff>:/images/doc.png</iconset>
          </property>
          <property name="iconSize">
@@ -2211,7 +2211,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/stat.png</normaloff>:/images/stat.png</iconset>
          </property>
          <property name="iconSize">
@@ -2240,7 +2240,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/doc.png</normaloff>:/images/doc.png</iconset>
          </property>
          <property name="iconSize">
@@ -3235,7 +3235,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/stat.png</normaloff>:/images/stat.png</iconset>
          </property>
          <property name="iconSize">
@@ -3264,7 +3264,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/doc.png</normaloff>:/images/doc.png</iconset>
          </property>
          <property name="iconSize">
@@ -3447,7 +3447,7 @@ QGroupBox::title {
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="images/images.qrc">:/images/476795083_514548728337984_1144380379871755551_n.png</pixmap>
+           <pixmap resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">:/images/476795083_514548728337984_1144380379871755551_n.png</pixmap>
           </property>
          </widget>
         </widget>
@@ -3466,7 +3466,7 @@ QGroupBox::title {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -3921,8 +3921,8 @@ QPushButton:hover {
        <widget class="QComboBox" name="comboBox_tri_2">
         <property name="geometry">
          <rect>
-          <x>160</x>
-          <y>195</y>
+          <x>100</x>
+          <y>190</y>
           <width>351</width>
           <height>41</height>
          </rect>
@@ -3946,7 +3946,7 @@ QPushButton:hover {
        <widget class="QLabel" name="label_tri_2">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>30</x>
           <y>200</y>
           <width>71</width>
           <height>21</height>
@@ -3967,7 +3967,7 @@ QPushButton:hover {
        <widget class="QLabel" name="label_recherche_2">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>470</x>
           <y>200</y>
           <width>91</width>
           <height>20</height>
@@ -3988,8 +3988,8 @@ QPushButton:hover {
        <widget class="QLineEdit" name="lineEdit_recherche_2">
         <property name="geometry">
          <rect>
-          <x>670</x>
-          <y>195</y>
+          <x>560</x>
+          <y>190</y>
           <width>351</width>
           <height>41</height>
          </rect>
@@ -4035,7 +4035,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/stat.png</normaloff>:/images/stat.png</iconset>
          </property>
          <property name="iconSize">
@@ -4064,7 +4064,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/doc.png</normaloff>:/images/doc.png</iconset>
          </property>
          <property name="iconSize">
@@ -4078,10 +4078,10 @@ border: 2px solid black; </string>
        <widget class="QTableView" name="tableView">
         <property name="geometry">
          <rect>
-          <x>130</x>
-          <y>270</y>
-          <width>781</width>
-          <height>431</height>
+          <x>150</x>
+          <y>250</y>
+          <width>961</width>
+          <height>401</height>
          </rect>
         </property>
        </widget>
@@ -4089,7 +4089,7 @@ border: 2px solid black; </string>
         <property name="geometry">
          <rect>
           <x>930</x>
-          <y>300</y>
+          <y>160</y>
           <width>181</width>
           <height>21</height>
          </rect>
@@ -4102,7 +4102,7 @@ border: 2px solid black; </string>
         <property name="geometry">
          <rect>
           <x>1110</x>
-          <y>330</y>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -4138,7 +4138,7 @@ QPushButton:pressed {
         <property name="geometry">
          <rect>
           <x>930</x>
-          <y>330</y>
+          <y>190</y>
           <width>161</width>
           <height>41</height>
          </rect>
@@ -4147,8 +4147,8 @@ QPushButton:pressed {
        <widget class="QPushButton" name="pushButton_suppv">
         <property name="geometry">
          <rect>
-          <x>1180</x>
-          <y>330</y>
+          <x>1170</x>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -5065,7 +5065,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/stat.png</normaloff>:/images/stat.png</iconset>
          </property>
          <property name="iconSize">
@@ -5094,7 +5094,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/doc.png</normaloff>:/images/doc.png</iconset>
          </property>
          <property name="iconSize">
@@ -6078,7 +6078,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/stat.png</normaloff>:/images/stat.png</iconset>
          </property>
          <property name="iconSize">
@@ -6107,7 +6107,7 @@ border: 2px solid black; </string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="images/images.qrc">
+          <iconset resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">
            <normaloff>:/images/doc.png</normaloff>:/images/doc.png</iconset>
          </property>
          <property name="iconSize">
@@ -6453,7 +6453,7 @@ QPushButton:hover {
          </rect>
         </property>
         <property name="pixmap">
-         <pixmap resource="images/images.qrc">:/images/logo.png</pixmap>
+         <pixmap resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">:/images/logo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -6653,7 +6653,7 @@ QPushButton:hover {
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="images/images.qrc">:/images/vax.png</pixmap>
+       <pixmap resource="../../../integfin/2a20-vaccination-and-biological-research/images/images.qrc">:/images/vax.png</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -6716,8 +6716,6 @@ QPushButton:hover {
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -9,7 +9,7 @@ QT += core gui network
 QT += printsupport
 QT += charts
 QT += charts widgets
-
+QT += core gui widgets serialport sql
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Integration
@@ -29,6 +29,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    arduinomot.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp \
@@ -36,6 +37,7 @@ SOURCES += \
     vaccin.cpp
 
 HEADERS += \
+    arduinomot.h \
         mainwindow.h \
     connection.h \
     medanalysis.h \

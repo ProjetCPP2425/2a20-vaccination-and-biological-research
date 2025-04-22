@@ -4,7 +4,8 @@
 
 #include <QMainWindow>
 #include "vaccin.h"
- //#include "buttondelegate.h"
+#include "arduinomot.h"
+
 #include <QStyledItemDelegate>
 #include <QHBoxLayout>  // Pour QHBoxLayout
 #include <QPushButton>  // Pour QPushButton
@@ -53,7 +54,7 @@ private slots:
     void on_pushButtonStat_18_clicked();
 
     void on_comboBox_tri_2_currentIndexChanged(int index);
-
+    void verifierEmployeEtOuvrirPorte();
 private:
     Ui::MainWindow *ui;
     Vaccin vacc;
@@ -66,6 +67,7 @@ private:
     QDate ancienneDateExpiration;
     QString ancienStatut;
     QString ancienneCertification;
+    Arduinomot A;
 
 };
 #endif // MAINWINDOW_H

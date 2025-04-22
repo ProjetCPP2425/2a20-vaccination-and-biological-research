@@ -29,6 +29,18 @@
 #include <QBarCategoryAxis>
 #include <QValueAxis>
 
+
+
+// apres integration
+#include <QSerialPort>
+#include <QSqlQuery>
+#include <QSqlError>
+
+
+
+
+
+
 // Constructeur de MainWindow
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -179,7 +191,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton_ajouter_2, &QPushButton::clicked, this, &MainWindow::on_pushButton_ajouter_v_clicked);
 
 
-
+    int ret = A.connect_arduino();
+    switch (ret) {
+    case 0:
+        qDebug() << "Arduino connecté sur :" << A.getarduino_port_name();
+        break;
+    case 1:
+        qDebug() << "Port trouvé mais connexion impossible : " << A.getarduino_port_name();
+        break;
+    case -1:
+        qDebug() << "Arduino non détecté";
+        break;
+    }
 
 }
 
@@ -482,33 +505,7 @@ void MainWindow::verifierVaccinsExpires() {
         qDebug() << "✅ Aucun vaccin expiré.";
     }
 }
-/*void MainWindow::updateCovidStats(QString country, int cases, int deaths, int recovered, int population, double vaccinationRate)
-{
-    QString message = QString(
-                          "<div style='background-color: #ffffff; padding: 15px; border-radius: 10px; border: 2px solid #B22222; font-size: 14px; color: #333;'>"
-                          "<h3 style='color:#B22222;'>📊 Données COVID-19 pour %1</h3>"
-                          "<p><b>✅ Cas confirmés :</b> <span style='color: #008000;'>%2</span></p>"
-                          "<p><b>❌ Décès :</b> <span style='color: #FF0000;'>%3</span></p>"
-                          "<p><b>💪 Guérisons :</b> <span style='color: #008000;'>%4</span></p>"
-                          "<p><b>👥 Population totale :</b> <span style='color: #333;'>%5</span></p>"
-                          "<p><b>💉 Taux de vaccination :</b> <span style='color: #B22222;'>%6%</span></p>"
-                          "</div>"
-                          ).arg(country)
-                          .arg(cases)
-                          .arg(deaths)
-                          .arg(recovered)
-                          .arg(population)
-                          .arg(vaccinationRate);
 
-    // 🔹 Assurez-vous que predictionLabel supporte HTML
-    ui->predictionLabel->setTextFormat(Qt::RichText);
-    ui->predictionLabel->setText(message);
-    ;
-
-    ui->tab->setCurrentIndex(3);  // ✅ Sélectionne l'onglet Prediction
-    ui->predictionLabel->setText(message);  // ✅ Affiche les données dans QLabel
-
-}*/
 void MainWindow::updateCovidStats(QString country, int confirmed, int deaths, int recovered, int active)
 {
     QString message = QString(
@@ -835,7 +832,7 @@ void MainWindow::on_pushButtonStat_18_clicked()
 
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("📊 Statistiques des vaccinations par année");
+    chart->setTitle("📊 Statistiques de nombre des vaccins par année");
     chart->setAnimationOptions(QChart::AllAnimations);
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignTop);
@@ -856,13 +853,28 @@ void MainWindow::on_pushButtonStat_18_clicked()
     // 👁 Vue graphique
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setMinimumSize(500, 300);
-    chartView->setMaximumSize(800, 500);
+    chartView->setMinimumSize(700, 50);
     chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    chartView->setContentsMargins(0, 0, 0, 0);
+
 
     // 🧱 Encadré dans un QGroupBox
     QGroupBox *graphBox = new QGroupBox("Vue Globale des vaccinations");
-    graphBox->setStyleSheet("QGroupBox { font-weight: bold; border: 2px solid #ccc; border-radius: 10px; padding: 10px; margin-top: 10px; }");
+    graphBox->setStyleSheet(R"(
+    QGroupBox {
+        font-weight: bold;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px auto;
+        background-color: #ffffff;
+    }
+)");
+
+
+
+
+
     QVBoxLayout *boxLayout = new QVBoxLayout();
     boxLayout->addWidget(chartView);
     graphBox->setLayout(boxLayout);
@@ -876,7 +888,7 @@ void MainWindow::on_pushButtonStat_18_clicked()
     // 📐 Layout final
     QVBoxLayout *layout = new QVBoxLayout();
 
-    QLabel *titleLabel = new QLabel("📊 Statistiques des vaccinations par année");
+    QLabel *titleLabel = new QLabel("📊  Statistiques de nombre des vaccins par année");
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #800000;");
     layout->addWidget(titleLabel);
@@ -884,10 +896,19 @@ void MainWindow::on_pushButtonStat_18_clicked()
     layout->addWidget(graphBox);
     layout->addWidget(summary);
 
+    layout->setAlignment(graphBox, Qt::AlignHCenter);
+    layout->setAlignment(summary, Qt::AlignHCenter);
+
+
     ui->Statistique_8->setLayout(layout);
     ui->Statistique_8->update();
     ui->Statistique_8->repaint();
+
+    graphBox->setMinimumWidth(1300);
+
+
 }
+
 
 
 
@@ -931,3 +952,26 @@ void MainWindow::on_comboBox_tri_2_currentIndexChanged(int index)
     ui->tableView->setModel(model);
 }
 
+void MainWindow::verifierEmployeEtOuvrirPorte()
+{
+    QByteArray data = A.read_from_arduino();
+    QString idEmp = QString(data).trimmed(); // ex : "E123"
+
+    qDebug() << "🔎 ID reçu d'Arduino : " << idEmp;
+
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM employes WHERE id_emp = :id");
+    query.bindValue(":id", idEmp);
+
+    if (query.exec()) {
+        if (query.next() && query.value(0).toInt() > 0) {
+            qDebug() << "✅ Employé reconnu, ouverture...";
+            A.write_to_arduino("OPEN\n");
+        } else {
+            qDebug() << "⛔ Employé inconnu.";
+            A.write_to_arduino("DENIED\n");
+        }
+    } else {
+        qDebug() << "❌ Erreur SQL : " << query.lastError().text();
+    }
+}

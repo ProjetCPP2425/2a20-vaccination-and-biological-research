@@ -2325,10 +2325,10 @@ public:
         comboBox_tri_2->addItem(QString());
         comboBox_tri_2->addItem(QString());
         comboBox_tri_2->setObjectName("comboBox_tri_2");
-        comboBox_tri_2->setGeometry(QRect(160, 195, 351, 41));
+        comboBox_tri_2->setGeometry(QRect(100, 190, 351, 41));
         label_tri_2 = new QLabel(lirect_8);
         label_tri_2->setObjectName("label_tri_2");
-        label_tri_2->setGeometry(QRect(80, 200, 71, 21));
+        label_tri_2->setGeometry(QRect(30, 200, 71, 21));
         label_tri_2->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -2337,7 +2337,7 @@ public:
 ""));
         label_recherche_2 = new QLabel(lirect_8);
         label_recherche_2->setObjectName("label_recherche_2");
-        label_recherche_2->setGeometry(QRect(570, 200, 91, 20));
+        label_recherche_2->setGeometry(QRect(470, 200, 91, 20));
         label_recherche_2->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -2346,7 +2346,7 @@ public:
 ""));
         lineEdit_recherche_2 = new QLineEdit(lirect_8);
         lineEdit_recherche_2->setObjectName("lineEdit_recherche_2");
-        lineEdit_recherche_2->setGeometry(QRect(670, 195, 351, 41));
+        lineEdit_recherche_2->setGeometry(QRect(560, 190, 351, 41));
         widget_11 = new QWidget(lirect_8);
         widget_11->setObjectName("widget_11");
         widget_11->setGeometry(QRect(490, 40, 361, 91));
@@ -2380,13 +2380,13 @@ public:
         pushButton_pdf_2->setIconSize(QSize(50, 50));
         tableView = new QTableView(lirect_8);
         tableView->setObjectName("tableView");
-        tableView->setGeometry(QRect(130, 270, 781, 431));
+        tableView->setGeometry(QRect(150, 250, 961, 401));
         label_10 = new QLabel(lirect_8);
         label_10->setObjectName("label_10");
-        label_10->setGeometry(QRect(930, 300, 181, 21));
+        label_10->setGeometry(QRect(930, 160, 181, 21));
         pushButton_modifier_2 = new QPushButton(lirect_8);
         pushButton_modifier_2->setObjectName("pushButton_modifier_2");
-        pushButton_modifier_2->setGeometry(QRect(1110, 330, 51, 41));
+        pushButton_modifier_2->setGeometry(QRect(1110, 190, 51, 41));
         pushButton_modifier_2->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #28A745;  /* Bright green background */\n"
 "    color: white;               /* White text */\n"
@@ -2408,10 +2408,10 @@ public:
         pushButton_modifier_2->setIcon(icon4);
         lineEdit = new QLineEdit(lirect_8);
         lineEdit->setObjectName("lineEdit");
-        lineEdit->setGeometry(QRect(930, 330, 161, 41));
+        lineEdit->setGeometry(QRect(930, 190, 161, 41));
         pushButton_suppv = new QPushButton(lirect_8);
         pushButton_suppv->setObjectName("pushButton_suppv");
-        pushButton_suppv->setGeometry(QRect(1180, 330, 51, 41));
+        pushButton_suppv->setGeometry(QRect(1170, 190, 51, 41));
         pushButton_suppv->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #DC3545;  /* Bright red background */\n"
 "    color: white;               /* White text */\n"
@@ -3707,7 +3707,7 @@ public:
         Affichage->setCurrentIndex(0);
         Affichage_2->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
-        tab->setCurrentIndex(1);
+        tab->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
         Affichage_5->setCurrentIndex(0);
 
