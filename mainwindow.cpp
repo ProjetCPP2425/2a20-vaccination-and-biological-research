@@ -1020,18 +1020,35 @@ void MainWindow::trierCarnets(const QString &critere)
 void MainWindow::on_pushButton_afficherRDV_clicked()
 {
     QSqlQuery query;
-    query.prepare("SELECT nom FROM carnet WHERE date_rdv = :today");
-    query.bindValue(":today", QDate::currentDate().toString("yyyy-MM-dd"));
 
-    if (query.exec()) {
-        while (query.next()) {
-            QString nom = query.value(0).toString();
-            qDebug() << "Nom trouvé :" << nom;
-            A.write_to_arduino(nom.toUtf8() + "\n");
-            QThread::sleep(2);
-        }
+    // ✅ Requête complète : NOM + PRENOM pour les RDV du jour
+    query.prepare("SELECT NOM, PRENOM FROM CARNETS WHERE TRUNC(DATE_RDV) = TRUNC(SYSDATE)");
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL :" << query.lastError().text();
+        return;
+    }
+
+    bool found = false;
+
+    while (query.next()) {
+        QString nom = query.value(0).toString().trimmed();
+        QString prenom = query.value(1).toString().trimmed();
+
+        QString fullName = prenom + " " + nom;
+
+        qDebug() << "✅ Nom à envoyer :" << fullName;
+
+        A.write_to_arduino(fullName.toUtf8() + "\n");
+
+        QThread::sleep(2); // Pause pour bien voir chaque nom
+        found = true;
+    }
+
+    if (!found) {
+        qDebug() << "⚠️ Aucun RDV aujourd'hui.";
+        A.write_to_arduino("Aucun RDV\n");
     } else {
-        qDebug() << "Erreur SQL :" << query.lastError().text();
+        QThread::sleep(2); // ✅ Permet d'afficher le DERNIER nom avant la fin
     }
 }
-
