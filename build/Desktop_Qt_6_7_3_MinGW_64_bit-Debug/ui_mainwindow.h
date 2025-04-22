@@ -2084,28 +2084,28 @@ public:
         comboBox_Tri->addItem(QString());
         comboBox_Tri->addItem(QString());
         comboBox_Tri->setObjectName("comboBox_Tri");
-        comboBox_Tri->setGeometry(QRect(160, 195, 351, 41));
+        comboBox_Tri->setGeometry(QRect(90, 200, 351, 41));
         label_111 = new QLabel(lirect_7);
         label_111->setObjectName("label_111");
-        label_111->setGeometry(QRect(90, 210, 191, 21));
+        label_111->setGeometry(QRect(10, 210, 81, 21));
         label_111->setStyleSheet(QString::fromUtf8("QLabel {\n"
-"    font-size: 16px;    /* Set font size to 16px */\n"
+"    font-size: 18px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
 "    color: black;       /* Black text (default, change if needed) */\n"
 "}\n"
 ""));
         label_112 = new QLabel(lirect_7);
         label_112->setObjectName("label_112");
-        label_112->setGeometry(QRect(570, 200, 91, 20));
+        label_112->setGeometry(QRect(450, 210, 101, 20));
         label_112->setStyleSheet(QString::fromUtf8("QLabel {\n"
-"    font-size: 16px;    /* Set font size to 16px */\n"
+"    font-size: 18px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
 "    color: black;       /* Black text (default, change if needed) */\n"
 "}\n"
 ""));
         rechercherLabo = new QLineEdit(lirect_7);
         rechercherLabo->setObjectName("rechercherLabo");
-        rechercherLabo->setGeometry(QRect(670, 195, 351, 41));
+        rechercherLabo->setGeometry(QRect(560, 200, 351, 41));
         widget_10 = new QWidget(lirect_7);
         widget_10->setObjectName("widget_10");
         widget_10->setGeometry(QRect(490, 40, 361, 91));
@@ -2139,7 +2139,7 @@ public:
         btnExportExcel->setIconSize(QSize(50, 50));
         pushButton_34 = new QPushButton(lirect_7);
         pushButton_34->setObjectName("pushButton_34");
-        pushButton_34->setGeometry(QRect(1110, 400, 51, 41));
+        pushButton_34->setGeometry(QRect(1130, 200, 51, 41));
         pushButton_34->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #28A745;  /* Bright green background */\n"
 "    color: white;               /* White text */\n"
@@ -2161,7 +2161,7 @@ public:
         pushButton_34->setIcon(icon2);
         pushButton_37 = new QPushButton(lirect_7);
         pushButton_37->setObjectName("pushButton_37");
-        pushButton_37->setGeometry(QRect(1190, 400, 51, 41));
+        pushButton_37->setGeometry(QRect(1200, 200, 51, 41));
         pushButton_37->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #DC3545;  /* Bright red background */\n"
 "    color: white;               /* White text */\n"
@@ -2183,16 +2183,25 @@ public:
         pushButton_37->setIcon(icon3);
         tableViewmay = new QTableView(lirect_7);
         tableViewmay->setObjectName("tableViewmay");
-        tableViewmay->setGeometry(QRect(0, 260, 1081, 421));
+        tableViewmay->setGeometry(QRect(0, 260, 1251, 421));
         tableViewmay->setStyleSheet(QString::fromUtf8(""));
         lineEdit_44 = new QLineEdit(lirect_7);
         lineEdit_44->setObjectName("lineEdit_44");
-        lineEdit_44->setGeometry(QRect(1100, 340, 151, 41));
+        lineEdit_44->setGeometry(QRect(930, 200, 191, 41));
+        lineEdit_44->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    background-color: transparent; /* Fond transparent */\n"
+"    color: #000000;                /* Texte noir normal */\n"
+"    font-size: 14px;               /* Taille de la police */\n"
+"    border: 2px dashed #000000;    /* Bordure en pointill\303\251s \303\251paisse */\n"
+"    border-radius: 5px;            /* Coins l\303\251g\303\250rement arrondis */\n"
+"    padding: 8px;                  /* Espacement interne pour le texte */\n"
+"    border-style: dashed;          /* Style en pointill\303\251s */\n"
+"}"));
         label_115 = new QLabel(lirect_7);
         label_115->setObjectName("label_115");
-        label_115->setGeometry(QRect(1090, 290, 171, 31));
+        label_115->setGeometry(QRect(930, 160, 191, 31));
         label_115->setStyleSheet(QString::fromUtf8("QLabel {\n"
-"    font-size: 16px;    /* Set font size to 16px */\n"
+"    font-size: 18px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
 "    color: black;       /* Black text (default, change if needed) */\n"
 "}\n"
@@ -3726,7 +3735,7 @@ public:
         comboTrierCarnets->setGeometry(QRect(80, 200, 351, 41));
         label_170 = new QLabel(lirect_10);
         label_170->setObjectName("label_170");
-        label_170->setGeometry(QRect(10, 210, 191, 21));
+        label_170->setGeometry(QRect(0, 210, 71, 21));
         label_170->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -3800,7 +3809,7 @@ public:
         modifierC->setIcon(icon2);
         tableVieww = new QTableView(lirect_10);
         tableVieww->setObjectName("tableVieww");
-        tableVieww->setGeometry(QRect(20, 260, 1321, 481));
+        tableVieww->setGeometry(QRect(20, 250, 1201, 481));
         nom_2 = new QLabel(lirect_10);
         nom_2->setObjectName("nom_2");
         nom_2->setGeometry(QRect(900, 150, 291, 41));
@@ -4110,10 +4119,10 @@ public:
 
         Affichage->setCurrentIndex(0);
         Affichage_31->setCurrentIndex(0);
-        Affichage_3->setCurrentIndex(3);
-        tab_5->setCurrentIndex(3);
+        Affichage_3->setCurrentIndex(0);
+        tab_5->setCurrentIndex(0);
         Affichage_6->setCurrentIndex(0);
-        tab_2->setCurrentIndex(0);
+        tab_2->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

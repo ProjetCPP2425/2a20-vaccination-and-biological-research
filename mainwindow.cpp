@@ -352,7 +352,7 @@ MainWindow::MainWindow(QWidget *parent)
 )");
     // Function to handle page changes
 
-
+       displayCarnet();
 
 
 
@@ -718,17 +718,21 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(3);
         ui->frame->setVisible(true);
         verifierVaccinsExpires();
+
         // Mettre à jour immédiatement l'affichage des vaccins
         Vaccin v;
         ui->tableView_2->setModel(v.afficher());
+
         // Ajustements d'affichage
         ui->tableView_2->verticalHeader()->setDefaultSectionSize(35);
         ui->tableView_2->horizontalHeader()->setDefaultSectionSize(150);
         ui->tableView_2->resizeColumnsToContents();
         ui->tableView_2->setStyleSheet("QTableView::item { padding: 10px; }");
-        ui->tableView_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
+        // Faire en sorte que les colonnes prennent toute la largeur
+        ui->tableView_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     });
+
     connect(ui->pushButton_ajouter_2, &QPushButton::clicked, this, &MainWindow::on_pushButton_ajouter_v_clicked);
 }
 

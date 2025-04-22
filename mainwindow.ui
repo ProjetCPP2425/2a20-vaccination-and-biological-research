@@ -2829,7 +2829,7 @@ border: 2px solid black; </string>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="ajoutct_7">
        <attribute name="title">
@@ -3536,8 +3536,8 @@ QPushButton:hover {
        <widget class="QComboBox" name="comboBox_Tri">
         <property name="geometry">
          <rect>
-          <x>160</x>
-          <y>195</y>
+          <x>90</x>
+          <y>200</y>
           <width>351</width>
           <height>41</height>
          </rect>
@@ -3566,15 +3566,15 @@ QPushButton:hover {
        <widget class="QLabel" name="label_111">
         <property name="geometry">
          <rect>
-          <x>90</x>
+          <x>10</x>
           <y>210</y>
-          <width>191</width>
+          <width>81</width>
           <height>21</height>
          </rect>
         </property>
         <property name="styleSheet">
          <string notr="true">QLabel {
-    font-size: 16px;    /* Set font size to 16px */
+    font-size: 18px;    /* Set font size to 16px */
     font-weight: bold;  /* Make text bold */
     color: black;       /* Black text (default, change if needed) */
 }
@@ -3587,15 +3587,15 @@ QPushButton:hover {
        <widget class="QLabel" name="label_112">
         <property name="geometry">
          <rect>
-          <x>570</x>
-          <y>200</y>
-          <width>91</width>
+          <x>450</x>
+          <y>210</y>
+          <width>101</width>
           <height>20</height>
          </rect>
         </property>
         <property name="styleSheet">
          <string notr="true">QLabel {
-    font-size: 16px;    /* Set font size to 16px */
+    font-size: 18px;    /* Set font size to 16px */
     font-weight: bold;  /* Make text bold */
     color: black;       /* Black text (default, change if needed) */
 }
@@ -3608,8 +3608,8 @@ QPushButton:hover {
        <widget class="QLineEdit" name="rechercherLabo">
         <property name="geometry">
          <rect>
-          <x>670</x>
-          <y>195</y>
+          <x>560</x>
+          <y>200</y>
           <width>351</width>
           <height>41</height>
          </rect>
@@ -3698,8 +3698,8 @@ border: 2px solid black; </string>
        <widget class="QPushButton" name="pushButton_34">
         <property name="geometry">
          <rect>
-          <x>1110</x>
-          <y>400</y>
+          <x>1130</x>
+          <y>200</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -3734,8 +3734,8 @@ QPushButton:pressed {
        <widget class="QPushButton" name="pushButton_37">
         <property name="geometry">
          <rect>
-          <x>1190</x>
-          <y>400</y>
+          <x>1200</x>
+          <y>200</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -3772,7 +3772,7 @@ QPushButton:pressed {
          <rect>
           <x>0</x>
           <y>260</y>
-          <width>1081</width>
+          <width>1251</width>
           <height>421</height>
          </rect>
         </property>
@@ -3783,25 +3783,36 @@ QPushButton:pressed {
        <widget class="QLineEdit" name="lineEdit_44">
         <property name="geometry">
          <rect>
-          <x>1100</x>
-          <y>340</y>
-          <width>151</width>
+          <x>930</x>
+          <y>200</y>
+          <width>191</width>
           <height>41</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir normal */
+    font-size: 14px;               /* Taille de la police */
+    border: 2px dashed #000000;    /* Bordure en pointillés épaisse */
+    border-radius: 5px;            /* Coins légèrement arrondis */
+    padding: 8px;                  /* Espacement interne pour le texte */
+    border-style: dashed;          /* Style en pointillés */
+}</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_115">
         <property name="geometry">
          <rect>
-          <x>1090</x>
-          <y>290</y>
-          <width>171</width>
+          <x>930</x>
+          <y>160</y>
+          <width>191</width>
           <height>31</height>
          </rect>
         </property>
         <property name="styleSheet">
          <string notr="true">QLabel {
-    font-size: 16px;    /* Set font size to 16px */
+    font-size: 18px;    /* Set font size to 16px */
     font-weight: bold;  /* Make text bold */
     color: black;       /* Black text (default, change if needed) */
 }
@@ -4213,7 +4224,7 @@ QLabel:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -6304,7 +6315,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="ajoutct_10">
        <attribute name="title">
@@ -7112,9 +7123,9 @@ QPushButton:hover {
        <widget class="QLabel" name="label_170">
         <property name="geometry">
          <rect>
-          <x>10</x>
+          <x>0</x>
           <y>210</y>
-          <width>191</width>
+          <width>71</width>
           <height>21</height>
          </rect>
         </property>
@@ -7284,8 +7295,8 @@ QPushButton:pressed {
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>260</y>
-          <width>1321</width>
+          <y>250</y>
+          <width>1201</width>
           <height>481</height>
          </rect>
         </property>
