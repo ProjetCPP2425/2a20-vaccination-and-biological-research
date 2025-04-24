@@ -59,6 +59,7 @@
 #include <QPushButton> // pour QPushButton
 #include <QResizeEvent> // pour resizeEvent
 
+#include "arduinolcd.h"
 
 
 
@@ -394,6 +395,8 @@ private slots:
 
 
 
+    void on_pushButton_afficherRDV_clicked();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 
@@ -407,6 +410,8 @@ protected:
 private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
+    ArduinoLCD A;
+
     QSortFilterProxyModel *proxyModel;
     QString idAModifier = "";
 

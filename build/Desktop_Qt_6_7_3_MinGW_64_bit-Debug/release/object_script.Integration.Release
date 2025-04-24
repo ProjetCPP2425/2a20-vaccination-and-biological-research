@@ -1,3 +1,4 @@
+release/arduinolcd.o
 release/carnets.o
 release/compagne.o
 release/email.o

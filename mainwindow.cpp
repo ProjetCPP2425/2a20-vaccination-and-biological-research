@@ -54,6 +54,7 @@
 
 #include <QRandomGenerator>
 
+#include <QThread>
 
 //daoussar
 
@@ -734,6 +735,19 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(ui->pushButton_ajouter_2, &QPushButton::clicked, this, &MainWindow::on_pushButton_ajouter_v_clicked);
+    //arduino
+    int ret = A.connect_arduino();
+        switch (ret) {
+        case 0:
+            qDebug() << "Arduino connecté sur :" << A.getarduino_port_name();
+            break;
+        case 1:
+            qDebug() << "Port trouvé mais connexion impossible : " << A.getarduino_port_name();
+            break;
+        case -1:
+            qDebug() << "Arduino non détecté";
+            break;
+        }
 }
 
 
@@ -5985,3 +5999,39 @@ void MainWindow::on_comboBox_tri_2_currentIndexChanged(int index)
 
 
 
+
+void MainWindow::on_pushButton_afficherRDV_clicked()
+{
+    QSqlQuery query;
+
+    // ✅ Requête complète : NOM + PRENOM pour les RDV du jour
+    query.prepare("SELECT NOM, PRENOM FROM CARNETS WHERE TRUNC(DATE_RDV) = TRUNC(SYSDATE)");
+
+    if (!query.exec()) {
+        qDebug() << "❌ Erreur SQL :" << query.lastError().text();
+        return;
+    }
+
+    bool found = false;
+
+    while (query.next()) {
+        QString nom = query.value(0).toString().trimmed();
+        QString prenom = query.value(1).toString().trimmed();
+
+        QString fullName = prenom + " " + nom;
+
+        qDebug() << "✅ Nom à envoyer :" << fullName;
+
+        A.write_to_arduino(fullName.toUtf8() + "\n");
+
+        QThread::sleep(2); // Pause pour bien voir chaque nom
+        found = true;
+    }
+
+    if (!found) {
+        qDebug() << "⚠️ Aucun RDV aujourd'hui.";
+        A.write_to_arduino("Aucun RDV\n");
+    } else {
+        QThread::sleep(2); // ✅ Permet d'afficher le DERNIER nom avant la fin
+    }
+}

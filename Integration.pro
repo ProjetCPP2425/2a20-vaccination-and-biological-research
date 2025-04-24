@@ -10,6 +10,8 @@ QT += network
 QT +=  charts
 QT += axcontainer
 QT += printsupport
+QT += serialport
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,6 +32,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    arduinolcd.cpp \
     carnets.cpp \
     compagne.cpp \
     email.cpp \
@@ -45,6 +48,7 @@ SOURCES += \
     vaccin.cpp
 
 HEADERS += \
+    arduinolcd.h \
     carnets.h \
     compagne.h \
     email.h \
