@@ -106,6 +106,8 @@ if(message!="")
 {
      email.sendEmail("najoua.dahmen18@gmail.com", "Notification d'Expiration",message );
 }
+QString message2=produitTmp.MessageAlerte();
+email.sendEmail("najoua.dahmen18@gmail.com", "Alerte coupure courant ",message2);
 int ret = A.connect_arduino();
 switch (ret) {
 case 0:
@@ -118,6 +120,8 @@ case -1:
     qDebug() << "Arduino non détecté";
     break;
 }
+connect(A.getserial(), &QSerialPort::readyRead, this, &MainWindow::lireDonneesSerie);
+
 }
 
 MainWindow::~MainWindow()
@@ -769,23 +773,34 @@ void MainWindow::on_StatP_clicked()
 }
 void MainWindow::lireDonneesSerie() {
     QByteArray data = A.read_from_arduino();
+    bufferSerie += QString::fromUtf8(data); // concatène les morceaux
 
+    // Tant qu'on a des lignes complètes
+    while (bufferSerie.contains('\n')) {
+        int pos = bufferSerie.indexOf('\n');
+        QString ligne = bufferSerie.left(pos).trimmed();  // extrait la ligne complète
+        bufferSerie.remove(0, pos + 1);  // supprime la ligne du buffer
 
-    if (data.contains("ALERTE_COURANT=0")) {
-        // Lancer la requête SQL pour les vaccins
-        QSqlQuery query;
-        if (query.exec("SELECT NOM_PRODUIT, QUANTITE FROM PRODUITS WHERE CATEGORIE = 'vaccin'")) {
-            QString message = "⚠️ Coupure de courant détectée !\n\nLes produits suivants nécessitent une réfrigération :\n\n";
+        qDebug() << "Ligne complète reçue : " << ligne;
 
-            while (query.next()) {
-                QString nom = query.value(0).toString();
-                QString quantite = query.value(1).toString();
-                message += "Produit : " + nom + " - Quantité : " + quantite + "\n";
+        if (ligne == "ALERTE_COURANT=0") {
+            QSqlQuery query;
+            if (query.exec("SELECT NOM_PRODUIT, QUANTITE FROM PRODUITS WHERE CATEGORIE = 'Vaccin'")) {
+                QString message = "⚠️ Coupure de courant détectée !\n\nLes produits suivants nécessitent une réfrigération :\n\n";
+
+                while (query.next()) {
+                    QString nom = query.value(0).toString();
+                    QString quantite = query.value(1).toString();
+                    message += "Produit : " + nom + " - Quantité : " + quantite + "\n";
+                }
+
+                QMessageBox::critical(this, "Alerte Produits Sensibles", message);
+            } else {
+                QMessageBox::warning(this, "Erreur SQL", "Échec lors de la requête SQL !");
             }
-
-            QMessageBox::critical(this, "Alerte Produits Sensibles", message);
-        } else {
-            QMessageBox::warning(this, "Erreur SQL", "Échec lors de la requête SQL !");
         }
     }
 }
+
+
+

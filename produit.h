@@ -44,7 +44,7 @@ public:
     bool modifier( QString oldNomProduit, QString newNomProduit);
     bool remplirChampsModification(QString nomProduit, QString &categorie, int &quantite,
                                    QDate &dateFabrication, QDate &dateExpiration, QString &nomFournisseur);
-
+    QString MessageAlerte();
     QSqlQueryModel* rechercherTout(const QString& critere);
     QSqlQueryModel* trierPar(const QString& critere);
     QSqlQueryModel* rapportStockSecurite();

@@ -69,6 +69,8 @@ private slots:
 
     void on_telecharger_qr_code_clicked();
 
+
+
 private:
     Ui::MainWindow *ui;
     Produit produitTmp;
@@ -76,5 +78,6 @@ private:
     bool modeModification = false;
 mailer email;
     arduinotension A ;
+     QString bufferSerie;
 };
 #endif // MAINWINDOW_H

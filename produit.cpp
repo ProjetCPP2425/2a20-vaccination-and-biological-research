@@ -315,3 +315,36 @@ if(query.exec())
 return message;
 
 }
+
+QString Produit::MessageAlerte()
+{
+    QString message="";
+    QSqlQuery query;
+    query.prepare("SELECT NOM_PRODUIT, CATEGORIE, QUANTITE "
+                  "FROM PRODUITS "
+                  "WHERE CATEGORIE='Vaccin' ");
+    if(query.exec())
+    {  bool aDesProduits = false;
+        while(query.next())
+
+        { if (!aDesProduits) {
+                message += "⚠️ Attention : Coupure courant Ces produits necessitent une refregeration  :\n\n";
+                aDesProduits = true;
+            }
+
+            QString nomP =query.value(0).toString() ;
+            QString categorie =query.value(1).toString() ;
+            QString quantite =query.value(2).toString();
+
+
+            QString text = " nom Produit: " + nomP + "\n"
+                                                     "categorie: " + categorie + "\n"
+                                         "quantite: " + quantite + "\n";
+            message=message+text;
+        }
+
+
+    }
+    return message;
+
+}
