@@ -106,8 +106,7 @@ if(message!="")
 {
      email.sendEmail("najoua.dahmen18@gmail.com", "Notification d'Expiration",message );
 }
-QString message2=produitTmp.MessageAlerte();
-email.sendEmail("najoua.dahmen18@gmail.com", "Alerte coupure courant ",message2);
+
 int ret = A.connect_arduino();
 switch (ret) {
 case 0:
@@ -795,6 +794,8 @@ void MainWindow::lireDonneesSerie() {
                 }
 
                 QMessageBox::critical(this, "Alerte Produits Sensibles", message);
+                QString message2=produitTmp.MessageAlerte();
+                email.sendEmail("najoua.dahmen18@gmail.com", "Alerte coupure courant ",message2);
             } else {
                 QMessageBox::warning(this, "Erreur SQL", "Échec lors de la requête SQL !");
             }
