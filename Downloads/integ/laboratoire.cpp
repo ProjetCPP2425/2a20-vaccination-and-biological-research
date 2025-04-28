@@ -69,6 +69,9 @@ QSqlTableModel* Laboratoire::afficher()
     model->setHeaderData(9, Qt::Horizontal, QObject::tr("Dépense"));
     model->setHeaderData(10, Qt::Horizontal, QObject::tr("Date de création"));
 
+
+
+
     return model;
 }
 

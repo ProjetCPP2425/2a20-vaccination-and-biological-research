@@ -1,0 +1,10 @@
+release/arduinomanager.o
+release/arduinomot.o
+release/arduinorfid.o
+release/laboratoire.o
+release/main.o
+release/mainwindow.o
+release/connection.o
+release/qrc_images.o
+release/moc_arduinomanager.o
+release/moc_mainwindow.o

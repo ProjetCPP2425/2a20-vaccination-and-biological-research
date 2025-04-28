@@ -45,10 +45,17 @@
 
 #include <QAxObject>
 #include <QVariant>
+#include <QDateTime>
+
+#include <QSerialPort>
+#include <QSerialPortInfo>
+#include "ArduinoManager.h"
+ArduinoManager *arduinoManager;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+
 
 {
     ui->setupUi(this);
@@ -79,17 +86,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->rechercherLabo, &QLineEdit::textChanged, this, &MainWindow::rechercherLabo);
 
     //tri
-        connect(ui->comboBox_Tri, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboBox_Tri_currentIndexChanged_M);
+    connect(ui->comboBox_Tri, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboBox_Tri_currentIndexChanged_M);
     //stat
     connect(ui->Affichage_3, &QTabWidget::currentChanged, this, &MainWindow::onTabWidgetPageChanged);
 
     connect(ui->pushButtonStat_16, &QPushButton::clicked, this, &MainWindow::displayStatisticsChart);
 
     connect(ui->pushButtonStat_16, &QPushButton::clicked, this, &MainWindow::goToStatistiques);
-  //pdf
+    //pdf
     connect(ui->btnExportExcel, &QPushButton::clicked, this, &MainWindow::onExcelClicked);
 
-  //maps
+    //maps
     connect(ui->pushButton_search, &QPushButton::clicked, this, &MainWindow::showMap);
 
 
@@ -97,13 +104,19 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect actions for selecting a lab and sending messages
     connect(ui->pushButton_selectLab, &QPushButton::clicked, this, &MainWindow::on_selectLab_clicked);
     connect(ui->pushButton_sendMessage, &QPushButton::clicked, this, &MainWindow::on_sendMessage_clicked);
-     ui->lineEdit_message->setPlaceholderText("Veuillez écrire ici...");
+    ui->lineEdit_message->setPlaceholderText("Veuillez écrire ici...");
 
     // Populate lab name combo box on initialization
-   // populateLabNameComboBox();
+    // populateLabNameComboBox();
     TCPSocket = new QTcpSocket(this);
-     TCPSocket->connectToHost(QHostAddress::LocalHost, 1234);
+    TCPSocket->connectToHost(QHostAddress::LocalHost, 1234);
 
+    initSerialPort();
+
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(QApplication::windowIcon());
+    trayIcon->show();
 
 
 
@@ -147,6 +160,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
+
     });
 
     // Bouton "Vaccin" -> Page 3 (pageVac)
@@ -166,21 +180,162 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(true);
     });
 
-    int ret = A.connect_arduino();
-    switch (ret) {
+
+    arduinoManager = new ArduinoManager(this);
+    int result = arduinoManager->connect_arduino();
+    switch (result) {
     case 0:
-        qDebug() << "Arduino connecté sur :" << A.getarduino_port_name();
+        qDebug() << "✅ Arduino connecté sur " << arduinoManager->getPortName();
         break;
     case 1:
-        qDebug() << "Port trouvé mais connexion impossible : " << A.getarduino_port_name();
+        qDebug() << "⚠️ Port trouvé mais pas ouvert !";
         break;
     case -1:
-        qDebug() << "Arduino non détecté";
+        qDebug() << "❌ Arduino non détecté.";
         break;
     }
 
+    connect(arduinoManager, &ArduinoManager::rfidUIDReceived, this, &MainWindow::handleCheckIn);
+    //B.write_to_arduino("DENIED\n");
+
 
 }
+
+void MainWindow::readSerialData()
+{
+    static QString buffer;
+    buffer += QString::fromUtf8(serialPort->readAll());
+
+    // 🔁 Tant qu'on trouve un saut de ligne
+    int newlineIndex;
+    while ((newlineIndex = buffer.indexOf('\n')) != -1) {
+        QString line = buffer.left(newlineIndex).trimmed();
+        buffer.remove(0, newlineIndex + 1);
+
+        qDebug() << "📥 Ligne reçue Arduino :" << line;
+
+        if (line.startsWith("UID de la carte :")) {
+            QString uid = line.section(':', 1).trimmed();
+            qDebug() << "🔍 UID extrait :" << uid;
+
+            if (!uid.isEmpty()) {
+                handleCheckIn(uid);  // ⬅️ Passage à la vérification dans la base
+            } else {
+                qDebug() << "⚠️ UID vide.";
+            }
+        }
+    }
+}
+void MainWindow::initSerialPort()
+{
+    serialPort = new QSerialPort(this);
+
+    bool arduino_is_available = false;
+    QString arduino_port_name;
+
+    // 🔍 Parcours des ports disponibles
+    foreach (const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()) {
+        if (serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier()) {
+            if (serialPortInfo.vendorIdentifier() == 9025 && serialPortInfo.productIdentifier() == 67) {
+                arduino_is_available = true;
+                arduino_port_name = serialPortInfo.portName();
+                qDebug() << "✅ Port Arduino trouvé :" << arduino_port_name;
+            }
+        }
+    }
+
+    if (arduino_is_available) {
+        serialPort->setPortName(arduino_port_name);
+        serialPort->setBaudRate(QSerialPort::Baud9600);
+        serialPort->setDataBits(QSerialPort::Data8);
+        serialPort->setParity(QSerialPort::NoParity);
+        serialPort->setStopBits(QSerialPort::OneStop);
+        serialPort->setFlowControl(QSerialPort::NoFlowControl);
+
+        if (serialPort->open(QIODevice::ReadWrite)) {
+            qDebug() << "📡 Port série ouvert avec succès.";
+            connect(serialPort, &QSerialPort::readyRead, this, &MainWindow::readSerialData);
+        } else {
+            qDebug() << "❌ Erreur : impossible d’ouvrir le port série.";
+        }
+    } else {
+        qDebug() << "❌ Aucun Arduino disponible.";
+    }
+}
+void MainWindow::showNotification(const QString &title, const QString &message)
+{
+    if (trayIcon && trayIcon->isVisible()) {
+        trayIcon->showMessage(title, message, QSystemTrayIcon::Information, 4000); // 4 seconds
+    }
+}
+void MainWindow::handleCheckIn(const QString &uid)
+{
+    qDebug() << "🔎 Vérification UID dans la base de données :" << uid;
+
+    QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QSqlQuery empQuery;
+    empQuery.prepare("SELECT NOM, PRENOM, NOM_LABORA FROM EMPLOYES WHERE RFID_ID = :rfid");
+    empQuery.bindValue(":rfid", uid);
+
+    if (empQuery.exec() && empQuery.next()) {
+        QString nom = empQuery.value(0).toString();
+        QString prenom = empQuery.value(1).toString();
+        QString nomLabora = empQuery.value(2).toString();
+
+        qDebug() << "✅ Employé reconnu :" << nom << prenom << " | Laboratoire:" << nomLabora;
+
+        // Check if RFID_ID already exists in LABORATOIRES
+        QSqlQuery checkQuery;
+        checkQuery.prepare("SELECT COUNT(*) FROM LABORATOIRES WHERE RFID_ID = :rfid");
+        checkQuery.bindValue(":rfid", uid);
+
+        if (checkQuery.exec() && checkQuery.next() && checkQuery.value(0).toInt() > 0) {
+            // RFID_ID exists — update PRESENCE
+            QSqlQuery updateQuery;
+            updateQuery.prepare("UPDATE LABORATOIRES SET PRESENCE = :time WHERE RFID_ID = :rfid");
+            updateQuery.bindValue(":time", currentTime);
+            updateQuery.bindValue(":rfid", uid);
+
+            if (updateQuery.exec()) {
+                qDebug() << "📝 Présence mise à jour pour" << nom << prenom;
+                QMessageBox::information(this, "✅ Accès autorisé",
+                                         QString("Bienvenue %1 %2 au laboratoire %3 !").arg(nom, prenom, nomLabora));
+                displayLaboratoires();
+            } else {
+                qDebug() << "❌ Erreur mise à jour base :" << updateQuery.lastError().text();
+            }
+        } else {
+            // First time — insert
+            QSqlQuery insertQuery;
+            insertQuery.prepare("INSERT INTO LABORATOIRES (NOM_EMP, PRENOM_EMP, PRESENCE, RFID_ID) "
+                                "VALUES (:nom, :prenom, :time, :rfid)");
+            insertQuery.bindValue(":nom", nom);
+            insertQuery.bindValue(":prenom", prenom);
+            insertQuery.bindValue(":time", currentTime);
+            insertQuery.bindValue(":rfid", uid);
+
+            if (insertQuery.exec()) {
+                qDebug() << "📝 Présence enregistrée pour" << nom << prenom;
+                QMessageBox::information(this, "✅ Accès autorisé",
+                                         QString("Bienvenue %1 %2 au laboratoire %3 !").arg(nom, prenom, nomLabora));
+                displayLaboratoires();
+            } else {
+                qDebug() << "❌ Erreur insertion base :" << insertQuery.lastError().text();
+            }
+        }
+
+        qDebug() << "🚪 Envoi de la commande OPEN au moteur";
+        serialPort->write("OPEN\n");
+
+    } else {
+        qDebug() << "❌ UID inconnu. Carte non enregistrée.";
+        QMessageBox::critical(this, "⛔ Accès refusé", "❌ Employé non reconnu !");
+        qDebug() << "🚪 Envoi de la commande DENIED au moteur";
+        serialPort->write("DENIED\n");
+    }
+}
+
+
 
 MainWindow::~MainWindow()
 {
@@ -189,6 +344,7 @@ MainWindow::~MainWindow()
     }
     delete ui;
 }
+
 // Ajouter Laboratoire
 void MainWindow::on_pushButton_32_clicked()
 {
@@ -285,9 +441,17 @@ void MainWindow::displayLaboratoires()
     if (model) {
         ui->tableView->setModel(model);
         ui->tableView->hideColumn(0); // Hides the NUM (ID) column
-        ui->tableView->resizeColumnsToContents();
-        ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+        // Resize each column based on content
+        ui->tableView->resizeColumnsToContents();
+
+        // Optional: Adjust row height as well
+        ui->tableView->resizeRowsToContents();
+
+        // Optional: Prevent stretching
+        ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+        // Header style
         ui->tableView->setStyleSheet(
             "QHeaderView::section {"
             "   background-color: #B00000; "
@@ -301,6 +465,7 @@ void MainWindow::displayLaboratoires()
         QMessageBox::warning(this, "Erreur", "Échec du chargement des laboratoires.");
     }
 }
+
 
 
 

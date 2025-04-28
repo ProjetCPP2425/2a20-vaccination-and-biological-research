@@ -32,14 +32,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-    arduinorfid.cpp \
+    arduinomanager.cpp \
     laboratoire.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp
 
 HEADERS += \
-    arduinorfid.h \
+    arduinomanager.h \
     laboratoire.h \
         mainwindow.h \
     connection.h

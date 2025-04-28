@@ -14,14 +14,14 @@
 #include <QByteArray>
 #include <QList>
 
-
+#include <QSerialPort>
 
 #include <QTcpSocket>
 
 #include <QTimer>
 
-#include "arduinorfid.h"
-
+#include <QDateTime>
+#include <QSystemTrayIcon>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -42,6 +42,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void readSerialData();
+   void handleCheckIn(const QString &uid);
+
 
 private slots:
     void on_pushButton_32_clicked();
@@ -64,6 +67,8 @@ private slots:
     void Read_Data_From_Socket();
 
     void clearAjoutFields();
+
+
    private:
     Ui::MainWindow *ui;
     Laboratoire labTmp;
@@ -78,7 +83,14 @@ private slots:
     QTcpSocket *TCPSocket;
 
     void populateLabNameComboBox();
-    ArduinoRFID A;
+
+
+    QSerialPort *serialPort;
+   void initSerialPort();
+
+    QSystemTrayIcon *trayIcon;
+    void showNotification(const QString &title, const QString &message);
+
 
 };
 #endif // MAINWINDOW_H

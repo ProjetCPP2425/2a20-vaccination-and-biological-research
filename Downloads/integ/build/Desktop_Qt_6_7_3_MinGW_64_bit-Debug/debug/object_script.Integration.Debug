@@ -1,0 +1,10 @@
+debug/arduinomanager.o
+debug/arduinomot.o
+debug/arduinorfid.o
+debug/laboratoire.o
+debug/main.o
+debug/mainwindow.o
+debug/connection.o
+debug/qrc_images.o
+debug/moc_arduinomanager.o
+debug/moc_mainwindow.o

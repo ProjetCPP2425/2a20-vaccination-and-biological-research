@@ -182,6 +182,7 @@ public:
     QTableView *tableView;
     QLineEdit *lineEdit_44;
     QLabel *label_115;
+    QLabel *label_result;
     QWidget *Statistique_7;
     QWidget *widget_4;
     QWidget *tab_3;
@@ -1931,10 +1932,10 @@ public:
         comboBox_Tri->addItem(QString());
         comboBox_Tri->addItem(QString());
         comboBox_Tri->setObjectName("comboBox_Tri");
-        comboBox_Tri->setGeometry(QRect(160, 195, 351, 41));
+        comboBox_Tri->setGeometry(QRect(90, 195, 351, 41));
         label_111 = new QLabel(lirect_7);
         label_111->setObjectName("label_111");
-        label_111->setGeometry(QRect(90, 210, 191, 21));
+        label_111->setGeometry(QRect(10, 210, 91, 21));
         label_111->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -1943,7 +1944,7 @@ public:
 ""));
         label_112 = new QLabel(lirect_7);
         label_112->setObjectName("label_112");
-        label_112->setGeometry(QRect(570, 200, 91, 20));
+        label_112->setGeometry(QRect(460, 200, 91, 20));
         label_112->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -1952,7 +1953,7 @@ public:
 ""));
         rechercherLabo = new QLineEdit(lirect_7);
         rechercherLabo->setObjectName("rechercherLabo");
-        rechercherLabo->setGeometry(QRect(670, 195, 351, 41));
+        rechercherLabo->setGeometry(QRect(550, 195, 351, 41));
         widget_10 = new QWidget(lirect_7);
         widget_10->setObjectName("widget_10");
         widget_10->setGeometry(QRect(490, 40, 361, 91));
@@ -1986,7 +1987,7 @@ public:
         btnExportExcel->setIconSize(QSize(50, 50));
         pushButton_34 = new QPushButton(lirect_7);
         pushButton_34->setObjectName("pushButton_34");
-        pushButton_34->setGeometry(QRect(1110, 400, 51, 41));
+        pushButton_34->setGeometry(QRect(1120, 190, 51, 41));
         pushButton_34->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #28A745;  /* Bright green background */\n"
 "    color: white;               /* White text */\n"
@@ -2008,7 +2009,7 @@ public:
         pushButton_34->setIcon(icon4);
         pushButton_37 = new QPushButton(lirect_7);
         pushButton_37->setObjectName("pushButton_37");
-        pushButton_37->setGeometry(QRect(1190, 400, 51, 41));
+        pushButton_37->setGeometry(QRect(1190, 190, 51, 41));
         pushButton_37->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #DC3545;  /* Bright red background */\n"
 "    color: white;               /* White text */\n"
@@ -2030,20 +2031,23 @@ public:
         pushButton_37->setIcon(icon5);
         tableView = new QTableView(lirect_7);
         tableView->setObjectName("tableView");
-        tableView->setGeometry(QRect(0, 260, 1081, 421));
+        tableView->setGeometry(QRect(0, 260, 1251, 421));
         tableView->setStyleSheet(QString::fromUtf8(""));
         lineEdit_44 = new QLineEdit(lirect_7);
         lineEdit_44->setObjectName("lineEdit_44");
-        lineEdit_44->setGeometry(QRect(1100, 340, 151, 41));
+        lineEdit_44->setGeometry(QRect(940, 190, 151, 41));
         label_115 = new QLabel(lirect_7);
         label_115->setObjectName("label_115");
-        label_115->setGeometry(QRect(1090, 290, 171, 31));
+        label_115->setGeometry(QRect(930, 140, 171, 31));
         label_115->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
 "    color: black;       /* Black text (default, change if needed) */\n"
 "}\n"
 ""));
+        label_result = new QLabel(lirect_7);
+        label_result->setObjectName("label_result");
+        label_result->setGeometry(QRect(50, 80, 171, 41));
         Affichage_3->addTab(lirect_7, QString());
         tableView->raise();
         comboBox_Tri->raise();
@@ -2055,6 +2059,7 @@ public:
         pushButton_37->raise();
         lineEdit_44->raise();
         label_115->raise();
+        label_result->raise();
         Statistique_7 = new QWidget();
         Statistique_7->setObjectName("Statistique_7");
         widget_4 = new QWidget(Statistique_7);
@@ -4070,6 +4075,7 @@ public:
         pushButton_34->setText(QString());
         pushButton_37->setText(QString());
         label_115->setText(QCoreApplication::translate("MainWindow", "Donner le nom du lab: :", nullptr));
+        label_result->setText(QString());
         Affichage_3->setTabText(Affichage_3->indexOf(lirect_7), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         Affichage_3->setTabText(Affichage_3->indexOf(Statistique_7), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
         loginButton->setTitle(QString());
