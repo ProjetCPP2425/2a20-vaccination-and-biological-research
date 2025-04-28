@@ -32,6 +32,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    arduinoclavier.cpp \
     arduinolcd.cpp \
     carnets.cpp \
     compagne.cpp \
@@ -48,6 +49,7 @@ SOURCES += \
     vaccin.cpp
 
 HEADERS += \
+    arduinoclavier.h \
     arduinolcd.h \
     carnets.h \
     compagne.h \

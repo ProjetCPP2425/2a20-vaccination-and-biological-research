@@ -1,3 +1,4 @@
+debug/arduinoclavier.o
 debug/arduinolcd.o
 debug/carnets.o
 debug/compagne.o

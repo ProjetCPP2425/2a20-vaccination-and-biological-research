@@ -104,7 +104,21 @@ bool Compagne::ajouter()
 QSqlQueryModel* Compagne::afficher()
 {
     QSqlQueryModel *model = new QSqlQueryModel();
-    model->setQuery("SELECT * FROM COMPAGNE");
+    model->setQuery(R"(
+    SELECT
+        NOM_COMPAGNE,
+        TO_CHAR(DATE_DEBUT, 'DD/MM/YYYY') AS DATE_DEBUT,
+        TO_CHAR(DATE_FIN, 'DD/MM/YYYY') AS DATE_FIN,
+        ZONE_GEOGRAPHIQUE,
+        OBJECTIF_DOSES,
+        DOSES_ADMINISTREES,
+        VACCINS_UTILISES,
+        STATUT,
+        FOURNITURES,
+        COUT_FOURNITURES
+    FROM COMPAGNE
+)");
+
 
     if (model->lastError().isValid()) {
         qDebug() << "Erreur lors de l'affichage des compagnes :" << model->lastError().text();

@@ -2859,7 +2859,7 @@ public:
 ""));
         label_typev = new QLabel(groupBox_27);
         label_typev->setObjectName("label_typev");
-        label_typev->setGeometry(QRect(10, 140, 131, 51));
+        label_typev->setGeometry(QRect(10, 140, 141, 51));
         label_typev->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: transparent; /* Fond transparent */\n"
 "    color: #000000;                /* Texte noir */\n"
@@ -3118,9 +3118,23 @@ public:
         comboBox_tri->addItem(QString());
         comboBox_tri->setObjectName("comboBox_tri");
         comboBox_tri->setGeometry(QRect(160, 195, 351, 41));
+        comboBox_tri->setStyleSheet(QString::fromUtf8("QComboBox {\n"
+"    background-color: white;\n"
+"    color: black;\n"
+"    font-weight: normal;\n"
+"    padding: 4px 8px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: white;\n"
+"    color: black;\n"
+"    selection-background-color: #cceeff;  /* bleu clair sur survol */\n"
+"    selection-color: black;               /* texte reste noir */\n"
+"}\n"
+""));
         label_tri = new QLabel(lirect_14);
         label_tri->setObjectName("label_tri");
-        label_tri->setGeometry(QRect(90, 210, 191, 21));
+        label_tri->setGeometry(QRect(80, 200, 71, 21));
         label_tri->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    font-size: 16px;    /* Set font size to 16px */\n"
 "    font-weight: bold;  /* Make text bold */\n"
@@ -3139,6 +3153,17 @@ public:
         lineEdit_recherche = new QLineEdit(lirect_14);
         lineEdit_recherche->setObjectName("lineEdit_recherche");
         lineEdit_recherche->setGeometry(QRect(670, 195, 351, 41));
+        lineEdit_recherche->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    color: black;\n"
+"    font-weight: normal;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: gray;\n"
+"    font-style: italic;\n"
+"}\n"
+"\n"
+""));
         widget_20 = new QWidget(lirect_14);
         widget_20->setObjectName("widget_20");
         widget_20->setGeometry(QRect(490, 40, 361, 91));
@@ -3238,9 +3263,54 @@ public:
         calendar_campaigns = new QCalendarWidget(Statistique_14);
         calendar_campaigns->setObjectName("calendar_campaigns");
         calendar_campaigns->setGeometry(QRect(80, 10, 811, 221));
+        calendar_campaigns->setStyleSheet(QString::fromUtf8("QCalendarWidget {\n"
+"    background-color: white;\n"
+"    border: 1px solid #ccc;\n"
+"    border-radius: 8px;\n"
+"    font-family: Arial;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QCalendarWidget QToolButton {\n"
+"    background-color: #b30000;\n"
+"    color: white;\n"
+"    border-radius: 6px;\n"
+"    font-weight: bold;\n"
+"    padding: 4px;\n"
+"}\n"
+"\n"
+"QCalendarWidget QToolButton:hover {\n"
+"    background-color: #cc0000;\n"
+"}\n"
+"\n"
+"QCalendarWidget QMenu {\n"
+"    background-color: white;\n"
+"    border: 1px solid #999;\n"
+"}\n"
+"\n"
+"QCalendarWidget QSpinBox {\n"
+"    width: 80px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QCalendarWidget QAbstractItemView {\n"
+"    selection-background-color: #0078d7;\n"
+"    selection-color: white;\n"
+"    gridline-color: #ccc;\n"
+"    background-color: white;\n"
+"}\n"
+"\n"
+"QCalendarWidget QWidget#qt_calendar_navigationbar {\n"
+"    background-color: #f8f8f8;\n"
+"}\n"
+"\n"
+"QCalendarWidget QTableView {\n"
+"    border: none;\n"
+"}\n"
+""));
         btn_export_campaigns = new QPushButton(Statistique_14);
         btn_export_campaigns->setObjectName("btn_export_campaigns");
-        btn_export_campaigns->setGeometry(QRect(890, 250, 80, 24));
+        btn_export_campaigns->setGeometry(QRect(890, 250, 91, 31));
         table_campaigns = new QTableView(Statistique_14);
         table_campaigns->setObjectName("table_campaigns");
         table_campaigns->setGeometry(QRect(240, 250, 621, 201));
@@ -3275,13 +3345,13 @@ public:
         scroll_affectations->setWidget(scrollAreaWidgetContents);
         btn_valider_affectations = new QPushButton(tab_6);
         btn_valider_affectations->setObjectName("btn_valider_affectations");
-        btn_valider_affectations->setGeometry(QRect(30, 420, 80, 24));
+        btn_valider_affectations->setGeometry(QRect(30, 420, 101, 31));
         Affichage_6->addTab(tab_6, QString());
         tab_7 = new QWidget();
         tab_7->setObjectName("tab_7");
         btn_stat_vaccination_zone = new QPushButton(tab_7);
         btn_stat_vaccination_zone->setObjectName("btn_stat_vaccination_zone");
-        btn_stat_vaccination_zone->setGeometry(QRect(10, 10, 80, 24));
+        btn_stat_vaccination_zone->setGeometry(QRect(10, 10, 91, 31));
         chartVaccZone = new QWidget(tab_7);
         chartVaccZone->setObjectName("chartVaccZone");
         chartVaccZone->setGeometry(QRect(320, 20, 731, 551));
@@ -4123,7 +4193,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 2096, 26));
+        menubar->setGeometry(QRect(0, 0, 2096, 21));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -4131,11 +4201,11 @@ public:
 
         retranslateUi(MainWindow);
 
-        Affichage->setCurrentIndex(0);
+        Affichage->setCurrentIndex(1);
         Affichage_31->setCurrentIndex(0);
         Affichage_3->setCurrentIndex(0);
         tab_5->setCurrentIndex(0);
-        Affichage_6->setCurrentIndex(0);
+        Affichage_6->setCurrentIndex(2);
         tab_2->setCurrentIndex(1);
 
 

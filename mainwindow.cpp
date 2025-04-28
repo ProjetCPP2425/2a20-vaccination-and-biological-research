@@ -424,7 +424,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->compagne, &QPushButton::clicked, this, [=]() {
         ui->stackedWidget->setCurrentIndex(4);
         ui->frame->setVisible(true);
-        //displayCompagne();                      // Affiche la liste des compagnes
+        displayCompagne();                      // Affiche la liste des compagnes
     });
 
     connect(ui->pushButton_modifier_employe, &QPushButton::clicked, this, &MainWindow::on_button_modifier_clicked);
@@ -530,6 +530,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //daoussar
+    displayCompagne();
 
     // 📁 Aller à la page des compagnes
 
@@ -601,6 +602,81 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ❌ Annulation (déconnectée pour l’instant)
     // connect(ui->pushButton_annuler, &QPushButton::clicked, this, &MainWindow::on_pushButton_annuler_clicked);
+
+
+    //arduino CLAVIER
+
+    // 🎯 Connexion clavier Arduino
+
+    QObject::connect(clavier.getserial(), &QSerialPort::readyRead, this, [=]() {
+        static QString buffer;
+
+        QByteArray data = clavier.read_from_arduino();
+        QString received = QString(data).trimmed();
+
+        if (!received.isEmpty()) {
+            buffer += received;
+            qDebug() << "🔁 Accumulation clavier : " << buffer;
+        }
+
+        if (buffer.endsWith("#")) {
+            QString code = buffer.left(buffer.length() - 1);
+            qDebug() << "✅ Code complet reçu : " << code;
+            buffer.clear();
+
+            QSqlQuery query;
+            query.prepare(R"(
+                SELECT E.NOM, E.POSTE, CP.NOM_COMPAGNE
+                FROM EMPLOYES E
+                JOIN CONTRIBUER C ON E.ID_EMPLOYE = C.ID_EMPLOYE
+                JOIN COMPAGNE CP ON CP.ID_COMPAGNE = C.ID_COMPAGNE
+                WHERE E.RFID_ID = :code
+            )");
+            query.bindValue(":code", code);
+
+            if (query.exec() && query.next()) {
+                QString nom = query.value("NOM").toString();
+                QString poste = query.value("POSTE").toString();
+                QString nomCompagne = query.value("NOM_COMPAGNE").toString();
+
+                QString nomAffiche = nom.toUpper();
+                QString message = QString(
+                    "<div style='font-size:15px;'>"
+                    "<p><b style='font-size:18px;'>🎉 BIENVENUE %1</b></p>"
+                    "<p><b>Poste :</b> %2</p>"
+                    "<p><b>Compagne :</b> %3</p>"
+                    "<hr>"
+                    "<p style='color:green;'>✅ Bonne mission !<br>✊ Merci d’être là pour sauver des vies.</p>"
+                    "</div>"
+                )
+                .arg(nomAffiche)
+                .arg(poste)
+                .arg(nomCompagne);
+
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("✔️ Let's save lives");
+                msgBox.setTextFormat(Qt::RichText);
+                msgBox.setText(message);
+                msgBox.setIcon(QMessageBox::Information);
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setButtonText(QMessageBox::Ok, "Let's save lives");
+                msgBox.setStyleSheet(
+                    "QLabel { min-width: 300px; font-family: Arial; font-size: 14px; } "
+                    "QPushButton { background-color: darkgreen; color: white; font-weight: bold; padding: 8px 18px; border-radius: 8px; } "
+                    "QPushButton:hover { background-color: green; }"
+                );
+                msgBox.exec();
+            } else {
+                QMessageBox::warning(this, "❌ Accès refusé",
+                    "Code invalide ou employé non affecté à une compagne !");
+            }
+        }
+    });
+
+
+
+
+    //ele
 
     ui->labelErreurNom_6->clear();
     ui->labelErreurNom_6->setVisible(false);
@@ -2844,12 +2920,26 @@ void MainWindow::displayCompagne()
 {
     QSqlQueryModel *model = compagneTmp.afficher();  // Appelle la méthode de la classe Compagne
 
+    //pour enlever l'heures de date
     if (model) {
         ui->tableView_d->setModel(model);              // Lier le modèle au tableau
+
+
+        for (int row = 0; row < model->rowCount(); ++row) {
+            for (int col = 0; col < model->columnCount(); ++col) {
+                QString value = model->data(model->index(row, col)).toString();
+                if (value.contains("00:00"))
+                    model->setData(model->index(row, col), value.section(' ', 0, 0));
+            }
+        }
+
+
+
         ui->tableView_d->resizeColumnsToContents();    // Ajuster la taille des colonnes
     } else {
         QMessageBox::warning(this, "Erreur", "Échec du chargement des compagnes.");
     }
+
 }
 
 
@@ -3109,7 +3199,16 @@ void MainWindow::chargerCompagnesParDate(const QDate &date)
 {
     QSqlQueryModel *model = new QSqlQueryModel(this);
     QSqlQuery query;
-    query.prepare("SELECT NOM_COMPAGNE, DATE_DEBUT, DATE_FIN, ZONE_GEOGRAPHIQUE, STATUT FROM COMPAGNE WHERE DATE_DEBUT <= :date AND DATE_FIN >= :date");
+    query.prepare(R"(
+        SELECT
+            NOM_COMPAGNE,
+            TO_CHAR(DATE_DEBUT, 'DD/MM/YYYY') AS DATE_DEBUT,
+            TO_CHAR(DATE_FIN, 'DD/MM/YYYY') AS DATE_FIN,
+            ZONE_GEOGRAPHIQUE,
+            STATUT
+        FROM COMPAGNE
+        WHERE DATE_DEBUT <= :date AND DATE_FIN >= :date
+    )");
     query.bindValue(":date", date);
     query.exec();
 
@@ -3158,8 +3257,17 @@ void MainWindow::rechercherParDate(const QDate &date)
     QSqlQueryModel *model = new QSqlQueryModel(this);
 
     QSqlQuery query;
-    query.prepare("SELECT NOM_COMPAGNE, DATE_DEBUT, DATE_FIN, ZONE_GEOGRAPHIQUE, STATUT "
-                  "FROM COMPAGNE WHERE :date BETWEEN DATE_DEBUT AND DATE_FIN");
+    query.prepare(R"(
+        SELECT
+            NOM_COMPAGNE,
+            TO_CHAR(DATE_DEBUT, 'DD/MM/YYYY') AS DATE_DEBUT,
+            TO_CHAR(DATE_FIN, 'DD/MM/YYYY') AS DATE_FIN,
+            ZONE_GEOGRAPHIQUE,
+            STATUT
+        FROM COMPAGNE
+        WHERE :date BETWEEN DATE_DEBUT AND DATE_FIN
+    )");
+
     query.bindValue(":date", date);
 
     if (!query.exec()) {

@@ -86,6 +86,10 @@
 #include <QSqlError>
 #include <QMessageBox>
 
+#include "arduinoclavier.h"
+
+
+
 
 //mayssem
 
@@ -492,6 +496,9 @@ private:
 
     QMap<QString, QList<QString>> mapAffectations;  // Compagne → Liste employés
     QList<DragDropListWidget*> listeWidgetsCampagnes; // Colonnes des campagnes
+
+
+    ArduinoClavier clavier;
 
 
    //mayssem
