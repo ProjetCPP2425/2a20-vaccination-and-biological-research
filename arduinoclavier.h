@@ -14,7 +14,7 @@ public:
 
 */
 
-
+/*
 #ifndef ARDUINOCLAVIER_H
 #define ARDUINOCLAVIER_H
 
@@ -38,3 +38,4 @@ private:
 };
 
 #endif // ARDUINOCLAVIER_H
+*/

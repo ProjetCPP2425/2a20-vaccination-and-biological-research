@@ -524,6 +524,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(chatbotButton, &QPushButton::clicked, this, &MainWindow::on_button_chatbot_icon_clicked);
 
     ui->tab_2->setTabText(3, "Statistiques");
+    ui->Affichage_6->setTabText(3, "Affectation");
+    ui->Affichage_6->setTabText(2, "Calendrier");
+    ui->Affichage_6->setTabText(4, "Statistiques");
+
+
+
+
 
 
 
@@ -604,14 +611,14 @@ MainWindow::MainWindow(QWidget *parent)
     // connect(ui->pushButton_annuler, &QPushButton::clicked, this, &MainWindow::on_pushButton_annuler_clicked);
 
 
-    //arduino CLAVIER
+   /* //arduino CLAVIER
 
     // 🎯 Connexion clavier Arduino
 
-    QObject::connect(clavier.getserial(), &QSerialPort::readyRead, this, [=]() {
+   QObject::connect(A.getserial(), &QSerialPort::readyRead, this, [=]() {
         static QString buffer;
 
-        QByteArray data = clavier.read_from_arduino();
+        QByteArray data = A.read_from_arduino();
         QString received = QString(data).trimmed();
 
         if (!received.isEmpty()) {
@@ -674,7 +681,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
 
-
+*/
 
     //ele
 
@@ -824,6 +831,8 @@ MainWindow::MainWindow(QWidget *parent)
             qDebug() << "Arduino non détecté";
             break;
         }
+
+        connect(A.getserial(), &QSerialPort::readyRead, this, &MainWindow::lireDonneesSerie);
 }
 
 
@@ -6143,3 +6152,129 @@ void MainWindow::on_pushButton_afficherRDV_clicked()
         QThread::sleep(2); // ✅ Permet d'afficher le DERNIER nom avant la fin
     }
 }
+/*void MainWindow::lireDonneesSerie() {
+    QByteArray data = A.read_from_arduino();
+    bufferSerie += QString::fromUtf8(data); // concatène les morceaux
+
+    // Tant qu'on a des lignes complètes
+    while (bufferSerie.contains('\n')) {
+        int pos = bufferSerie.indexOf('\n');
+        QString ligne = bufferSerie.left(pos).trimmed();  // extrait la ligne complète
+        bufferSerie.remove(0, pos + 1);  // supprime la ligne du buffer
+
+        qDebug() << "Ligne complète reçue : " << ligne;
+
+        if (ligne == "ALERTE_COURANT=0") {
+            QSqlQuery query;
+            if (query.exec("SELECT NOM_PRODUIT, QUANTITE FROM PRODUITS WHERE CATEGORIE = 'Vaccin'")) {
+                QString message = "⚠️ Coupure de courant détectée !\n\nLes produits suivants nécessitent une réfrigération :\n\n";
+
+                while (query.next()) {
+                    QString nom = query.value(0).toString();
+                    QString quantite = query.value(1).toString();
+                    message += "Produit : " + nom + " - Quantité : " + quantite + "\n";
+                }
+
+                QMessageBox::critical(this, "Alerte Produits Sensibles", message);
+                QString message2=produitTmp.MessageAlerte();
+                email.sendEmail("najoua.dahmen18@gmail.com", "Alerte coupure courant ",message2);
+            } else {
+                QMessageBox::warning(this, "Erreur SQL", "Échec lors de la requête SQL !");
+            }
+        }
+    }
+}
+*/
+void MainWindow::lireDonneesSerie() {
+    QByteArray data = A.read_from_arduino();
+    bufferSerie += QString::fromUtf8(data); // Accumule les données série
+
+    // Tant qu'on a une ligne complète
+    while (bufferSerie.contains('\n') || bufferSerie.contains('#')) {
+        int pos = bufferSerie.indexOf('\n');
+        int posSharp = bufferSerie.indexOf('#');
+
+        if (posSharp != -1 && (posSharp < pos || pos == -1)) {
+            // 🎯 Traitement du clavier RFID
+            QString code = bufferSerie.left(posSharp).trimmed();
+            bufferSerie.remove(0, posSharp + 1);
+
+            qDebug() << "✅ Code clavier reçu : " << code;
+
+            // Requête SQL avec le code RFID
+            QSqlQuery query;
+            query.prepare(R"(
+                SELECT E.NOM, E.POSTE, CP.NOM_COMPAGNE
+                FROM EMPLOYES E
+                JOIN CONTRIBUER C ON E.ID_EMPLOYE = C.ID_EMPLOYE
+                JOIN COMPAGNE CP ON CP.ID_COMPAGNE = C.ID_COMPAGNE
+                WHERE E.RFID_ID = :code
+            )");
+            query.bindValue(":code", code);
+
+            if (query.exec() && query.next()) {
+                QString nom = query.value("NOM").toString();
+                QString poste = query.value("POSTE").toString();
+                QString nomCompagne = query.value("NOM_COMPAGNE").toString();
+
+                QString nomAffiche = nom.toUpper();
+                QString message = QString(
+                    "<div style='font-size:15px;'>"
+                    "<p><b style='font-size:18px;'>🎉 BIENVENUE %1</b></p>"
+                    "<p><b>Poste :</b> %2</p>"
+                    "<p><b>Compagne :</b> %3</p>"
+                    "<hr>"
+                    "<p style='color:green;'>✅ Bonne mission !<br>✊ Merci d’être là pour sauver des vies.</p>"
+                    "</div>"
+                ).arg(nomAffiche).arg(poste).arg(nomCompagne);
+
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("✔️ Let's save lives");
+                msgBox.setTextFormat(Qt::RichText);
+                msgBox.setText(message);
+                msgBox.setIcon(QMessageBox::Information);
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.setButtonText(QMessageBox::Ok, "Let's save lives");
+                msgBox.setStyleSheet(
+                    "QLabel { min-width: 300px; font-family: Arial; font-size: 14px; } "
+                    "QPushButton { background-color: darkgreen; color: white; font-weight: bold; padding: 8px 18px; border-radius: 8px; } "
+                    "QPushButton:hover { background-color: green; }"
+                );
+                msgBox.exec();
+            } else {
+                QMessageBox::warning(this, "❌ Accès refusé", "Code invalide ou employé non affecté à une compagne !");
+            }
+        }
+        else if (pos != -1) {
+            // 🎯 Traitement du capteur de courant
+            QString ligne = bufferSerie.left(pos).trimmed();
+            bufferSerie.remove(0, pos + 1);
+
+            qDebug() << "🔌 Ligne capteur reçue : " << ligne;
+
+            if (ligne == "ALERTE_COURANT=0") {
+                QSqlQuery query;
+                if (query.exec("SELECT NOM_PRODUIT, QUANTITE FROM PRODUITS WHERE CATEGORIE = 'Vaccin'")) {
+                    QString message = "⚠️ Coupure de courant détectée !\n\nLes produits suivants nécessitent une réfrigération :\n\n";
+
+                    while (query.next()) {
+                        QString nom = query.value(0).toString();
+                        QString quantite = query.value(1).toString();
+                        message += "Produit : " + nom + " - Quantité : " + quantite + "\n";
+                    }
+
+                    QMessageBox::critical(this, "Alerte Produits Sensibles", message);
+                    QString message2 = produitTmp.MessageAlerte();
+                    email.sendEmail("najoua.dahmen18@gmail.com", "Alerte coupure courant", message2);
+                } else {
+                    QMessageBox::warning(this, "Erreur SQL", "Échec lors de la requête SQL !");
+                }
+            }
+        } else {
+            break;
+        }
+    }
+}
+
+
+

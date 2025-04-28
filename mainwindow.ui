@@ -401,7 +401,7 @@ QPushButton:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <property name="iconSize">
        <size>
@@ -5036,7 +5036,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -5808,8 +5808,8 @@ background: transparent;
        <widget class="QComboBox" name="comboBox_tri">
         <property name="geometry">
          <rect>
-          <x>160</x>
-          <y>195</y>
+          <x>80</x>
+          <y>190</y>
           <width>351</width>
           <height>41</height>
          </rect>
@@ -5849,7 +5849,7 @@ QComboBox QAbstractItemView {
        <widget class="QLabel" name="label_tri">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>10</x>
           <y>200</y>
           <width>71</width>
           <height>21</height>
@@ -5870,7 +5870,7 @@ QComboBox QAbstractItemView {
        <widget class="QLabel" name="label_recherche">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>440</x>
           <y>200</y>
           <width>91</width>
           <height>20</height>
@@ -5891,8 +5891,8 @@ QComboBox QAbstractItemView {
        <widget class="QLineEdit" name="lineEdit_recherche">
         <property name="geometry">
          <rect>
-          <x>670</x>
-          <y>195</y>
+          <x>530</x>
+          <y>190</y>
           <width>351</width>
           <height>41</height>
          </rect>
@@ -5994,8 +5994,8 @@ border: 2px solid black; </string>
        <widget class="QPushButton" name="button_modifierD">
         <property name="geometry">
          <rect>
-          <x>430</x>
-          <y>130</y>
+          <x>1140</x>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -6030,8 +6030,8 @@ QPushButton:pressed {
        <widget class="QPushButton" name="button_supprimer">
         <property name="geometry">
          <rect>
-          <x>330</x>
-          <y>130</y>
+          <x>1080</x>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -6068,7 +6068,7 @@ QPushButton:pressed {
          <rect>
           <x>10</x>
           <y>260</y>
-          <width>911</width>
+          <width>1181</width>
           <height>321</height>
          </rect>
         </property>
@@ -6076,9 +6076,9 @@ QPushButton:pressed {
        <widget class="QLabel" name="label_10">
         <property name="geometry">
          <rect>
-          <x>960</x>
-          <y>300</y>
-          <width>161</width>
+          <x>880</x>
+          <y>160</y>
+          <width>211</width>
           <height>31</height>
          </rect>
         </property>
@@ -6089,8 +6089,8 @@ QPushButton:pressed {
        <widget class="QLineEdit" name="nom_saisie">
         <property name="geometry">
          <rect>
-          <x>940</x>
-          <y>370</y>
+          <x>890</x>
+          <y>190</y>
           <width>181</width>
           <height>41</height>
          </rect>
@@ -8028,7 +8028,7 @@ font-weight: bold;
      <x>0</x>
      <y>0</y>
      <width>2096</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

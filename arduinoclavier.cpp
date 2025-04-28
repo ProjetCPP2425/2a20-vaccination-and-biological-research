@@ -6,7 +6,7 @@ arduinoCLAVIER::arduinoCLAVIER() {}
 
 
 
-#include "arduinoclavier.h"
+/*#include "arduinoclavier.h"
 
 #include <QDebug>
 
@@ -77,3 +77,4 @@ QByteArray ArduinoClavier::read_from_arduino()
     }
     return QByteArray();
 }
+*/

@@ -231,6 +231,7 @@ public:
 
 
 private slots:
+    void lireDonneesSerie();
 
     void on_pushButton_supprimer_employe_clicked();
     void on_annuler_clicked();
@@ -415,6 +416,7 @@ private:
     Ui::MainWindow *ui;
     Carnets carnetTmp;
     ArduinoLCD A;
+    QString bufferSerie;
 
     QSortFilterProxyModel *proxyModel;
     QString idAModifier = "";
@@ -498,7 +500,7 @@ private:
     QList<DragDropListWidget*> listeWidgetsCampagnes; // Colonnes des campagnes
 
 
-    ArduinoClavier clavier;
+    //ArduinoClavier clavier;
 
 
    //mayssem

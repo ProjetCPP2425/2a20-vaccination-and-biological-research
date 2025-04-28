@@ -16,6 +16,7 @@ private:
     QDate dateExpiration;
     QString nomFournisseur;
 
+
 public:
     Produit();
     Produit(int idProduit, QString nomProduit, QString categorie, int quantite,
@@ -51,6 +52,7 @@ public:
     QMap<QString, int> calculerTauxStock();
 
     QString MessageDeExpiration();
+    QString MessageAlerte();
 
 };
 
