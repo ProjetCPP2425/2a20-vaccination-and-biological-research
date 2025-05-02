@@ -304,12 +304,12 @@ public:
     QWidget *widget_15;
     QPushButton *btnStat;
     QPushButton *btnGeneratePDF;
+    QPushButton *pushButton_afficherRDV;
     QPushButton *modifierC;
     QTableView *tableView;
     QLabel *nom_2;
     QLineEdit *suppid;
     QPushButton *supprimerC;
-    QPushButton *pushButton_afficherRDV;
     QWidget *Statistique_10;
     QFrame *frame_21;
     QGroupBox *groupBox_20;
@@ -3471,16 +3471,19 @@ public:
         widget_15->setStyleSheet(QString::fromUtf8("background-color: qlineargradient(\n"
 "    spread:pad,\n"
 "    x1:0, y1:0, x2:1, y2:0,\n"
-"    stop:0 #d30102,\n"
-"    stop:0.499 #d30102,\n"
-"    stop:0.5 white,\n"
+"    stop:0 white,         /* Left third */\n"
+"    stop:0.33 white,\n"
+"    stop:0.34 #d30102,   /* Middle third (red) */\n"
+"    stop:0.66 #d30102,\n"
+"    stop:0.67 white,     /* Right third */\n"
 "    stop:1 white\n"
 ");\n"
-"border-radius: 30px; \n"
-"border: 2px solid black; "));
+"border-radius: 30px;\n"
+"border: 2px solid black;\n"
+""));
         btnStat = new QPushButton(widget_15);
         btnStat->setObjectName("btnStat");
-        btnStat->setGeometry(QRect(50, 0, 91, 91));
+        btnStat->setGeometry(QRect(130, 0, 91, 91));
         btnStat->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background: transparent;\n"
 "    border: none;\n"
@@ -3489,13 +3492,22 @@ public:
         btnStat->setIconSize(QSize(50, 50));
         btnGeneratePDF = new QPushButton(widget_15);
         btnGeneratePDF->setObjectName("btnGeneratePDF");
-        btnGeneratePDF->setGeometry(QRect(220, 10, 81, 71));
+        btnGeneratePDF->setGeometry(QRect(250, 10, 81, 71));
         btnGeneratePDF->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background: transparent;\n"
 "    border: none;\n"
 "}"));
         btnGeneratePDF->setIcon(icon3);
         btnGeneratePDF->setIconSize(QSize(50, 50));
+        pushButton_afficherRDV = new QPushButton(widget_15);
+        pushButton_afficherRDV->setObjectName("pushButton_afficherRDV");
+        pushButton_afficherRDV->setGeometry(QRect(40, 30, 41, 31));
+        pushButton_afficherRDV->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"}"));
+        QIcon icon9(QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
+        pushButton_afficherRDV->setIcon(icon9);
         modifierC = new QPushButton(lirect_10);
         modifierC->setObjectName("modifierC");
         modifierC->setGeometry(QRect(1170, 200, 51, 41));
@@ -3566,9 +3578,6 @@ public:
 "}\n"
 ""));
         supprimerC->setIcon(icon5);
-        pushButton_afficherRDV = new QPushButton(lirect_10);
-        pushButton_afficherRDV->setObjectName("pushButton_afficherRDV");
-        pushButton_afficherRDV->setGeometry(QRect(160, 80, 181, 29));
         tab_2->addTab(lirect_10, QString());
         Statistique_10 = new QWidget();
         Statistique_10->setObjectName("Statistique_10");
@@ -4131,10 +4140,10 @@ public:
         rechercheC->setText(QString());
         btnStat->setText(QString());
         btnGeneratePDF->setText(QString());
+        pushButton_afficherRDV->setText(QString());
         modifierC->setText(QString());
         nom_2->setText(QCoreApplication::translate("MainWindow", "Entrer le CIN du patient:", nullptr));
         supprimerC->setText(QString());
-        pushButton_afficherRDV->setText(QCoreApplication::translate("MainWindow", "Afficher les rdv", nullptr));
         tab_2->setTabText(tab_2->indexOf(lirect_10), QCoreApplication::translate("MainWindow", "Affichage", nullptr));
         groupBox_20->setTitle(QString());
         label_172->setText(QCoreApplication::translate("MainWindow", "         Cin du patient:", nullptr));

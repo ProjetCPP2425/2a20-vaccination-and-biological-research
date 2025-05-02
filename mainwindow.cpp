@@ -236,7 +236,7 @@ void MainWindow::envoyerRappelSMS()
 
 
 
-void MainWindow::on_rechercheC_textChanged(const QString &arg1)
+/*void MainWindow::on_rechercheC_textChanged(const QString &arg1)
 {
     qDebug() << "Recherche en cours... Texte saisi :" << arg1; // Debug
 
@@ -270,9 +270,70 @@ void MainWindow::on_rechercheC_textChanged(const QString &arg1)
     ui->tableView->setModel(model);
     ui->tableView->hideColumn(0); // 🔹 Masquer la première colonne (ID)
 
+
+}*/
+
+
+void MainWindow::on_rechercheC_textChanged(const QString &arg1)
+{
+    qDebug() << "Recherche en cours... Texte saisi :" << arg1;
+
+    QSqlQueryModel *model = new QSqlQueryModel();
+    QSqlQuery query;
+    QString searchText = arg1.trimmed();
+
+    QString baseSelect = "SELECT CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS ";
+
+    if (searchText.isEmpty()) {
+        query.prepare(baseSelect);
+    }
+    else if (searchText.toInt()) {
+        query.prepare(baseSelect + "WHERE CIN LIKE :val");
+        query.bindValue(":val", searchText + "%");
+    }
+    else if (searchText.compare("vaccine", Qt::CaseInsensitive) == 0 ||
+             searchText.compare("non_vaccine", Qt::CaseInsensitive) == 0) {
+        query.prepare(baseSelect + "WHERE LOWER(STATUT_VACCINAL) = LOWER(:val)");
+        query.bindValue(":val", searchText);
+    }
+    else {
+        query.prepare(baseSelect + "WHERE LOWER(NOM) LIKE LOWER(:val) OR LOWER(PRENOM) LIKE LOWER(:val)");
+        query.bindValue(":val", "%" + searchText + "%");
+    }
+
+    if (!query.exec()) {
+        qDebug() << "Erreur SQL :" << query.lastError().text();
+        return;
+    }
+
+    model->setQuery(query);
+
+    // ✅ Définir les en-têtes manuellement
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("CIN"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Prénom"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Âge"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Sexe"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Téléphone"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Poids"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Date RDV"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Remarques"));
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Statut Vaccinal"));
+
+    // ✅ Appliquer le modèle et configuration visuelle
+    ui->tableView->setModel(model);
+    ui->tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableView->setAlternatingRowColors(true);
+    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->resizeRowsToContents();
+
+    for (int i = 0; i < model->columnCount(); ++i) {
+        ui->tableView->horizontalHeader()->setSectionResizeMode(i,
+                                                                i <= 2 ? QHeaderView::ResizeToContents : QHeaderView::Stretch);
+    }
 }
-
-
 
 
 void MainWindow::on_ajout_carnet_clicked()
@@ -996,10 +1057,9 @@ void MainWindow::on_btnStat_clicked()
     ui->stat_carnet->setLayout(layout);
 }
 
-
 void MainWindow::trierCarnets(const QString &critere)
 {
-    QString requete = "SELECT STATUT_VACCINAL, AGE, SEXE, CIN, NUM, NOM, POIDS, DATE_RDV, PRENOM, REMARQUES FROM CARNETS";
+    QString requete = "SELECT CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS";
 
     if (critere == "Âge") {
         requete += " ORDER BY AGE ASC";
@@ -1011,11 +1071,36 @@ void MainWindow::trierCarnets(const QString &critere)
 
     QSqlQueryModel *model = new QSqlQueryModel();
     model->setQuery(requete);
+
+    // ✅ Définir les en-têtes
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("CIN"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Prénom"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Âge"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Sexe"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Téléphone"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Poids"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Date RDV"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Remarques"));
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Statut Vaccinal"));
+
+    // ✅ Appliquer le modèle à la table
     ui->tableView->setModel(model);
-    ui->tableView->resizeColumnsToContents();
+    ui->tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableView->setAlternatingRowColors(true);
+    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->resizeRowsToContents();
 
-
+    // ✅ Ajustement intelligent des colonnes
+    for (int i = 0; i < model->columnCount(); ++i) {
+        ui->tableView->horizontalHeader()->setSectionResizeMode(i,
+                                                                i <= 2 ? QHeaderView::ResizeToContents : QHeaderView::Stretch);
+    }
 }
+
+
 
 void MainWindow::on_pushButton_afficherRDV_clicked()
 {
