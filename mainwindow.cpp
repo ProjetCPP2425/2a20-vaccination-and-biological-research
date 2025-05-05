@@ -158,6 +158,10 @@
 #include <QBarCategoryAxis>
 #include <QValueAxis>
 
+#include <QSerialPort>
+#include <QSerialPortInfo>
+ArduinoManager *arduinoManager;
+
 
 // Constructeur de MainWindow
 MainWindow::MainWindow(QWidget *parent)
@@ -165,6 +169,96 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->tab_2->setStyleSheet(R"(
+    QTabBar::tab {
+        background: #d32f2f; /* Rouge vif */
+        color: white;
+        padding: 10px 25px;
+        font-size: 14px;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-right: 2px;
+    }
+
+    QTabBar::tab:selected {
+        background: #b71c1c; /* Rouge foncé */
+        color: #fff;
+    }
+
+    QTabBar::tab:hover {
+        background: #e53935; /* Rouge clair survol */
+        color: white;
+        font-style: italic;
+    }
+
+    QTabWidget::pane {
+        border-top: 3px solid #b71c1c;
+        margin: 2px;
+    }
+    )");
+    ui->Affichage_3->setStyleSheet(R"(
+    QTabBar::tab {
+        background: #d32f2f; /* Rouge vif */
+        color: white;
+        padding: 10px 25px;
+        font-size: 14px;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-right: 2px;
+    }
+
+    QTabBar::tab:selected {
+        background: #b71c1c; /* Rouge foncé */
+        color: #fff;
+    }
+
+    QTabBar::tab:hover {
+        background: #e53935; /* Rouge clair survol */
+        color: white;
+        font-style: italic;
+    }
+
+    QTabWidget::pane {
+        border-top: 3px solid #b71c1c;
+        margin: 2px;
+    }
+    )");
+    //  ardmay
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(QApplication::windowIcon());
+    trayIcon->show();
+    arduinoManager = new ArduinoManager(this);
+       int result = arduinoManager->connect_arduino1();
+       switch (result) {
+       case 0:
+           qDebug() << "✅ Arduino connecté sur " << arduinoManager->getPortName();
+           break;
+       case 1:
+           qDebug() << "⚠️ Port trouvé mais pas ouvert !";
+           break;
+       case -1:
+           qDebug() << "❌ Arduino non détecté.";
+           break;
+       }
+
+       //connect(arduinoManager, &ArduinoManager::rfidUIDReceived, this, &MainWindow::handleCheckIn);
+       //B.write_to_arduino("DENIED\n");
+       //connect(ui->btnCheckTemp, &QPushButton::clicked, this, &MainWindow::handleVaccineLock);
+       //connect(this, &MainWindow::ontemperatureReceived, this, &MainWindow::ontemperatureReceived);
+       // Connecter l'UID RFID reçu depuis ArduinoManager
+       connect(arduinoManager, &ArduinoManager::rfidUIDReceived, this, &MainWindow::handleCheckIn);
+
+       // Connecter la température reçue
+       connect(arduinoManager, &ArduinoManager::temperatureReceived, this, &MainWindow::ontemperatureReceived);
+
+       // Connecter bouton température
+       connect(ui->btnCheckTemp, &QPushButton::clicked, this, &MainWindow::handleVaccineLock);
+       connect(arduinoManager, &ArduinoManager::temperatureReceived, this, &MainWindow::displayTemperature);
+
+
+
      ui->frame_chatbox->hide();
 
 
@@ -333,8 +427,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //testSMS();
     // envoyerRappelSMS();
-
-    /* smsTimer = new QTimer(this);
+//fo9ma
+     smsTimer = new QTimer(this);
     connect(smsTimer, &QTimer::timeout, this, &MainWindow::envoyerRappelSMS);
     smsTimer->start(60000); // 60 000 ms = toutes les 60 secondes*///--->correcte
     connect(ui->comboTrierCarnets, &QComboBox::currentTextChanged, this, &MainWindow::trierCarnets);
@@ -527,6 +621,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Affichage_6->setTabText(3, "Affectation");
     ui->Affichage_6->setTabText(2, "Calendrier");
     ui->Affichage_6->setTabText(4, "Statistiques");
+    ui->Affichage_3->setTabText(4, "Chatroom");
+
 
 
 
@@ -819,7 +915,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->pushButton_ajouter_2, &QPushButton::clicked, this, &MainWindow::on_pushButton_ajouter_v_clicked);
     //arduino
-    int ret = A.connect_arduino();
+   int ret = A.connect_arduino();
         switch (ret) {
         case 0:
             qDebug() << "Arduino connecté sur :" << A.getarduino_port_name();
@@ -2153,6 +2249,67 @@ void MainWindow::on_rechercheC_textChanged(const QString &arg1)
 
 }
 
+/*void MainWindow::on_rechercheC_textChanged(const QString &arg1)
+{
+    qDebug() << "Recherche en cours... Texte saisi :" << arg1;
+
+    QSqlQueryModel *model = new QSqlQueryModel();
+    QSqlQuery query;
+    QString searchText = arg1.trimmed();
+
+    QString baseSelect = "SELECT CIN, NOM, PRENOM, AGE, SEXE, NUM, POIDS, DATE_RDV, REMARQUES, STATUT_VACCINAL FROM CARNETS ";
+
+    if (searchText.isEmpty()) {
+        query.prepare(baseSelect);
+    }
+    else if (searchText.toInt()) {
+        query.prepare(baseSelect + "WHERE CIN LIKE :val");
+        query.bindValue(":val", searchText + "%");
+    }
+    else if (searchText.compare("vaccine", Qt::CaseInsensitive) == 0 ||
+             searchText.compare("non_vaccine", Qt::CaseInsensitive) == 0) {
+        query.prepare(baseSelect + "WHERE LOWER(STATUT_VACCINAL) = LOWER(:val)");
+        query.bindValue(":val", searchText);
+    }
+    else {
+        query.prepare(baseSelect + "WHERE LOWER(NOM) LIKE LOWER(:val) OR LOWER(PRENOM) LIKE LOWER(:val)");
+        query.bindValue(":val", "%" + searchText + "%");
+    }
+
+    if (!query.exec()) {
+        qDebug() << "Erreur SQL :" << query.lastError().text();
+        return;
+    }
+
+    model->setQuery(query);
+
+    // ✅ Définir les en-têtes manuellement
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("CIN"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Prénom"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Âge"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Sexe"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Téléphone"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Poids"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Date RDV"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Remarques"));
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Statut Vaccinal"));
+
+    // ✅ Appliquer le modèle et configuration visuelle
+    ui->tableView->setModel(model);
+    ui->tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableView->setAlternatingRowColors(true);
+    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->resizeRowsToContents();
+
+    for (int i = 0; i < model->columnCount(); ++i) {
+        ui->tableView->horizontalHeader()->setSectionResizeMode(i,
+                                                                i <= 2 ? QHeaderView::ResizeToContents : QHeaderView::Stretch);
+    }
+}*/
+
 
 
 
@@ -2246,7 +2403,7 @@ void MainWindow::on_ajout_carnet_clicked()
     ui->statut_vaccinal->setCurrentIndex(0);
 }
 
-void MainWindow::displayCarnet()
+/*void MainWindow::displayCarnet()
 {
     QSqlQueryModel *model = carnetTmp.afficher();
     if (!model) {
@@ -2267,8 +2424,32 @@ void MainWindow::displayCarnet()
                                                                  i <= 2 ? QHeaderView::ResizeToContents : QHeaderView::Stretch);
     }
 }
+*/
 
+void MainWindow::displayCarnet()
+{
+    QSqlQueryModel *model = carnetTmp.afficher();
+    if (!model) {
+        QMessageBox::warning(this, "Erreur", "Échec du chargement des carnets.");
+        return;
+    }
 
+    // Appliquer le modèle
+    ui->tableVieww->setModel(model);
+    ui->tableVieww->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableVieww->setAlternatingRowColors(true);
+    ui->tableVieww->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableVieww->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableVieww->horizontalHeader()->setStretchLastSection(true);
+    ui->tableVieww->resizeRowsToContents();
+
+    // 🔄 Uniformiser les colonnes comme dans le tri
+    for (int i = 0; i < model->columnCount(); ++i) {
+        // Étendre les colonnes longues comme Nom et Remarques
+        ui->tableVieww->horizontalHeader()->setSectionResizeMode(i,
+            (i == 1 || i == 8) ? QHeaderView::Stretch : QHeaderView::ResizeToContents);
+    }
+}
 
 void MainWindow::on_supprimerC_clicked()
 {
@@ -2881,7 +3062,7 @@ void MainWindow::on_btnStat_clicked()
 
 
 
-void MainWindow::trierCarnets(const QString &critere)
+/*void MainWindow::trierCarnets(const QString &critere)
 {
     QString requete = "SELECT STATUT_VACCINAL, AGE, SEXE, CIN, NUM, NOM, POIDS, DATE_RDV, PRENOM, REMARQUES FROM CARNETS";
 
@@ -2899,10 +3080,51 @@ void MainWindow::trierCarnets(const QString &critere)
     ui->tableVieww->resizeColumnsToContents();
 
     // ✅ Plus besoin de hideColumn(0), car l’ID n’est même pas sélectionné
+}*/
+
+
+void MainWindow::trierCarnets(const QString &critere)
+{
+    QString requete = "SELECT STATUT_VACCINAL, AGE, SEXE, CIN, NUM, NOM, POIDS, DATE_RDV, PRENOM, REMARQUES FROM CARNETS";
+
+    if (critere == "Âge") {
+        requete += " ORDER BY AGE ASC";
+    } else if (critere == "Date de RDV") {
+        requete += " ORDER BY DATE_RDV ASC";
+    } else if (critere == "Poids") {
+        requete += " ORDER BY POIDS ASC";
+    }
+
+    QSqlQueryModel *model = new QSqlQueryModel();
+    model->setQuery(requete);
+
+    // 🧠 Ajout des en-têtes clairs
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Statut Vaccinal"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Âge"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Sexe"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("CIN"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Téléphone"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Poids"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Date RDV"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Prénom"));
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Remarques"));
+
+    // 📋 Appliquer modèle et config
+    ui->tableVieww->setModel(model);
+    ui->tableVieww->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableVieww->setAlternatingRowColors(true);
+    ui->tableVieww->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableVieww->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableVieww->horizontalHeader()->setStretchLastSection(true);
+    ui->tableVieww->resizeRowsToContents();
+
+    // 📐 Étendre les colonnes : les infos principales auto, les longues en stretch
+    for (int i = 0; i < model->columnCount(); ++i) {
+        ui->tableVieww->horizontalHeader()->setSectionResizeMode(i,
+            (i == 5 || i == 9) ? QHeaderView::Stretch : QHeaderView::ResizeToContents);
+    }
 }
-
-
-
 
 
 
@@ -6121,7 +6343,7 @@ void MainWindow::on_pushButton_afficherRDV_clicked()
 {
     QSqlQuery query;
 
-    // ✅ Requête complète : NOM + PRENOM pour les RDV du jour
+
     query.prepare("SELECT NOM, PRENOM FROM CARNETS WHERE TRUNC(DATE_RDV) = TRUNC(SYSDATE)");
 
     if (!query.exec()) {
@@ -6278,3 +6500,335 @@ void MainWindow::lireDonneesSerie() {
 
 
 
+
+/*void MainWindow::displayTemperature(float temp)
+{
+    qDebug() << "🌡️ Température reçue :" << temp;
+
+    if (temp > 10.0) {
+        QMessageBox::critical(this, "⚠️ Température élevée",
+                              QString("La température est de %1°C\nRisque pour les vaccins sensibles !").arg(temp));
+    } else {
+        QMessageBox::information(this, "✅ Température normale",
+                                 QString("La température est de %1°C\nPas de risque détecté.").arg(temp));
+    }
+}
+*/
+
+void MainWindow::displayTemperature(float temp)
+{
+    qDebug() << "🌡️ Température reçue :" << temp;
+
+    if (temp > 10.0) {
+        QMessageBox::critical(this, "⚠️ Température élevée",
+                              QString("La température est de %1°C\nRisque pour les vaccins sensibles !").arg(temp));
+    } else {
+        QMessageBox::information(this, "✅ Température normale",
+                                 QString("La température est de %1°C\nPas de risque détecté.").arg(temp));
+    }
+}
+void MainWindow::readSerialData()
+{
+    static QString buffer;
+    buffer += QString::fromUtf8(serialPort->readAll());
+
+    // 🔁 Tant qu'on trouve un saut de ligne
+    int newlineIndex;
+    while ((newlineIndex = buffer.indexOf('\n')) != -1) {
+        QString line = buffer.left(newlineIndex).trimmed();
+        buffer.remove(0, newlineIndex + 1);
+
+        qDebug() << "📥 Ligne reçue Arduino :" << line;
+
+        if (line.startsWith("UID de la carte :")) {
+            QString uid = line.section(':', 1).trimmed();
+            qDebug() << "🔍 UID extrait :" << uid;
+
+            if (!uid.isEmpty()) {
+                handleCheckIn(uid);  // ⬅️ Passage à la vérification dans la base
+            } else {
+                qDebug() << "⚠️ UID vide.";
+            }
+        }
+    }
+}
+/*void MainWindow::initSerialPort()
+{
+    serialPort = new QSerialPort(this);
+
+    bool arduino_is_available = false;
+    QString arduino_port_name;
+
+    // 🔍 Parcours des ports disponibles
+    foreach (const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()) {
+        if (serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier()) {
+            if (serialPortInfo.vendorIdentifier() == 9025 && serialPortInfo.productIdentifier() == 67) {
+                arduino_is_available = true;
+                arduino_port_name = serialPortInfo.portName();
+                qDebug() << "✅ Port Arduino trouvé :" << arduino_port_name;
+            }
+        }
+    }
+
+    if (arduino_is_available) {
+        serialPort->setPortName(arduino_port_name);
+        serialPort->setBaudRate(QSerialPort::Baud9600);
+        serialPort->setDataBits(QSerialPort::Data8);
+        serialPort->setParity(QSerialPort::NoParity);
+        serialPort->setStopBits(QSerialPort::OneStop);
+        serialPort->setFlowControl(QSerialPort::NoFlowControl);
+
+        if (serialPort->open(QIODevice::ReadWrite)) {
+            qDebug() << "📡 Port série ouvert avec succès.";
+            connect(serialPort, &QSerialPort::readyRead, this, &MainWindow::readSerialData);
+        } else {
+            qDebug() << "❌ Erreur : impossible d’ouvrir le port série.";
+        }
+    } else {
+        qDebug() << "❌ Aucun Arduino disponible.";
+    }
+}*/
+
+void MainWindow::showNotification(const QString &title, const QString &message)
+{
+    if (trayIcon && trayIcon->isVisible()) {
+        trayIcon->showMessage(title, message, QSystemTrayIcon::Information, 4000); // 4 seconds
+    }
+}
+/*void MainWindow::handleCheckIn(const QString &uid)
+{
+    qDebug() << "🔎 Vérification UID dans la base de données :" << uid;
+
+    QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QSqlQuery empQuery;
+    empQuery.prepare("SELECT NOM, PRENOM FROM EMPLOYES WHERE RFID_ID = :rfid");
+    empQuery.bindValue(":rfid", uid);
+
+    if (empQuery.exec() && empQuery.next()) {
+        QString nom = empQuery.value(0).toString();
+        QString prenom = empQuery.value(1).toString();
+
+        qDebug() << "✅ Employé reconnu :" << nom << prenom;
+
+        QSqlQuery logQuery;
+        logQuery.prepare("INSERT INTO LABORATOIRES (NOM_EMP, PRENOM_EMP, PRESENCE) "
+                         "VALUES (:nom, :prenom, :time)");
+        logQuery.bindValue(":nom", nom);
+        logQuery.bindValue(":prenom", prenom);
+        logQuery.bindValue(":time", currentTime);
+
+        if (logQuery.exec()) {
+            qDebug() << "📝 Présence enregistrée pour" << nom << prenom;
+            QMessageBox::information(this, "✅ Accès autorisé", QString("Bienvenue %1 %2 !").arg(nom, prenom));
+            //displayLaboratoires();
+        } else {
+            qDebug() << "❌ Erreur insertion base :" << logQuery.lastError().text();
+        }
+
+        // 🔓 Envoyer l’ordre au moteur
+        qDebug() << "🚪 Envoi de la commande OPEN au moteur";
+        serialPort->write("OPEN\n");
+
+    } else {
+        qDebug() << "❌ UID inconnu. Carte non enregistrée.";
+        QMessageBox::critical(this, "⛔ Accès refusé", "❌ Employé non reconnu !");
+
+        // 🚫 Empêcher ouverture
+        qDebug() << "🚪 Envoi de la commande DENIED au moteur";
+        serialPort->write("DENIED\n");
+    }
+}*/
+void MainWindow::handleCheckIn(const QString &uid)
+{
+    qDebug() << "🔎 Vérification UID dans la base de données :" << uid;
+
+    QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QSqlQuery empQuery;
+    empQuery.prepare("SELECT NOM, PRENOM, NOM_LABORA FROM EMPLOYES WHERE RFID_ID = :rfid");
+    empQuery.bindValue(":rfid", uid);
+
+    if (empQuery.exec() && empQuery.next()) {
+        QString nom = empQuery.value(0).toString();
+        QString prenom = empQuery.value(1).toString();
+        QString nomLabora = empQuery.value(2).toString();
+
+        qDebug() << "✅ Employé reconnu :" << nom << prenom << " | Laboratoire:" << nomLabora;
+
+        // Vérifier si l'entrée existe déjà dans LABORATOIRES
+        QSqlQuery checkQuery;
+        checkQuery.prepare("SELECT COUNT(*) FROM LABORATOIRES WHERE RFID_ID = :rfid");
+        checkQuery.bindValue(":rfid", uid);
+
+        if (checkQuery.exec() && checkQuery.next() && checkQuery.value(0).toInt() > 0) {
+            // Mise à jour de la présence
+            QSqlQuery updateQuery;
+            updateQuery.prepare("UPDATE LABORATOIRES SET PRESENCE = :time WHERE RFID_ID = :rfid");
+            updateQuery.bindValue(":time", currentTime);
+            updateQuery.bindValue(":rfid", uid);
+
+            if (updateQuery.exec()) {
+                qDebug() << "📝 Présence mise à jour pour" << nom << prenom;
+            } else {
+                qDebug() << "❌ Erreur mise à jour base :" << updateQuery.lastError().text();
+            }
+        } else {
+            // Première fois — insertion
+            QSqlQuery insertQuery;
+            insertQuery.prepare("INSERT INTO LABORATOIRES (NOM_EMP, PRENOM_EMP, PRESENCE, RFID_ID) "
+                                "VALUES (:nom, :prenom, :time, :rfid)");
+            insertQuery.bindValue(":nom", nom);
+            insertQuery.bindValue(":prenom", prenom);
+            insertQuery.bindValue(":time", currentTime);
+            insertQuery.bindValue(":rfid", uid);
+
+            if (insertQuery.exec()) {
+                qDebug() << "📝 Présence enregistrée pour" << nom << prenom;
+            } else {
+                qDebug() << "❌ Erreur insertion base :" << insertQuery.lastError().text();
+            }
+        }
+
+        QMessageBox::information(this, "✅ Accès autorisé",
+                                 QString("<b>Bienvenue %1 %2 au laboratoire %3 !</b><br>🚪 La porte est en train de s'ouvrir.")
+                                 .arg(nom, prenom, nomLabora));
+        displayLaboratoires();
+
+        if (arduinoManager) {
+            arduinoManager->sendCommand("OPEN\n");
+        } else {
+            qDebug() << "⚠ ArduinoManager indisponible pour OPEN.";
+        }
+
+    } else {
+        qDebug() << "❌ UID inconnu. Carte non enregistrée.";
+        QMessageBox::critical(this, "⛔ Accès refusé", "❌ Employé non reconnu !");
+
+        if (arduinoManager) {
+            arduinoManager->sendCommand("DENIED\n");
+        } else {
+            qDebug() << "⚠ ArduinoManager indisponible pour DENIED.";
+        }
+    }
+}
+
+
+
+
+/*void MainWindow::ontemperatureReceived(float temp)
+{
+    if (!attenteTemperature)
+        return;  // 🔒 Ignore si on n'attendait pas une réponse
+
+    attenteTemperature = false;  // 🔓 Déverrouiller (on a reçu la réponse)
+
+    qDebug() << "🌡️ Température reçue depuis signal :" << temp;
+
+    bool vaccinsSensibles = false;
+    QSqlQuery query("SELECT COUNT(*) FROM PRODUITS WHERE SENSIBLE_TEMP = 'O'");
+    if (query.next())
+        vaccinsSensibles = (query.value(0).toInt() > 0);
+
+    QString actionCommand;
+    QString popupTitle;
+    QString popupText;
+    QMessageBox::Icon popupIcon;
+
+    if (vaccinsSensibles && temp > 10.0) {
+        actionCommand = "DENIED\n";
+        popupTitle = "🔒 Alerte Température Élevée";
+        popupText = QString(
+                        "<b>Température mesurée :</b> %1 °C<br>"
+                        "<b>⚠️ Vaccins sensibles détectés !</b><br>"
+                        "👉 <i>La porte a été <b>fermée</b> pour protéger les vaccins.</i>"
+                        ).arg(temp);
+        popupIcon = QMessageBox::Critical;
+    } else {
+        actionCommand = "OPEN\n";
+        popupTitle = "✅ Température Normale";
+        popupText = QString(
+                        "<b>Température mesurée :</b> %1 °C<br>"
+                        "<b>✅ Conditions normales.</b><br>"
+                        "👉 <i>La porte est <b>ouverte</b> pour accès sécurisé.</i>"
+                        ).arg(temp);
+        popupIcon = QMessageBox::Information;
+    }
+
+    if (arduinoManager) {
+        arduinoManager->sendCommand(actionCommand);
+    }
+
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(popupTitle);
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText(popupText);
+    msgBox.setIcon(popupIcon);
+    msgBox.exec();
+}
+
+
+
+void MainWindow::handleVaccineLock()
+{
+    if (arduinoManager && !attenteTemperature) {
+        attenteTemperature = true;  // 🔒 On attend une réponse maintenant
+        arduinoManager->sendCommand("TEMP_REQUEST\n");
+    }
+}*/
+void MainWindow::ontemperatureReceived(float temp)
+{
+    if (!attenteTemperature)
+        return;  // 🔒 Ignore si on n'attendait pas une réponse
+
+    attenteTemperature = false;  // 🔓 Déverrouiller (on a reçu la réponse)
+
+    qDebug() << "🌡️ Température reçue depuis signal :" << temp;
+
+    bool vaccinsSensibles = false;
+    QSqlQuery query("SELECT COUNT(*) FROM PRODUITS WHERE SENSIBLE_TEMP = 'O'");
+    if (query.next())
+        vaccinsSensibles = (query.value(0).toInt() > 0);
+
+    QString actionCommand;
+    QString popupTitle;
+    QString popupText;
+    QMessageBox::Icon popupIcon;
+
+    if (vaccinsSensibles && temp > 10.0) {
+        actionCommand = "DENIED\n";
+        popupTitle = "🔒 Alerte Température Élevée";
+        popupText = QString(
+                        "<b>Température mesurée :</b> %1 °C<br>"
+                        "<b>⚠️ Vaccins sensibles détectés !</b><br>"
+                        "👉 <i>La porte a été <b>fermée</b> pour protéger les vaccins.</i>"
+                        ).arg(temp);
+        popupIcon = QMessageBox::Critical;
+    } else {
+        actionCommand = "OPEN\n";
+        popupTitle = "✅ Température Normale";
+        popupText = QString(
+                        "<b>Température mesurée :</b> %1 °C<br>"
+                        "<b>✅ Conditions normales.</b><br>"
+                        "👉 <i>La porte est <b>ouverte</b> pour accès sécurisé.</i>"
+                        ).arg(temp);
+        popupIcon = QMessageBox::Information;
+    }
+
+    if (arduinoManager) {
+        arduinoManager->sendCommand(actionCommand);
+    }
+
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(popupTitle);
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText(popupText);
+    msgBox.setIcon(popupIcon);
+    msgBox.exec();
+}
+
+void MainWindow::handleVaccineLock()
+{
+    if (arduinoManager && !attenteTemperature) {
+        attenteTemperature = true;  // 🔒 On attend une réponse maintenant
+        arduinoManager->sendCommand("TEMP_REQUEST\n");
+    }
+}

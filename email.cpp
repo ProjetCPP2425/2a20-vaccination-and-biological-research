@@ -17,7 +17,7 @@ int mailer::sendEmail(QString dist, QString obj, QString bdy)
     QString smtpServer = "smtp.gmail.com";
     int smtpPort = 465;  // Adjust this based on your SMTP server configuration
     QString username = "dahmenele3@gmail.com";
-    QString password = "hmct jzka tlil torw";
+    QString password = "tcgg gfwa zrxm szvl";
     //opuc ifgh tjle ciag
     // Sender and recipient information
     QString from = "dahmenele3@gmail.com";

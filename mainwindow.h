@@ -60,6 +60,8 @@
 #include <QResizeEvent> // pour resizeEvent
 
 #include "arduinolcd.h"
+#include "arduinomanager.h"
+
 
 
 
@@ -222,8 +224,11 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    void readSerialData();
+    void handleCheckIn(const QString &uid);
     ~MainWindow();
-
+    void ontemperatureReceived(float temp);
+    void displayTemperature(float temp);
 
     //daoussar
 
@@ -231,6 +236,7 @@ public:
 
 
 private slots:
+      void handleVaccineLock();
     void lireDonneesSerie();
 
     void on_pushButton_supprimer_employe_clicked();
@@ -528,6 +534,17 @@ private:
     QDate ancienneDateExpiration;
     QString ancienStatut;
     QString ancienneCertification;
+
+
+
+
+    QSerialPort *serialPort;
+    void initSerialPort();
+
+    QSystemTrayIcon *trayIcon;
+    void showNotification(const QString &title, const QString &message);
+
+    bool attenteTemperature = false;
 };
 #endif // MAINWINDOW_H
 

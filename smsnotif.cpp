@@ -9,9 +9,9 @@
 #include <QDebug>
 
 // Twilio credentials
-const QString ACCOUNT_SID = "ACd670a75642ad7045f2d28b8774766e0e";
-const QString AUTH_TOKEN = "d1d3c3f30e3a2785702409ce8c1ab7a5";
-const QString TWILIO_NUMBER = "+19062989207";
+const QString ACCOUNT_SID = "ACce2a987f2a3feade2e5fb7de382f6893";
+const QString AUTH_TOKEN = "d9220379af88550ed11cb92cf3955b1e";
+const QString TWILIO_NUMBER = "+19472182043";
 
 SmsNotif::SmsNotif() {}
 

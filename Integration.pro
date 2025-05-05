@@ -34,6 +34,7 @@ CONFIG += c++11
 SOURCES += \
     arduinoclavier.cpp \
     arduinolcd.cpp \
+    arduinomanager.cpp \
     carnets.cpp \
     compagne.cpp \
     email.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
 HEADERS += \
     arduinoclavier.h \
     arduinolcd.h \
+    arduinomanager.h \
     carnets.h \
     compagne.h \
     email.h \
