@@ -169,6 +169,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+     displayEmploye();
     ui->tab_2->setStyleSheet(R"(
     QTabBar::tab {
         background: #d32f2f; /* Rouge vif */
@@ -197,7 +198,119 @@ MainWindow::MainWindow(QWidget *parent)
         margin: 2px;
     }
     )");
+    ui->tab_5->setStyleSheet(R"(
+    QTabBar::tab {
+        background: #d32f2f; /* Rouge vif */
+        color: white;
+        padding: 10px 25px;
+        font-size: 14px;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-right: 2px;
+    }
+
+    QTabBar::tab:selected {
+        background: #b71c1c; /* Rouge foncé */
+        color: #fff;
+    }
+
+    QTabBar::tab:hover {
+        background: #e53935; /* Rouge clair survol */
+        color: white;
+        font-style: italic;
+    }
+
+    QTabWidget::pane {
+        border-top: 3px solid #b71c1c;
+        margin: 2px;
+    }
+    )");
     ui->Affichage_3->setStyleSheet(R"(
+    QTabBar::tab {
+        background: #d32f2f; /* Rouge vif */
+        color: white;
+        padding: 10px 25px;
+        font-size: 14px;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-right: 2px;
+    }
+
+    QTabBar::tab:selected {
+        background: #b71c1c; /* Rouge foncé */
+        color: #fff;
+    }
+
+    QTabBar::tab:hover {
+        background: #e53935; /* Rouge clair survol */
+        color: white;
+        font-style: italic;
+    }
+
+    QTabWidget::pane {
+        border-top: 3px solid #b71c1c;
+        margin: 2px;
+    }
+    )");
+    ui->Affichage_6->setStyleSheet(R"(
+    QTabBar::tab {
+        background: #d32f2f; /* Rouge vif */
+        color: white;
+        padding: 10px 25px;
+        font-size: 14px;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-right: 2px;
+    }
+
+    QTabBar::tab:selected {
+        background: #b71c1c; /* Rouge foncé */
+        color: #fff;
+    }
+
+    QTabBar::tab:hover {
+        background: #e53935; /* Rouge clair survol */
+        color: white;
+        font-style: italic;
+    }
+
+    QTabWidget::pane {
+        border-top: 3px solid #b71c1c;
+        margin: 2px;
+    }
+    )");
+    ui->Affichage->setStyleSheet(R"(
+    QTabBar::tab {
+        background: #d32f2f; /* Rouge vif */
+        color: white;
+        padding: 10px 25px;
+        font-size: 14px;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-right: 2px;
+    }
+
+    QTabBar::tab:selected {
+        background: #b71c1c; /* Rouge foncé */
+        color: #fff;
+    }
+
+    QTabBar::tab:hover {
+        background: #e53935; /* Rouge clair survol */
+        color: white;
+        font-style: italic;
+    }
+
+    QTabWidget::pane {
+        border-top: 3px solid #b71c1c;
+        margin: 2px;
+    }
+    )");
+    ui->Affichage_31->setStyleSheet(R"(
     QTabBar::tab {
         background: #d32f2f; /* Rouge vif */
         color: white;
@@ -368,22 +481,45 @@ MainWindow::MainWindow(QWidget *parent)
         ui->frame->setVisible(true);
 
         // Mettre à jour immédiatement l'affichage des employés
-        Employe e;
-        ui->tableView_2->setModel(e.afficher());
+        /*Employe employe;
+        ui->tableView->setModel(employe.afficher());
         chargerNomsDansComboBoxPDF();
 
         // Ajustements d'affichage
-        ui->tableView_2->verticalHeader()->setDefaultSectionSize(35);
-        ui->tableView_2->horizontalHeader()->setDefaultSectionSize(150);
-        ui->tableView_2->resizeColumnsToContents();
-        ui->tableView_2->setStyleSheet("QTableView_2::item { padding: 10px; }");
-        ui->tableView_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+        ui->tableView->verticalHeader()->setDefaultSectionSize(35);
+        ui->tableView->horizontalHeader()->setDefaultSectionSize(150);
+        ui->tableView->resizeColumnsToContents();
+        ui->tableView->setStyleSheet("QTableView::item { padding: 10px; }");
+        ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);*/
+        displayEmployes();
+        chargerNomsDansComboBoxPDF();
+
 
         connect(ui->pushButton_supprimer_employe, &QPushButton::clicked, this, &MainWindow::on_pushButton_supprimer_employe_clicked);
     });
 
 
 
+    /*
+    connect(ui->vaccin, &QPushButton::clicked, this, [=](){
+        ui->stackedWidget->setCurrentIndex(3);
+        ui->frame->setVisible(true);
+        verifierVaccinsExpires();
+
+        // Mettre à jour immédiatement l'affichage des vaccins
+        Vaccin v;
+        ui->tableView_2->setModel(v.afficher());
+
+        // Ajustements d'affichage
+        ui->tableView_2->verticalHeader()->setDefaultSectionSize(35);
+        ui->tableView_2->horizontalHeader()->setDefaultSectionSize(150);
+        ui->tableView_2->resizeColumnsToContents();
+        ui->tableView_2->setStyleSheet("QTableView::item { padding: 10px; }");
+
+        // Faire en sorte que les colonnes prennent toute la largeur
+        ui->tableView_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    });
+*/
     connect(ui->btnPredire, &QPushButton::clicked, this, &MainWindow::on_btnPredire_clicked);
 
     connect(ui->nom_carnet, &QLineEdit::textChanged, this, [=]() {
@@ -610,7 +746,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     chatbotButton->setToolTip("Ouvrir le Chat RH (Ctrl+M)");
     chatbotButton->hide();
-    chatbotButton->move(this->width() - chatbotButton->width() - 20, this->height() - chatbotButton->height() - 120);
+    chatbotButton->move(this->width() - chatbotButton->width() - 20, this->height() - chatbotButton->height() - 400);
 
 
 
@@ -629,9 +765,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
+    displayVaccin();
 
-
-
+      displayProduit();
     //daoussar
     displayCompagne();
 
@@ -801,7 +937,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->nomFournisseur_6, &QLineEdit::textChanged, this, &MainWindow::validerChampsP);
     connect(ui->dateExpiration_6, &QDateEdit::dateChanged, this, &MainWindow::validerChampsP);
     connect(ui->quantite_6, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::validerChampsP);
-    connect(ui->rechercher_6, &QPushButton::clicked, this, &MainWindow::on_rechercherP_clicked);
+   // connect(ui->rechercher_6, &QPushButton::clicked, this, &MainWindow::on_rechercherP_clicked);
     connect(ui->Stat_6, &QPushButton::clicked, this, &MainWindow::on_StatP_clicked);
     QString message=produitTmp.MessageDeExpiration();
     qDebug()<<message;
@@ -979,20 +1115,96 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     int buttonHeight = chatbotButton->height();
     chatbotButton->move(width() - buttonWidth - margin, height() - buttonHeight - margin);
 }
-void MainWindow::on_Affichage_currentChanged(int index)
+/*void MainWindow::on_Affichage_currentChanged(int index)
 {
-    if (index ==0){
-        Employe employe;
-        ui->tableView->setModel(employe.afficher());
+    if (index == 1){
+    Employe employe;
+    ui->tableView->setModel(employe.afficher());
 
+    ui->tableView->verticalHeader()->setDefaultSectionSize(35);
+    ui->tableView->horizontalHeader()->setDefaultSectionSize(200);
+
+    // Forcer le scroll horizontal
+    ui->tableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    ui->tableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+    // Largeur élargie pour forcer le scroll horizontal
+    ui->tableView->setMinimumWidth(2000);
+
+    // Style et dimension
+    ui->tableView->setStyleSheet("QTableView::item { padding: 10px; }");
+    ui->tableView->setMinimumSize(1400, 700);
+    ui->tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    }
+
+}
+*/
+
+void MainWindow::displayEmployes()
+{
+    QSqlQueryModel *model = employe.afficher();  // ⚠️ Assure-toi que `employeTmp` est bien instancié
+
+    if (!model) {
+        QMessageBox::warning(this, "Erreur", "Échec du chargement des employés.");
+        return;
+    }
+
+    // Appliquer le modèle
+    ui->tableView->setModel(model);  // 🔁 Remplace par le nom correct de ton QTableView
+    ui->tableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->tableView->setAlternatingRowColors(true);
+    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->resizeRowsToContents();
+
+    // Redimensionnement intelligent des colonnes
+    for (int i = 0; i < model->columnCount(); ++i) {
+        ui->tableView->horizontalHeader()->setSectionResizeMode(i,
+            (i == 1 || i == 3 || i == 9) ? QHeaderView::Stretch : QHeaderView::ResizeToContents);
+        // Nom (1), Poste (3), Type d'absences (9) en stretch
     }
 }
+
+
+
 void MainWindow::afficherDashboard(const QString& prenom, const QString& poste)
 {
-    ui->label_bienvenue->setText("👋 Bienvenue, " + prenom + " !");
-    ui->label_poste->setText("Poste : " + poste);
-    ui->stackedWidget->setCurrentIndex(7); // vers le dashboard
+    if (poste == "hr") {
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->label_bienvenue_emp->setText("👋 Bienvenue, " + prenom + " !");
+    }
+    else if (poste == "produits") {
+        ui->stackedWidget->setCurrentIndex(1);
+        ui->label_bienvenue_prod->setText("👋 Bienvenue, " + prenom + " !");
+    }
+    else if (poste == "labo") {
+        ui->stackedWidget->setCurrentIndex(2);
+        ui->label_bienvenue_lab->setText("👋 Bienvenue, " + prenom + " !");
+    }
+    else if (poste == "vaccin") {
+        ui->stackedWidget->setCurrentIndex(3);
+        ui->label_bienvenue_vacc->setText("👋 Bienvenue, " + prenom + " !");
+    }
+    else if (poste == "compagne") {
+        ui->stackedWidget->setCurrentIndex(4);
+        ui->label_bienvenue_comp->setText("👋 Bienvenue, " + prenom + " !");
+    }
+    else if (poste == "carnet") {
+        ui->stackedWidget->setCurrentIndex(5);
+        ui->label_bienvenue_carnet->setText("👋 Bienvenue, " + prenom + " !");
+    }
+    else if (poste == "admin") {
+        ui->stackedWidget->setCurrentIndex(0);
+        //ui->label_bienvenue_rh->setText("👑 Admin : " + prenom + " !");
+    }
+    else {
+        QMessageBox::critical(this, "Accès refusé", "❌ Poste non reconnu ou accès refusé.");
+        ui->stackedWidget->setCurrentIndex(6); // Page login
+    }
 }
+
 
 void MainWindow::on_ajouter_employe_clicked()
 {
@@ -1498,7 +1710,6 @@ void MainWindow::seConnecter()
 
 
 
-
 void MainWindow::redirectTo(const QString &poste, int pageIndex, bool fullAccess)
 {
     ui->stackedWidget->setCurrentIndex(pageIndex);
@@ -1579,7 +1790,7 @@ void MainWindow::lancerRechercheEmploye()
 void MainWindow::reinitialiserTableEmployes()
 {
     Employe e;
-    ui->tableView->setModel(e.afficher());
+     displayEmploye();
     ui->comboBox_tri_3->setCurrentIndex(-1); // désélectionne le tri
     ui->comboBox_recherche->setCurrentIndex(-1); // désélectionne recherche
     ui->lineEdit_recherche->clear(); // vide le champ
@@ -1620,6 +1831,9 @@ void MainWindow::exporterPlanningHoraireHTML()
         {"produits", "13h-16h"}, {"carnet", "9h-11h"}, {"compagne", "11h-15h"},
         {"vaccin", "9h-12h"}, {"admin", "8h-10h"}
     };
+    QString imageBase64 = imageToBase64(":/images/logo.png");
+
+
 
     QString html = R"(
 <!DOCTYPE html>
@@ -1670,7 +1884,8 @@ void MainWindow::exporterPlanningHoraireHTML()
 </head>
 <body>
 <div class='header'>
-            <img src=':/images/logo.png'>
+            <"<img src='" + imageBase64 + "'>"
+
     <div class='title-block'>
         <h1>📅 Planning Hebdomadaire des Employés</h1>
         <p><strong>Période :</strong> )" + dateDebut.toString("dd/MM/yyyy") + " ➡ " + dateFin.toString("dd/MM/yyyy") + R"(</p>
@@ -1776,6 +1991,17 @@ void MainWindow::exporterPlanningHoraireHTML()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 void MainWindow::convertirHTMLenPDF(const QString& cheminHTML)
 {
     QString cheminPDF = cheminHTML;
@@ -1801,6 +2027,7 @@ void MainWindow::convertirHTMLenPDF(const QString& cheminHTML)
         QMessageBox::warning(this, "Erreur", "La génération du PDF a échoué.");
     }
 }
+
 
 
 
@@ -1842,7 +2069,7 @@ void MainWindow::afficherStatistiquesEmployes()
     QString statistiques = R"(
 <div style='font-family:"Segoe UI", sans-serif;
             font-size:14px;
-            color:#ecf0f1;
+             color:#000000;
             line-height:1.5;
             text-align:left;
             padding:10px;
@@ -1875,7 +2102,7 @@ void MainWindow::afficherStatistiquesEmployes()
         QLabel {
             background: transparent;
             font-size: 14px;
-            color: #ecf0f1;
+             color:#000000;
             font-family: 'Segoe UI', sans-serif;
         }
     )");
@@ -2126,10 +2353,10 @@ void MainWindow::afficherHistoriqueConnexions() {
     }
 
     QTextStream in(&file);
-    ui->tableWidget_historique->clear();  // Nettoyage
+    ui->tableWidget_historique->clear();
     ui->tableWidget_historique->setRowCount(0);
-    ui->tableWidget_historique->setColumnCount(2);
-    ui->tableWidget_historique->setHorizontalHeaderLabels({"Utilisateur", "Date & Heure"});
+    ui->tableWidget_historique->setColumnCount(3);  // ➕ Ajout d’une colonne
+    ui->tableWidget_historique->setHorizontalHeaderLabels({"Utilisateur", "Date", "Heure"});
 
     int row = 0;
     while (!in.atEnd()) {
@@ -2138,9 +2365,16 @@ void MainWindow::afficherHistoriqueConnexions() {
 
         QStringList parts = ligne.split("|");
         if (parts.size() == 2) {
+            QString utilisateur = parts[0].trimmed();
+            QString dateHeure = parts[1].trimmed();
+            QStringList dateHeureParts = dateHeure.split(" ");
+            QString date = dateHeureParts.value(0);
+            QString heure = dateHeureParts.value(1);
+
             ui->tableWidget_historique->insertRow(row);
-            ui->tableWidget_historique->setItem(row, 0, new QTableWidgetItem(parts[0].trimmed()));
-            ui->tableWidget_historique->setItem(row, 1, new QTableWidgetItem(parts[1].trimmed()));
+            ui->tableWidget_historique->setItem(row, 0, new QTableWidgetItem(utilisateur));
+            ui->tableWidget_historique->setItem(row, 1, new QTableWidgetItem(date));
+            ui->tableWidget_historique->setItem(row, 2, new QTableWidgetItem(heure));
             row++;
         }
     }
@@ -4003,10 +4237,25 @@ void MainWindow::trierCompagnes(const QString &critere)
     } else if (critere == "doses_administrees") {
         orderBy = "DOSES_ADMINISTREES";
     } else {
-        orderBy = "ID_COMPAGNE";
+        orderBy = "DATE_DEBUT";  // défaut plus logique
     }
 
-    QString queryString = "SELECT * FROM COMPAGNE ORDER BY " + orderBy;
+    // ✅ Exclure la colonne ID_COMPAGNE
+    QString queryString = R"(
+         SELECT
+             NOM_COMPAGNE,
+             TO_CHAR(DATE_DEBUT, 'DD/MM/YYYY') AS DATE_DEBUT,
+             TO_CHAR(DATE_FIN, 'DD/MM/YYYY') AS DATE_FIN,
+             ZONE_GEOGRAPHIQUE,
+             OBJECTIF_DOSES,
+             DOSES_ADMINISTREES,
+             VACCINS_UTILISES,
+             STATUT,
+             FOURNITURES,
+             COUT_FOURNITURES
+         FROM COMPAGNE
+         ORDER BY )" + orderBy;
+
     qDebug() << "🔍 Requête SQL triée :" << queryString;
 
     QSqlQueryModel *model = new QSqlQueryModel(this);
@@ -4026,6 +4275,7 @@ void MainWindow::trierCompagnes(const QString &critere)
 
 //recherche
 
+
 void MainWindow::rechercherCompagnes(const QString &texte)
 {
     QSqlQueryModel *model = new QSqlQueryModel(this);
@@ -4034,7 +4284,18 @@ void MainWindow::rechercherCompagnes(const QString &texte)
     QString filtre = "%" + texte + "%";
 
     query.prepare(R"(
-        SELECT * FROM COMPAGNE
+        SELECT
+            NOM_COMPAGNE,
+            TO_CHAR(DATE_DEBUT, 'DD/MM/YYYY') AS DATE_DEBUT,
+            TO_CHAR(DATE_FIN, 'DD/MM/YYYY') AS DATE_FIN,
+            ZONE_GEOGRAPHIQUE,
+            OBJECTIF_DOSES,
+            DOSES_ADMINISTREES,
+            VACCINS_UTILISES,
+            STATUT,
+            FOURNITURES,
+            COUT_FOURNITURES
+        FROM COMPAGNE
         WHERE LOWER(NOM_COMPAGNE) LIKE LOWER(:filtre)
            OR LOWER(VACCINS_UTILISES) LIKE LOWER(:filtre)
            OR LOWER(ZONE_GEOGRAPHIQUE) LIKE LOWER(:filtre)
@@ -4051,6 +4312,8 @@ void MainWindow::rechercherCompagnes(const QString &texte)
     ui->tableView_d->setModel(model);
     ui->tableView_d->resizeColumnsToContents();
 }
+
+
 
 
 
@@ -4962,9 +5225,9 @@ void MainWindow::verifierNomProduit()
 
     if (nomProduit.isEmpty() || nomProduit.length() < 3 || !regexNom.match(nomProduit).hasMatch()) {
         ui->labelErreurNom_6->setText("❌ Le nom doit contenir au moins 3 lettres et pas de caractères spéciaux.");
-        ui->labelErreurNom_6->setStyleSheet("color: black; font-size: 12px; font-style: italic;");
+        ui->labelErreurNom_6->setStyleSheet("background-color: transparent;color: red; font-size: 12px; font-style: italic;");
         ui->labelErreurNom_6->setVisible(true);
-        ui->nomProduit_6->setStyleSheet("border: 2px solid red;");
+        ui->nomProduit_6->setStyleSheet("background-color: transparent; border: 2px solid red;");
         return;
     }
 
@@ -4982,14 +5245,14 @@ void MainWindow::verifierNomProduit()
 
     if (count > 0) {
         ui->labelErreurNom_6->setText("❌ Ce nom de produit est déjà utilisé !");
-        ui->labelErreurNom_6->setStyleSheet("color: red; font-size: 12px; font-style: italic;");
+        ui->labelErreurNom_6->setStyleSheet("background-color: transparent; color: red; font-size: 12px; font-style: italic;");
         ui->labelErreurNom_6->setVisible(true);
         ui->nomProduit_6->setStyleSheet("border: 2px solid red;");
     } else {
         ui->labelErreurNom_6->setText("✔ Ce nom de produit est valide !");
-        ui->labelErreurNom_6->setStyleSheet("color: black; font-size: 12px; font-style: italic;");
+        ui->labelErreurNom_6->setStyleSheet("background-color: transparent; color: green ; font-size: 12px; font-style: italic;");
         ui->labelErreurNom_6->setVisible(true);
-        ui->nomProduit_6->setStyleSheet("border: 2px solid green;");
+        ui->nomProduit_6->setStyleSheet("background-color: transparent; border: 2px solid green;");
     }
 }
 void MainWindow::validerChampsP()
@@ -5005,7 +5268,7 @@ void MainWindow::validerChampsP()
     if (nom.isEmpty() || nom.length() < 3 || !regexNom.match(nom).hasMatch()) {
         ui->nomProduit_6->setStyleSheet("border: 2px solid red;");
         ui->labelErreurNom_6->setText("❌ Le nom doit contenir au moins 3 lettres.");
-        ui->labelErreurNom_6->setStyleSheet("color: black; font-size: 12px; font-style: italic;");
+        ui->labelErreurNom_6->setStyleSheet("background-color: transparent; color: red ; font-size: 12px; font-style: italic;");
         ui->labelErreurNom_6->setVisible(true);
     } else {
         ui->nomProduit_6->setStyleSheet("border: 2px solid green;");
@@ -5016,7 +5279,7 @@ void MainWindow::validerChampsP()
     if (nomFournisseur.isEmpty() || nomFournisseur.length() < 3 || !regexNom.match(nomFournisseur).hasMatch()) {
         ui->nomFournisseur_6->setStyleSheet("border: 2px solid red;");
         ui->labelErreurFournisseur_6->setText("❌ Le nom du fournisseur doit contenir au moins 3 lettres.");
-        ui->labelErreurFournisseur_6->setStyleSheet("color: black; font-size: 12px; font-style: italic;");
+        ui->labelErreurFournisseur_6->setStyleSheet("background-color: transparent; color: red; font-size: 12px; font-style: italic;");
         ui->labelErreurFournisseur_6->setVisible(true);
     } else {
         ui->nomFournisseur_6->setStyleSheet("border: 2px solid green;");
@@ -5027,17 +5290,17 @@ void MainWindow::validerChampsP()
     if (dateExpiration <= dateFabrication) {
         ui->dateExpiration_6->setStyleSheet("border: 2px solid red;");
         ui->labelErreurDateExpiration_6->setText("❌ La date d'expiration doit être après la fabrication.");
-        ui->labelErreurDateExpiration_6->setStyleSheet("color: black; font-size: 12px; font-style: italic;");
+        ui->labelErreurDateExpiration_6->setStyleSheet("background-color: transparent; color: red; font-size: 12px; font-style: italic;");
         ui->labelErreurDateExpiration_6->setVisible(true);
     } else {
-        ui->dateExpiration_6->setStyleSheet("border: 2px solid green;");
+        ui->dateExpiration_6->setStyleSheet("background-color: transparent; border: 2px solid green;");
         ui->labelErreurDateExpiration_6->clear();
         ui->labelErreurDateExpiration_6->setVisible(false);
     }
     if (quantite <= 0) {
         ui->quantite_6->setStyleSheet("border: 2px solid red;");
         ui->labelErreurQuantite_6->setText("❌ La quantité doit être supérieure à 0.");
-        ui->labelErreurQuantite_6->setStyleSheet("color: black; font-size: 12px; font-style: italic;");
+        ui->labelErreurQuantite_6->setStyleSheet("background-color: transparent; color: red; font-size: 12px; font-style: italic;");
         ui->labelErreurQuantite_6->setVisible(true);
     } else {
         ui->quantite_6->setStyleSheet("border: 2px solid green;");
@@ -5086,6 +5349,7 @@ void MainWindow::on_supprimer_6_clicked()
         ui->TableViewP_6->setModel(nullptr);
         ui->TableViewP_6->setModel(produit.afficher());
         ui->TableViewP_6->resizeColumnsToContents();
+         displayProduit();
 
         // 🔄 Nettoyer le champ de saisie
         ui->champRecherche_11->clear();
@@ -5094,7 +5358,7 @@ void MainWindow::on_supprimer_6_clicked()
     }
 }
 
-
+/*
 void MainWindow::on_Affichage_31_currentChanged(int index)
 {
     if (index == 1) {
@@ -5112,7 +5376,7 @@ void MainWindow::on_Affichage_31_currentChanged(int index)
     }
 }
 
-
+*/
 
 void MainWindow::on_ajouter_6_clicked()
 { if (!QSqlDatabase::database().isOpen()) {
@@ -5179,6 +5443,7 @@ void MainWindow::on_ajouter_6_clicked()
     ui->TableViewP_6->setModel(nullptr);
     ui->TableViewP_6->setModel(produit.afficher());
     ui->TableViewP_6->resizeColumnsToContents();
+     displayProduit();
 
     ui->nomProduit_6->clear();
     ui->categorie_6->setCurrentIndex(0);
@@ -5226,6 +5491,7 @@ void MainWindow::on_modifier_6_clicked()
     ui->stackedWidget->setCurrentIndex(1);
     ui->Affichage_31->setCurrentIndex(0);
     ui->champRecherche_11->clear();
+     displayProduit();
 }
 
 void MainWindow::remplirChampsModificationP(QString nomProduit)
@@ -5274,10 +5540,11 @@ void MainWindow::on_pushButton_26_clicked()
 
     ui->stackedWidget->setCurrentIndex(1);
     ui->Affichage_31->setCurrentIndex(1);
+     displayProduit();
 }
 
 
-
+/*
 void MainWindow::on_rechercherP_clicked()
 { QString critere = ui->champRecherche_11->text().trimmed();
 
@@ -5292,7 +5559,7 @@ void MainWindow::on_rechercherP_clicked()
 
 }
 
-
+*/
 
 
 /*
@@ -5329,7 +5596,21 @@ void MainWindow::on_comboBox_11_activated(int index)
         //ui->TableViewP_6->setSortingEnabled(false);
         ui->TableViewP_6->setModel(model);
         ui->TableViewP_6->resizeColumnsToContents();
+        ui->TableViewP_6->setMinimumSize(1000, 600);
+                ui->TableViewP_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+                // 📐 Ajustement des colonnes et lignes
+                ui->TableViewP_6->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+                ui->TableViewP_6->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+                ui->TableViewP_6->setMinimumSize(1000, 600);
+                        ui->TableViewP_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+                        // 📐 Ajustement des colonnes et lignes
+                        ui->TableViewP_6->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+                        ui->TableViewP_6->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     }
+
 }
 
 
@@ -5509,6 +5790,34 @@ void MainWindow::on_telecharger_qr_code_clicked()
         QMessageBox::warning(this, tr("Error"), tr("No QR Code to save."));
     }
 }
+void MainWindow::displayProduit()
+{
+    QSqlQueryModel *model = produitTmp.afficher();  // Appelle la méthode de la classe Produit
+
+    if (model) {
+        ui->TableViewP_6->setModel(model);  // Remplace par le bon nom de ta QTableView
+
+        // Supprimer "00:00" des dates si présent
+        for (int row = 0; row < model->rowCount(); ++row) {
+            for (int col = 0; col < model->columnCount(); ++col) {
+                QString value = model->data(model->index(row, col)).toString();
+                if (value.contains("00:00"))
+                    model->setData(model->index(row, col), value.section(' ', 0, 0));
+            }
+        }
+
+        ui->TableViewP_6->resizeColumnsToContents();
+        ui->TableViewP_6->setMinimumSize(1000, 600);
+                ui->TableViewP_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+                // 📐 Ajustement des colonnes et lignes
+                ui->TableViewP_6->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+                ui->TableViewP_6->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);// Ajuster la taille des colonnes
+    } else {
+        QMessageBox::warning(this, "Erreur", "Échec du chargement des produits.");
+    }
+}
+
 void MainWindow::on_StatP_clicked()
 {
     // 👉 Afficher l'onglet Statistiques
@@ -5635,6 +5944,8 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
             QMessageBox::information(this, "Succès", "Vaccin modifié avec succès !");
             modeModification_v = false;  // Désactiver le mode modification
             connect(ui->lineEdit_nom_2, &QLineEdit::textChanged, this, &MainWindow::verifierNom);
+            ui->stackedWidget->setCurrentIndex(3);
+            ui->tab_5->setCurrentIndex(1);
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de la modification !");
             return;
@@ -5671,7 +5982,7 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
     }
 
     // ✅ Mise à jour de l'affichage
-    ui->tableView->setModel(v.afficher());
+    ui->tableView_2->setModel(v.afficher());
     ui->lineEdit_nom_2->setDisabled(false);
     ui->lineEdit_nom_2->clear();
     ui->dateEdit_creation_2->setDate(QDate::currentDate());
@@ -5718,7 +6029,7 @@ void MainWindow::on_pushButton_suppv_clicked() {
         Vaccin v;
         if (v.supprimer(nomv)) {  // ✅ Suppression si le vaccin existe
             QMessageBox::information(this, "Succès", "Vaccin supprimé avec succès !");
-            ui->tableView->setModel(v.afficher());  // 🔄 Mettre à jour l'affichage
+            ui->tableView_2->setModel(v.afficher());  // 🔄 Mettre à jour l'affichage
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de la suppression du vaccin !");
         }
@@ -6180,16 +6491,21 @@ void MainWindow::on_pushButtonStat_18_clicked()
         ui->Statistique_8->setLayout(nullptr);
     }
 
-    // 📦 Requête Oracle (groupement par année)
+    // 📦 Requête Oracle
     QSqlQuery query;
     if (!query.exec("SELECT TO_CHAR(date_creation, 'YYYY') AS annee, COUNT(*) FROM Vaccin GROUP BY TO_CHAR(date_creation, 'YYYY') ORDER BY annee")) {
         qDebug() << "Erreur SQL :" << query.lastError().text();
         return;
     }
 
-    // 📊 Préparer données
-    QBarSet *set0 = new QBarSet("Vaccinations");
-    set0->setColor(QColor("#2e86c1"));  // 🔹 Couleur personnalisée
+    // 📊 Préparer les données
+    QBarSet *set0 = new QBarSet("💉 Vaccinations par année");
+    QFont legendFont;
+    legendFont.setBold(true);
+    legendFont.setPointSize(12);  // ou 14 pour plus grand
+   // chart->legend()->setFont(legendFont);
+
+   // set0->setColor(QColor("#2e86c1"));
     QStringList categories;
     QList<int> valeurs;
     int totalVaccinations = 0;
@@ -6201,96 +6517,80 @@ void MainWindow::on_pushButtonStat_18_clicked()
         *set0 << nb;
         valeurs << nb;
         totalVaccinations += nb;
-        qDebug() << "Année:" << annee << "Nombre:" << nb;
     }
 
     if (categories.isEmpty()) {
-        qDebug() << "Aucune donnée dans la base pour les statistiques.";
+        qDebug() << "Aucune donnée trouvée.";
         return;
     }
 
+    // 📈 Création du graphique
     QBarSeries *series = new QBarSeries();
     series->append(set0);
-    series->setLabelsVisible(true);  // 🔢 Afficher les valeurs au-dessus des barres
+    series->setLabelsVisible(true);
 
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("📊 Statistiques de nombre des vaccins par année");
+   // chart->setTitle("📊 Statistiques de nombre des vaccins par année");
     chart->setAnimationOptions(QChart::AllAnimations);
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignTop);
+    chart->setMargins(QMargins(10, 10, 10, 10));
 
-    // 🧭 Axe X
+    // Axes
     QBarCategoryAxis *axisX = new QBarCategoryAxis();
     axisX->append(categories);
     chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
 
-    // 📈 Axe Y
     int maxValue = *std::max_element(valeurs.begin(), valeurs.end()) + 5;
     QValueAxis *axisY = new QValueAxis();
     axisY->setRange(0, maxValue);
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
-    // 👁 Vue graphique
+    // 📊 Vue du graphique
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setMinimumSize(700, 50);
-    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // Largeur minimale pour éviter le compactage
+    chartView->setMinimumWidth(1200);
+
+    // On laisse la hauteur auto
+    chartView->setMinimumHeight(550);  // raisonnable
+    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    // Marges du graphique
+    chart->setMargins(QMargins(10, 10, 10, 10));
     chartView->setContentsMargins(0, 0, 0, 0);
 
 
-    // 🧱 Encadré dans un QGroupBox
-    QGroupBox *graphBox = new QGroupBox("Vue Globale des vaccinations");
-    graphBox->setStyleSheet(R"(
-    QGroupBox {
-        font-weight: bold;
-        border: 2px solid #ccc;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px auto;
-        background-color: #ffffff;
-    }
-)");
+    // 📝 Titre
+    QLabel *titleLabel = new QLabel("📊 Statistiques de nombre des vaccins par année");
+    titleLabel->setAlignment(Qt::AlignCenter);
+    titleLabel->setStyleSheet("font-size: 22px; font-weight: bold; color: #b30000; margin-bottom: 10px;");
 
-
-
-
-
-    QVBoxLayout *boxLayout = new QVBoxLayout();
-    boxLayout->addWidget(chartView);
-    graphBox->setLayout(boxLayout);
-
-    // 💬 Résumé texte
+    // 🧾 Résumé
     QLabel *summary = new QLabel("📅 Total années : " + QString::number(categories.size()) +
                                  " — 💉 Total vaccinations : " + QString::number(totalVaccinations));
     summary->setAlignment(Qt::AlignCenter);
-    summary->setStyleSheet("font-style: italic; color: #2e86c1;");
+    summary->setStyleSheet("font-style: italic; color: #2e86c1; font-size: 16px;font-weight: bold;");
 
     // 📐 Layout final
     QVBoxLayout *layout = new QVBoxLayout();
-
-    QLabel *titleLabel = new QLabel("📊  Statistiques de nombre des vaccins par année");
-    titleLabel->setAlignment(Qt::AlignCenter);
-    titleLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #800000;");
     layout->addWidget(titleLabel);
-
-    layout->addWidget(graphBox);
+    layout->addWidget(chartView, 0, Qt::AlignHCenter);
     layout->addWidget(summary);
-
-    layout->setAlignment(graphBox, Qt::AlignHCenter);
     layout->setAlignment(summary, Qt::AlignHCenter);
+    layout->setContentsMargins(40, 20, 40, 10);  // left, top, right, bottom
 
+    layout->setSpacing(5);
+    layout->addSpacerItem(new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     ui->Statistique_8->setLayout(layout);
     ui->Statistique_8->update();
-    ui->Statistique_8->repaint();
-
-    graphBox->setMinimumWidth(1300);
-
-
 }
+
 
 
 
@@ -6551,6 +6851,22 @@ void MainWindow::readSerialData()
             }
         }
     }
+}
+
+
+
+
+void MainWindow::displayEmploye() {
+    QSqlQueryModel *model = employe.afficher();
+    if (!model) {
+        QMessageBox::warning(this, "Erreur", "Échec de l'affichage des employés !");
+        return;
+    }
+
+    ui->tableView->setModel(model);
+    ui->tableView->setAlternatingRowColors(true);
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->resizeRowsToContents();
 }
 /*void MainWindow::initSerialPort()
 {
@@ -6832,3 +7148,128 @@ void MainWindow::handleVaccineLock()
         arduinoManager->sendCommand("TEMP_REQUEST\n");
     }
 }
+
+void MainWindow::on_champRecherche_11_textChanged(const QString &arg1)
+{QString critere = ui->champRecherche_11->text().trimmed();
+
+    Produit produit;
+    QSqlQueryModel *model = produit.rechercherTout(critere);
+
+    ui->TableViewP_6->setModel(model);
+    ui->TableViewP_6->resizeColumnsToContents();
+
+    ui->TableViewP_6->setMinimumSize(1000, 600);
+    ui->TableViewP_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // 📐 Ajustement des colonnes et lignes
+    ui->TableViewP_6->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->TableViewP_6->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+
+
+            // 📐 Ajustement des colonnes et lignes
+            ui->TableViewP_6->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+            ui->TableViewP_6->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    if (model->rowCount()==0){
+        QMessageBox::information(this, "Recherche","Aucun resultat trouvé ");
+
+}
+}
+
+void MainWindow::on_telecharger_qr_code_6_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save QR Code"), "", tr("PNG Files (*.png);;All Files (*)"));
+
+        if (fileName.isEmpty()) {
+            return; // User cancelled the dialog
+        }
+
+        // Ensure the file name ends with .png
+        if (!fileName.endsWith(".png", Qt::CaseInsensitive)) {
+            fileName += ".png";
+        }
+
+        // Get the QR code image from the label
+        QLabel *qrLabel = ui->qrcode_6; // Assuming your QLabel is named qrcode
+        QPixmap pixmap = qrLabel->pixmap();
+
+        // Check if the pixmap is valid
+        if (!pixmap.isNull()) {
+            // Define the border size
+            int borderSize = 10; // Adjust as needed
+            int newWidth = pixmap.width() + 2 * borderSize;
+            int newHeight = pixmap.height() + 2 * borderSize;
+
+            // Create a new image with a white background
+            QImage borderedImage(newWidth, newHeight, QImage::Format_RGB32);
+            borderedImage.fill(Qt::white); // Fill with white
+
+            // Draw the original QR code onto the new image
+            QPainter painter(&borderedImage);
+            painter.drawPixmap(borderSize, borderSize, pixmap);
+            painter.end();
+
+            // Save the bordered image as a PNG file
+            if (borderedImage.save(fileName, "PNG")) {
+                QMessageBox::information(this, tr("Success"), tr("QR Code saved successfully!"));
+            } else {
+                QMessageBox::warning(this, tr("Error"), tr("Failed to save QR Code."));
+            }
+        } else {
+            QMessageBox::warning(this, tr("Error"), tr("No QR Code to save."));
+        }
+}
+void MainWindow::displayVaccin()
+{ Vaccin v ;
+    QSqlQueryModel *model = v.afficher();  // Assure-toi que vaccinTmp est bien instancié
+
+    if (!model) {
+        QMessageBox::warning(this, "Erreur", "Échec du chargement des vaccins.");
+        return;
+    }
+
+    // 🔹 Lier le modèle au tableau
+    ui->tableView_2->setModel(model);  // Remplace par le bon nom de ton QTableView
+     ui->tableView_2->resizeColumnsToContents();
+    // 🔹 Nettoyer les dates pour enlever "00:00"
+    for (int row = 0; row < model->rowCount(); ++row) {
+        for (int col = 0; col < model->columnCount(); ++col) {
+            QString value = model->data(model->index(row, col)).toString();
+            if (value.contains("00:00"))
+                model->setData(model->index(row, col), value.section(' ', 0, 0));
+        }
+    }
+
+    // 🔹 Ajustements visuels
+
+    ui->tableView_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableView_2->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tableView_2->setMinimumSize(1000, 600);
+            ui->tableView_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
+
+
+
+
+
+
+            // 📐 Ajustement des colonnes et lignes
+
+
+}
+QString MainWindow::imageToBase64(const QString& imagePath)
+{
+    QImage image(imagePath);
+    if (image.isNull()) {
+        qDebug() << "⚠️ Image introuvable :" << imagePath;
+        return "";
+    }
+
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "PNG");
+    return "data:image/png;base64," + byteArray.toBase64();
+}
+

@@ -167,7 +167,7 @@ QSqlQueryModel* Produit::rechercherTout(const QString& critere)
     QString critereLower = critere.toLower();
 
     query.prepare(R"(
-        SELECT * FROM SMARTVACC.PRODUITS
+        SELECT   NOM_PRODUIT, CATEGORIE, QUANTITE, DATE_FABRICATION, DATE_EXPIRATION, NOM_FOURNISSEUR FROM SMARTVACC.PRODUITS
         WHERE LOWER(NOM_PRODUIT) LIKE '%' || :critere || '%'
            OR LOWER(CATEGORIE) LIKE '%' || :critere || '%'
            OR LOWER(NOM_FOURNISSEUR) LIKE '%' || :critere || '%'
@@ -183,7 +183,7 @@ QSqlQueryModel* Produit::rechercherTout(const QString& critere)
     return model;
 }
 
-
+/*
 
 
 QSqlQueryModel* Produit::trierPar(const QString& critere)
@@ -226,9 +226,43 @@ QSqlQueryModel* Produit::trierPar(const QString& critere)
     model->setHeaderData(4, Qt::Horizontal, QObject::tr("Date de fabrication"));
     model->setHeaderData(5, Qt::Horizontal, QObject::tr("Date d'expiration"));
     model->setHeaderData(6, Qt::Horizontal, QObject::tr("Fournisseur"));
-*/
+
     return model;
 }
+    */
+QSqlQueryModel* Produit::trierPar(const QString& critere)
+{
+    QSqlQueryModel *model = new QSqlQueryModel();
+    QString baseQuery = "SELECT  NOM_PRODUIT, CATEGORIE, QUANTITE, DATE_FABRICATION, DATE_EXPIRATION, NOM_FOURNISSEUR FROM PRODUITS ";
+    QString query;
+
+    if (critere == "QTY_ASC") {
+        query = baseQuery + "ORDER BY QUANTITE ASC";
+    }
+    else if (critere == "EXP_DESC") {
+        query = baseQuery + "ORDER BY DATE_EXPIRATION DESC";
+    }
+    else if (critere == "FAB_ASC") {
+        query = baseQuery + "ORDER BY DATE_FABRICATION ASC";  // pas DESC ici ?
+    }
+    else {
+        qDebug() << "❌ Critère de tri inconnu : " << critere;
+        delete model;
+        return nullptr;
+    }
+
+    qDebug() << "✅ Requête exécutée : " << query;
+    model->setQuery(query);
+
+    if (model->lastError().isValid()) {
+        qDebug() << "❌ Erreur SQL :" << model->lastError().text();
+        delete model;
+        return nullptr;
+    }
+
+    return model;
+}
+
 QSqlQueryModel* Produit::rapportStockSecurite()
 {
     QSqlQueryModel* model = new QSqlQueryModel();

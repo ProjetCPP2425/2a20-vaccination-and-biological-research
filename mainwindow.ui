@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2096</width>
-    <height>1094</height>
+    <width>2047</width>
+    <height>1009</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -348,12 +348,12 @@ QPushButton:hover {
 }
 </string>
       </property>
-      <widget class="QLabel" name="label_bienvenue">
+      <widget class="QLabel" name="label_bienvenue_emp">
        <property name="geometry">
         <rect>
          <x>20</x>
          <y>20</y>
-         <width>351</width>
+         <width>551</width>
          <height>31</height>
         </rect>
        </property>
@@ -401,7 +401,7 @@ QPushButton:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1853,7 +1853,7 @@ QPushButton:pressed {
 }
 </string>
       </property>
-      <widget class="QLabel" name="label_48">
+      <widget class="QLabel" name="label_bienvenue_prod">
        <property name="geometry">
         <rect>
          <x>170</x>
@@ -1871,14 +1871,14 @@ QPushButton:pressed {
 </string>
        </property>
        <property name="text">
-        <string>Bienvenue dans la section de gestion de produits</string>
+        <string/>
        </property>
       </widget>
      </widget>
      <widget class="QTabWidget" name="Affichage_31">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>80</y>
         <width>1281</width>
         <height>801</height>
@@ -2452,7 +2452,7 @@ QPushButton:hover {
          <rect>
           <x>30</x>
           <y>210</y>
-          <width>191</width>
+          <width>71</width>
           <height>21</height>
          </rect>
         </property>
@@ -2582,7 +2582,7 @@ border: 2px solid black; </string>
        <widget class="QTableView" name="TableViewP_6">
         <property name="geometry">
          <rect>
-          <x>90</x>
+          <x>50</x>
           <y>260</y>
           <width>1161</width>
           <height>401</height>
@@ -2661,19 +2661,6 @@ QPushButton:pressed {
          <iconset theme="QIcon::ThemeIcon::EditDelete"/>
         </property>
        </widget>
-       <widget class="QPushButton" name="rechercher_6">
-        <property name="geometry">
-         <rect>
-          <x>850</x>
-          <y>210</y>
-          <width>75</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Rechercher</string>
-        </property>
-       </widget>
        <widget class="QLineEdit" name="champRecherche_12">
         <property name="geometry">
          <rect>
@@ -2708,14 +2695,14 @@ QPushButton:pressed {
        <widget class="QPushButton" name="btnCheckTemp">
         <property name="geometry">
          <rect>
-          <x>200</x>
-          <y>80</y>
-          <width>93</width>
-          <height>29</height>
+          <x>820</x>
+          <y>198</y>
+          <width>111</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="text">
-         <string>PushButton</string>
+         <string>Température</string>
         </property>
        </widget>
       </widget>
@@ -2810,7 +2797,7 @@ border: 2px solid black; </string>
 }
 </string>
       </property>
-      <widget class="QLabel" name="label_107">
+      <widget class="QLabel" name="label_bienvenue_lab">
        <property name="geometry">
         <rect>
          <x>170</x>
@@ -2828,7 +2815,7 @@ border: 2px solid black; </string>
 </string>
        </property>
        <property name="text">
-        <string>Bienvenue dans la section de gestion des laboratoires</string>
+        <string/>
        </property>
       </widget>
      </widget>
@@ -2842,7 +2829,7 @@ border: 2px solid black; </string>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="ajoutct_7">
        <attribute name="title">
@@ -4090,7 +4077,7 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>230</x>
-            <y>590</y>
+            <y>570</y>
             <width>301</width>
             <height>51</height>
            </rect>
@@ -4100,7 +4087,7 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>560</x>
-            <y>590</y>
+            <y>570</y>
             <width>211</width>
             <height>51</height>
            </rect>
@@ -4113,7 +4100,7 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>200</x>
-            <y>140</y>
+            <y>120</y>
             <width>631</width>
             <height>441</height>
            </rect>
@@ -4134,7 +4121,7 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>560</x>
-            <y>90</y>
+            <y>70</y>
             <width>131</width>
             <height>41</height>
            </rect>
@@ -4147,7 +4134,7 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>300</x>
-            <y>90</y>
+            <y>70</y>
             <width>251</width>
             <height>41</height>
            </rect>
@@ -4157,7 +4144,7 @@ QGroupBox::title {
           <property name="geometry">
            <rect>
             <x>50</x>
-            <y>20</y>
+            <y>10</y>
             <width>351</width>
             <height>51</height>
            </rect>
@@ -4205,11 +4192,11 @@ QLabel:hover {
 }
 </string>
       </property>
-      <widget class="QLabel" name="label_124">
+      <widget class="QLabel" name="label_bienvenue_vacc">
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>20</y>
+         <x>90</x>
+         <y>10</y>
          <width>651</width>
          <height>31</height>
         </rect>
@@ -4223,7 +4210,7 @@ QLabel:hover {
 </string>
        </property>
        <property name="text">
-        <string>Bienvenue dans la section de gestion de vaccination</string>
+        <string/>
        </property>
       </widget>
      </widget>
@@ -4237,7 +4224,7 @@ QLabel:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
@@ -4849,9 +4836,9 @@ border: 2px solid black; </string>
        <widget class="QTableView" name="tableView_2">
         <property name="geometry">
          <rect>
-          <x>150</x>
-          <y>250</y>
-          <width>961</width>
+          <x>20</x>
+          <y>240</y>
+          <width>1181</width>
           <height>401</height>
          </rect>
         </property>
@@ -5017,11 +5004,11 @@ QPushButton:pressed {
 }
 </string>
       </property>
-      <widget class="QLabel" name="label_226">
+      <widget class="QLabel" name="label_bienvenue_comp">
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>20</y>
+         <x>80</x>
+         <y>30</y>
          <width>651</width>
          <height>31</height>
         </rect>
@@ -5035,7 +5022,7 @@ QPushButton:pressed {
 </string>
        </property>
        <property name="text">
-        <string>Bienvenue dans la section de gestion de Compagnes de vaccination</string>
+        <string/>
        </property>
       </widget>
      </widget>
@@ -5049,7 +5036,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -6200,7 +6187,7 @@ QCalendarWidget QTableView {
          <rect>
           <x>240</x>
           <y>250</y>
-          <width>621</width>
+          <width>471</width>
           <height>201</height>
          </rect>
         </property>
@@ -6372,7 +6359,7 @@ QCalendarWidget QTableView {
 }
 </string>
       </property>
-      <widget class="QLabel" name="label_158">
+      <widget class="QLabel" name="label_bienvenue_carnet">
        <property name="geometry">
         <rect>
          <x>120</x>
@@ -6390,7 +6377,7 @@ QCalendarWidget QTableView {
 </string>
        </property>
        <property name="text">
-        <string>Bienvenue dans la section de gestion des carnets du vaccination</string>
+        <string/>
        </property>
       </widget>
      </widget>
@@ -6404,7 +6391,7 @@ QCalendarWidget QTableView {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="ajoutct_10">
        <attribute name="title">
@@ -7773,9 +7760,9 @@ QPushButton:hover {
         <property name="geometry">
          <rect>
           <x>200</x>
-          <y>10</y>
-          <width>151</width>
-          <height>151</height>
+          <y>110</y>
+          <width>131</width>
+          <height>121</height>
          </rect>
         </property>
         <property name="pixmap">
@@ -7788,8 +7775,8 @@ QPushButton:hover {
        <widget class="QLabel" name="label_18">
         <property name="geometry">
          <rect>
-          <x>240</x>
-          <y>160</y>
+          <x>230</x>
+          <y>220</y>
           <width>71</width>
           <height>41</height>
          </rect>
@@ -7810,7 +7797,7 @@ QPushButton:hover {
         <property name="geometry">
          <rect>
           <x>140</x>
-          <y>340</y>
+          <y>320</y>
           <width>241</width>
           <height>41</height>
          </rect>
@@ -7831,8 +7818,8 @@ QPushButton:hover {
        <widget class="QPushButton" name="btn_login">
         <property name="geometry">
          <rect>
-          <x>210</x>
-          <y>410</y>
+          <x>190</x>
+          <y>440</y>
           <width>121</width>
           <height>41</height>
          </rect>
@@ -7855,34 +7842,13 @@ QPushButton:hover {
          <string>Se Connecter</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_19">
-        <property name="geometry">
-         <rect>
-          <x>390</x>
-          <y>450</y>
-          <width>171</width>
-          <height>51</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QLabel {
-    font-size: 12px;
-    color: gray;
-    text-decoration: underline;
-}
-</string>
-        </property>
-        <property name="text">
-         <string>Mot de passe oublié?</string>
-        </property>
-       </widget>
        <widget class="QLabel" name="label_6">
         <property name="geometry">
          <rect>
-          <x>120</x>
-          <y>-10</y>
-          <width>341</width>
-          <height>221</height>
+          <x>210</x>
+          <y>120</y>
+          <width>101</width>
+          <height>91</height>
          </rect>
         </property>
         <property name="text">
@@ -7898,8 +7864,8 @@ QPushButton:hover {
        <widget class="QLabel" name="label_8">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>399</y>
+          <x>0</x>
+          <y>410</y>
           <width>131</width>
           <height>131</height>
          </rect>
@@ -7908,7 +7874,7 @@ QPushButton:hover {
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap>:/images/Downloads/698c99ce-a4b1-4073-bda8-6d779a89693d.jpeg</pixmap>
+         <pixmap resource="images/images.qrc">:/images/8f091580-f9f5-43fb-89a3-0d4bbe6da779.jpeg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -7917,27 +7883,33 @@ QPushButton:hover {
        <widget class="QLabel" name="label_9">
         <property name="geometry">
          <rect>
-          <x>430</x>
-          <y>20</y>
+          <x>420</x>
+          <y>10</y>
           <width>121</width>
-          <height>151</height>
+          <height>121</height>
          </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
         </property>
         <property name="text">
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap>:/images/Downloads/8f091580-f9f5-43fb-89a3-0d4bbe6da779.jpeg</pixmap>
+         <pixmap resource="images/images.qrc">:/images/698c99ce-a4b1-4073-bda8-6d779a89693d.jpeg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QLineEdit" name="lineedit_login">
         <property name="geometry">
          <rect>
           <x>140</x>
-          <y>220</y>
+          <y>270</y>
           <width>241</width>
           <height>41</height>
          </rect>
@@ -7956,7 +7928,7 @@ QPushButton:hover {
         <property name="geometry">
          <rect>
           <x>90</x>
-          <y>270</y>
+          <y>380</y>
           <width>371</width>
           <height>41</height>
          </rect>
@@ -7968,10 +7940,10 @@ QPushButton:hover {
        <widget class="QPushButton" name="btn_toggle_password">
         <property name="geometry">
          <rect>
-          <x>350</x>
-          <y>350</y>
-          <width>20</width>
-          <height>20</height>
+          <x>330</x>
+          <y>320</y>
+          <width>51</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="text">
@@ -7981,10 +7953,10 @@ QPushButton:hover {
        <widget class="QLabel" name="label_tentatives">
         <property name="geometry">
          <rect>
-          <x>240</x>
-          <y>460</y>
-          <width>63</width>
-          <height>20</height>
+          <x>130</x>
+          <y>490</y>
+          <width>231</width>
+          <height>51</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -7996,13 +7968,32 @@ font-weight: bold;
          <string/>
         </property>
        </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>20</y>
+          <width>311</width>
+          <height>181</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="images/images.qrc">:/images/2afc17cd-edba-480d-9376-c2ef5360da57.jpeg</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <zorder>label</zorder>
        <zorder>label_9</zorder>
        <zorder>label_6</zorder>
        <zorder>label_16</zorder>
        <zorder>label_18</zorder>
        <zorder>lineedit_password</zorder>
        <zorder>btn_login</zorder>
-       <zorder>label_19</zorder>
        <zorder>label_8</zorder>
        <zorder>lineedit_login</zorder>
        <zorder>label_info_login</zorder>
@@ -8040,7 +8031,7 @@ font-weight: bold;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>2096</width>
+     <width>2047</width>
      <height>26</height>
     </rect>
    </property>

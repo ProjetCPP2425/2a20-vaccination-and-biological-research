@@ -87,6 +87,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QBuffer>
 
 #include "arduinoclavier.h"
 
@@ -321,6 +322,7 @@ private slots:
     //mayssem
     void on_pushButton_32_clicked();
     void displayLaboratoires();
+    void displayEmployes();
     void on_pushButton_37_clicked();
     void on_pushButton_34_clicked();
     void validateFields();
@@ -341,8 +343,8 @@ private slots:
 
     void on_supprimer_6_clicked();
 
-    void on_Affichage_31_currentChanged(int index);
-
+    //void on_Affichage_31_currentChanged(int index);
+    void displayProduit();
 
     void remplirChampsModificationP(QString nomProduit);
 
@@ -359,7 +361,7 @@ private slots:
 
 
 
-    void on_rechercherP_clicked();
+    //void on_rechercherP_clicked();
 
 
 
@@ -408,6 +410,12 @@ private slots:
 
     void on_pushButton_afficherRDV_clicked();
 
+    void on_champRecherche_11_textChanged(const QString &arg1);
+
+    void on_telecharger_qr_code_6_clicked();
+
+    void displayVaccin();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 
@@ -449,9 +457,12 @@ private:
     Employe employe;
     QMap<QString, QString> cacheGPT;
     QPushButton *chatbotButton;
+    void displayEmploye();
 
     QChartView *chartViewStatistique = nullptr;  // pour éviter plusieurs affichages
     QChartView *chartViewParPoste = nullptr;
+    QString imageToBase64(const QString& imagePath);
+
     QNetworkAccessManager *manager;
     void envoyerRequeteChatGPT(const QString &message);
     QJsonArray faq;

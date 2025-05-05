@@ -1,4 +1,3 @@
-
 #include "employes.h"
 #include <QSqlQuery>
 #include <QSqlError>
@@ -123,7 +122,6 @@ QSqlQueryModel* Employe::afficher() {
 
     return model;
 }
-
 
 
 
@@ -265,35 +263,38 @@ QString Employe::getPosteFromCIN(const QString &cin)
 
 QSqlQueryModel* Employe::afficherParPoste() {
     QSqlQueryModel* model = new QSqlQueryModel();
-    model->setQuery("SELECT * FROM SMARTVACC.EMPLOYES ORDER BY POSTE ASC");
+    model->setQuery("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES ORDER BY POSTE ASC");
     return model;
 }
+
 
 QSqlQueryModel* Employe::afficherParAnciennete() {
     QSqlQueryModel* model = new QSqlQueryModel();
-    model->setQuery("SELECT * FROM SMARTVACC.EMPLOYES ORDER BY DATE_EMBAUCHE ASC");
+    model->setQuery("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES ORDER BY DATE_EMBAUCHE ASC");
     return model;
 }
 
+
 QSqlQueryModel* Employe::afficherParSalaire() {
     QSqlQueryModel* model = new QSqlQueryModel();
-    model->setQuery("SELECT * FROM SMARTVACC.EMPLOYES ORDER BY SALAIRE ASC");
+    model->setQuery("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES ORDER BY SALAIRE ASC");
     return model;
 }
 QSqlQueryModel* Employe::rechercherParCIN(const QString &cin) {
     QSqlQueryModel* model = new QSqlQueryModel();
     QSqlQuery query;
-    query.prepare("SELECT * FROM SMARTVACC.EMPLOYES WHERE CIN = :cin");
+    query.prepare("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES WHERE CIN = :cin");
     query.bindValue(":cin", cin);
     query.exec();
     model->setQuery(query);
     return model;
 }
 
+
 QSqlQueryModel* Employe::rechercherParContact(const QString &contact) {
     QSqlQueryModel* model = new QSqlQueryModel();
     QSqlQuery query;
-    query.prepare("SELECT * FROM SMARTVACC.EMPLOYES WHERE CONTACT = :contact");
+    query.prepare("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES WHERE CONTACT = :contact");
     query.bindValue(":contact", contact);
     query.exec();
     model->setQuery(query);
@@ -317,12 +318,9 @@ QString Employe::getPrenomFromCIN(const QString &cin) {
 QSqlQueryModel* Employe::rechercherParDisponibilite(int dispo) {
     QSqlQueryModel* model = new QSqlQueryModel();
     QSqlQuery query;
-    query.prepare("SELECT * FROM SMARTVACC.EMPLOYES WHERE DISPONIBILITE = :dispo");
+    query.prepare("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES WHERE DISPONIBILITE = :dispo");
     query.bindValue(":dispo", dispo);
     query.exec();
     model->setQuery(query);
     return model;
 }
-
-
-
