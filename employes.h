@@ -22,17 +22,15 @@ private:
     QDate DATE_EMBAUCHE;
     int DISPONIBILITE;
     QString TYPE_ABSENCES;
+    QString RFID_ID; // ✅ Nouveau
 
 public:
-    // 🔹 Gestion des erreurs SQL
     QString lastError;
 
-    // ✅ Constructeurs
     Employe();
     Employe(QString cin, int id, QString nom, QString prenom, QString poste, QString sexe, float salaire,
             QString contact, QDate date_embauche, int disponibilite, QString type_absences);
 
-    // ✅ Getters
     QString getCIN() const;
     int getIdEmploye() const;
     QString getNom() const;
@@ -44,10 +42,9 @@ public:
     QDate getDateEmbauche() const;
     int getDisponibilite() const;
     QString getTypeAbsences() const;
+    QString getRFID_ID() const; // ✅
     QString getPrenomFromCIN(const QString &cin);
 
-
-    // ✅ Setters
     void setCIN(const QString &cin);
     void setIdEmploye(int id);
     void setNom(const QString &nom);
@@ -59,8 +56,8 @@ public:
     void setDateEmbauche(const QDate &date);
     void setDisponibilite(int disponibilite);
     void setTypeAbsences(const QString &typeAbsences);
+    void setRFID_ID(const QString &rfid); // ✅
 
-    // ✅ Fonctions principales
     bool ajouter();
     bool modifier(QString cin);
     bool supprimerParCIN(QString cin);
@@ -74,10 +71,6 @@ public:
     QSqlQueryModel* rechercherParCIN(const QString &cin);
     QSqlQueryModel* rechercherParContact(const QString &contact);
     QSqlQueryModel* rechercherParDisponibilite(int dispo);
-
-
-
-
 };
 
 #endif // EMPLOYES_H

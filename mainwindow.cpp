@@ -385,6 +385,9 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
+    connect(arduinoManager, &ArduinoManager::rfidUIDReceived, this, &MainWindow::afficherRFIDDansLineEdit);
+
+
 
     ui->stackedWidget->setCurrentIndex(6);
     ui->frame->setVisible(false);
@@ -769,6 +772,9 @@ MainWindow::MainWindow(QWidget *parent)
 
       displayProduit();
     //daoussar
+
+      chargerEmployesContributeurs(); // Chargement au démarrage
+
     displayCompagne();
 
     // 📁 Aller à la page des compagnes
@@ -1069,6 +1075,16 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
+void MainWindow::afficherRFIDDansLineEdit(const QString &uid)
+{
+    // Si le champ existe, l'affiche
+    if (ui->lineEdit_RFIDid) {
+        ui->lineEdit_RFIDid->setText(uid);
+        qDebug() << "📲 UID RFID reçu et affiché dans le formulaire :" << uid;
+    } else {
+        qDebug() << "⚠️ lineEdit_RFIDid introuvable dans l'UI";
+    }
+}
 
 
 
@@ -1205,19 +1221,20 @@ void MainWindow::afficherDashboard(const QString& prenom, const QString& poste)
     }
 }
 
-
 void MainWindow::on_ajouter_employe_clicked()
 {
-    // ✅ 1. Récupérer le prochain ID_EMPLOYE automatiquement
-    QSqlQuery idQuery;
-    idQuery.prepare("SELECT COALESCE(MAX(ID_EMPLOYE), 0) + 1 FROM SMARTVACC.EMPLOYES");
-
-    int id_employe = 1; // Valeur par défaut si la table est vide
-    if (idQuery.exec() && idQuery.next()) {
-        id_employe = idQuery.value(0).toInt(); // Récupère l'ID suivant
+    int id_employe;
+    if (modeModification) {
+        id_employe = idEmployeOriginal;
+    } else {
+        QSqlQuery idQuery;
+        idQuery.prepare("SELECT COALESCE(MAX(ID_EMPLOYE), 0) + 1 FROM SMARTVACC.EMPLOYES");
+        id_employe = 1;
+        if (idQuery.exec() && idQuery.next()) {
+            id_employe = idQuery.value(0).toInt();
+        }
     }
 
-    // ✅ 2. Récupérer les valeurs des champs
     QString cin = ui->lineedit_cin_employe->text().trimmed();
     QString nom = ui->lineedit_nom_employe->text().trimmed();
     QString prenom = ui->lineedit_prenom_employe->text().trimmed();
@@ -1227,8 +1244,8 @@ void MainWindow::on_ajouter_employe_clicked()
     QDate date_embauche = ui->dateEdit->date();
     int disponibilite = (ui->combobox_disponibilite->currentText().toLower() == "oui") ? 1 : 0;
     QString type_absences = ui->combobox_abscences->currentText();
+    QString rfid_id = ui->lineEdit_RFIDid->text().trimmed(); // ✅
 
-    // ✅ 3. Vérification du sexe
     QString sexe;
     if (ui->radiobutton_homme->isChecked()) {
         sexe = "Homme";
@@ -1239,29 +1256,25 @@ void MainWindow::on_ajouter_employe_clicked()
         return;
     }
 
-    // ✅ 4. Vérifier si les champs obligatoires sont remplis
     if (cin.isEmpty() || nom.isEmpty() || prenom.isEmpty() || poste.isEmpty() || salaire <= 0 || contact.isEmpty()) {
         QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs obligatoires !");
         return;
     }
 
-    // ✅ 5. Mode Modification 🛠
-    if (modeModification) {
-        Employe employe (cin, id_employe, nom, prenom, poste, sexe, salaire, contact, date_embauche, disponibilite, type_absences);
+    Employe employe(cin, id_employe, nom, prenom, poste, sexe, salaire, contact, date_embauche, disponibilite, type_absences);
+    employe.setRFID_ID(rfid_id); // ✅
 
-        if (employe.modifier(cin)) {
+    if (modeModification) {
+        if (employe.modifier(cinOriginal)) {
             QMessageBox::information(this, "Succès", "L'employé a été modifié avec succès !");
-            modeModification = false;  // Désactiver le mode modification
-            cinOriginal.clear();
         } else {
             QMessageBox::critical(this, "Erreur", "Échec de la modification de l'employé !");
             return;
         }
-    }
-    // ✅ 6. Mode Ajout 🆕
-    else {
-        Employe employe(cin, id_employe, nom, prenom, poste, sexe, salaire, contact, date_embauche, disponibilite, type_absences);
-
+        modeModification = false;
+        cinOriginal.clear();
+        idEmployeOriginal = -1;
+    } else {
         if (employe.ajouter()) {
             QMessageBox::information(this, "Succès", "L'employé a été ajouté avec succès !");
         } else {
@@ -1270,14 +1283,12 @@ void MainWindow::on_ajouter_employe_clicked()
         }
     }
 
-    // ✅ 7. Mise à jour de la `tableView`
     ui->tableView->setModel(employe.afficher());
 
-    // ✅ 8. Réinitialiser les champs après l'ajout ou modification
     ui->lineedit_cin_employe->clear();
     ui->lineedit_nom_employe->clear();
     ui->lineedit_prenom_employe->clear();
-    ui->combobox_poste->setCurrentIndex(0); // Remettre à l'option par défaut
+    ui->combobox_poste->setCurrentIndex(0);
     ui->lineditsalaire->clear();
     ui->lineeditcontact->clear();
     ui->dateEdit->setDate(QDate::currentDate());
@@ -1285,9 +1296,9 @@ void MainWindow::on_ajouter_employe_clicked()
     ui->combobox_abscences->setCurrentIndex(0);
     ui->radiobutton_homme->setChecked(false);
     ui->radiobutton_femme->setChecked(false);
-
-
+    ui->lineEdit_RFIDid->clear(); // ✅
 }
+
 
 
 
@@ -1376,53 +1387,43 @@ void MainWindow::on_button_modifier_clicked()
         return;
     }
 
-    // 🔹 Vérifier si l'employé existe avant de modifier
+    // 🔍 Vérifier si l'employé existe
     Employe employe;
     if (!employe.chargerEmploye(cin)) {
         QMessageBox::critical(this, "Erreur", "Aucun employé trouvé avec ce CIN !");
         return;
     }
 
-    modeModifications = true;  // ✅ Active le mode modification
-    cinOriginal = cin;  // ✅ Stocke l'ancien CIN pour la mise à jour
+    // ✅ Activer le mode modification
+    modeModification = true;
+    cinOriginal = cin;
+    idEmployeOriginal = employe.getIdEmploye();
 
-    // 🔹 Pré-remplissage des champs avec les données existantes
+    // 🔁 Pré-remplir les champs avec les données récupérées
     ui->lineedit_cin_employe->setText(employe.getCIN());
     ui->lineedit_nom_employe->setText(employe.getNom());
     ui->lineedit_prenom_employe->setText(employe.getPrenom());
 
-    // ✅ Sélection du poste dans la ComboBox
     int posteIndex = ui->combobox_poste->findText(employe.getPoste());
-    if (posteIndex != -1) {
-        ui->combobox_poste->setCurrentIndex(posteIndex);
-    }
+    if (posteIndex != -1) ui->combobox_poste->setCurrentIndex(posteIndex);
 
-    // ✅ Sélection du sexe
     ui->radiobutton_homme->setChecked(employe.getSexe() == "Homme");
     ui->radiobutton_femme->setChecked(employe.getSexe() == "Femme");
 
-    // ✅ Conversion et mise à jour des champs numériques
-    ui->lineditsalaire->setText(QString::number(employe.getSalaire(), 'f', 2));  // Format avec 2 décimales
+    ui->lineditsalaire->setText(QString::number(employe.getSalaire(), 'f', 2));
     ui->lineeditcontact->setText(employe.getContact());
     ui->dateEdit->setDate(employe.getDateEmbauche());
 
-    // ✅ Sélection de la disponibilité dans la ComboBox
     int dispoIndex = ui->combobox_disponibilite->findText(employe.getDisponibilite() ? "Oui" : "Non");
-    if (dispoIndex != -1) {
-        ui->combobox_disponibilite->setCurrentIndex(dispoIndex);
-    }
+    if (dispoIndex != -1) ui->combobox_disponibilite->setCurrentIndex(dispoIndex);
 
-    // ✅ Sélection du type d'absence dans la ComboBox
     int absenceIndex = ui->combobox_abscences->findText(employe.getTypeAbsences());
-    if (absenceIndex != -1) {
-        ui->combobox_abscences->setCurrentIndex(absenceIndex);
-    }
+    if (absenceIndex != -1) ui->combobox_abscences->setCurrentIndex(absenceIndex);
 
-    // ✅ Redirige vers la page d'édition
-   // ui->pdf->setCurrentWidget(ui->ajoutct);
+    // (Optionnel) ➕ Affichage d’un message ou d’un label de mode modification
+    //ui->label_mode->setText("🛠️ Mode édition activé");
+    //ui->label_mode->setStyleSheet("color: red; font-weight: bold;");
 }
-
-
 
 void MainWindow::validateInput(QLineEdit *field, QLabel *errorLabel, QRegularExpression regex, const QString &errorMsg)
 {
@@ -4364,7 +4365,82 @@ void MainWindow::on_pushButtonStat_14_clicked()
 
 
 
+void MainWindow::chargerEmployesContributeurs()
+{
+    QSqlQuery query;
+    query.prepare(R"(
+        SELECT DISTINCT E.ID_EMPLOYE, E.NOM, E.PRENOM, E.RFID_ID
+        FROM EMPLOYES E
+        INNER JOIN CONTRIBUER C ON E.ID_EMPLOYE = C.ID_EMPLOYE
+    )");
 
+    if (!query.exec()) {
+        qDebug() << "Erreur chargement contributeurs :" << query.lastError().text();
+        return;
+    }
+
+    ui->tableWidget_rfid_contributeurs->clear();
+    ui->tableWidget_rfid_contributeurs->setRowCount(0);
+    ui->tableWidget_rfid_contributeurs->setColumnCount(2);
+    ui->tableWidget_rfid_contributeurs->setHorizontalHeaderLabels({"Nom", "RFID_ID"});
+
+    int row = 0;
+    while (query.next()) {
+        int id = query.value(0).toInt();
+        QString nomComplet = query.value(1).toString() + " " + query.value(2).toString();
+        QString rfid = query.value(3).toString();
+
+        ui->tableWidget_rfid_contributeurs->insertRow(row);
+
+        QTableWidgetItem* itemNom = new QTableWidgetItem(nomComplet);
+        itemNom->setFlags(itemNom->flags() ^ Qt::ItemIsEditable);
+        itemNom->setData(Qt::UserRole, id);
+        ui->tableWidget_rfid_contributeurs->setItem(row, 0, itemNom);
+
+        QLineEdit* edit = new QLineEdit;
+        edit->setText(rfid);
+        edit->setPlaceholderText("ex: ABC123");
+        ui->tableWidget_rfid_contributeurs->setCellWidget(row, 1, edit);
+
+        row++;
+    }
+}
+
+
+
+void MainWindow::on_btn_enregistrer_rfid_clicked()
+{
+    int rowCount = ui->tableWidget_rfid_contributeurs->rowCount();
+
+    for (int row = 0; row < rowCount; ++row) {
+        QTableWidgetItem* item = ui->tableWidget_rfid_contributeurs->item(row, 0);
+        QLineEdit* edit = qobject_cast<QLineEdit*>(ui->tableWidget_rfid_contributeurs->cellWidget(row, 1));
+
+        if (!item || !edit) continue;
+
+        int id = item->data(Qt::UserRole).toInt();
+        QString rfid = edit->text().trimmed();
+
+        if (rfid.isEmpty()) continue;
+
+        // Facultatif : validation
+        if (!rfid.contains(QRegularExpression("^[A-Za-z0-9]{2,20}$"))) {
+            QMessageBox::warning(this, "Erreur", "Code RFID invalide pour : " + item->text());
+            return;
+        }
+
+        QSqlQuery query;
+        query.prepare("UPDATE EMPLOYES SET RFID_ID = :rfid WHERE ID_EMPLOYE = :id");
+        query.bindValue(":rfid", rfid);
+        query.bindValue(":id", id);
+
+        if (!query.exec()) {
+            qDebug() << "Erreur update RFID :" << query.lastError().text();
+        }
+    }
+
+    QMessageBox::information(this, "Succès", "Les codes RFID ont été enregistrés.");
+}
 
 
 
@@ -4374,10 +4450,105 @@ void MainWindow::on_pushButtonStat_14_clicked()
 //mayssem labo
 
 
+void MainWindow::on_pushButton_32_clicked()
+{
+    QString nom = ui->lineEdit_NomLab->text();
+    QString adresse = ui->lineEdit_Adresse->text();
+    QString responsable = ui->comboBox_Responsable->currentText();
+    QString type = ui->lineEdit_Type->text();
+    QString statut = ui->comboBox_Statut->currentText();
+    int nb_projets = ui->spinBox_NbProjets->value();
+    int matriels = ui->spinBox_NbProjets_2->value();
+    int personnel = ui->spinBox_NbProjets_3->value();
+    float depense = ui->doubleSpinBox_7->value();
+    QDate date_creation = ui->dateEdit_7->date();
+
+    if (nom.isEmpty() || adresse.isEmpty() || responsable.isEmpty() || type.isEmpty()) {
+        QMessageBox::warning(this, "Champs vides", "Veuillez remplir tous les champs obligatoires.");
+        return;
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM SMARTVACC.LABORATOIRES WHERE NOM_LAB = :nom");
+    query.bindValue(":nom", nom);
+    if (!query.exec()) {
+        QMessageBox::critical(this, "Erreur", "Erreur lors de la vérification du laboratoire.");
+        return;
+    }
+    query.next();
+    int count = query.value(0).toInt();
+
+    Laboratoire lab(0, nom, adresse, type, responsable, depense, nb_projets, statut, matriels, personnel, date_creation);
 
 
+    QString encodedAddress = QUrl::toPercentEncoding(adresse);
+    QString geoUrl = QString("https://nominatim.openstreetmap.org/search?q=%1&format=json").arg(encodedAddress);
+    QUrl url(geoUrl);
 
 
+    QNetworkAccessManager* manager = new QNetworkAccessManager(this);
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::UserAgentHeader, "QtApp");
+
+    QNetworkReply* reply = manager->get(request);
+    ui->pushButton_32->setEnabled(false);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() mutable {
+        ui->pushButton_32->setEnabled(true);
+
+        if (reply->error() != QNetworkReply::NoError) {
+            QMessageBox::warning(this, "Erreur réseau", reply->errorString());
+            reply->deleteLater();
+            manager->deleteLater();
+            return;
+        }
+
+        QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+        if (!doc.isArray() || doc.array().isEmpty()) {
+            QMessageBox::warning(this, "Adresse invalide", "L'adresse saisie ne semble pas valide ou localisable sur la carte.");
+            reply->deleteLater();
+            manager->deleteLater();
+            return;
+        }
+
+        // ✅ Address valid, continue
+        bool success = false;
+        if (count > 0) {
+            success = lab.modifier(nom);
+        } else {
+            success = lab.ajouter();
+        }
+
+        if (success) {
+            QMessageBox::information(this, "Succès", count > 0 ? "Laboratoire modifié avec succès." : "Laboratoire ajouté avec succès.");
+        } else {
+            QMessageBox::critical(this, "Erreur", count > 0 ? "Échec de la modification." : "Échec de l'ajout.");
+        }
+
+        // Clear & refresh
+        populateNomlabComboBox();
+        populateLabNameComboBox();
+        ui->tableViewmay->setModel(labTmp.afficher());
+
+        ui->lineEdit_NomLab->clear();
+        ui->lineEdit_Adresse->clear();
+        ui->comboBox_Statut->setCurrentIndex(0);
+        ui->lineEdit_Type->clear();
+        ui->spinBox_NbProjets->setValue(0);
+        ui->spinBox_NbProjets_2->setValue(0);
+        ui->spinBox_NbProjets_3->setValue(0);
+        ui->doubleSpinBox_7->setValue(0.00);
+        ui->dateEdit_7->setDate(QDate::currentDate());
+        populateResponsableComboBox();
+        ui->comboBox_Responsable->setCurrentIndex(0);
+
+        reply->deleteLater();
+        manager->deleteLater();
+    });
+}
+
+
+/*
 
 void MainWindow::on_pushButton_32_clicked()
 {
@@ -4452,7 +4623,7 @@ void MainWindow::on_pushButton_32_clicked()
     ui->comboBox_Responsable->setCurrentIndex(0);
 
 }
-
+*/
 void MainWindow::clearAjoutFields()
 {
     ui->lineEdit_NomLab->clear();
@@ -5926,7 +6097,10 @@ void MainWindow::on_pushButton_ajouter_v_clicked() {
         QMessageBox::warning(this, "Erreur", "Veuillez choisir un statut valide !");
         return;
     }
-
+    if (date_creation > QDate::currentDate()) {
+          QMessageBox::warning(this, "Date invalide", "❌ La date de creation ne doit pas dépasser la date d'aujourd'hui !");
+          return;
+      }
     // Vérifier que la date d'expiration est après la date de création
     if (date_expiration <= date_creation) {
         QMessageBox::warning(this, "Date invalide", "La date d'expiration doit être après la date de création !");
@@ -6499,7 +6673,7 @@ void MainWindow::on_pushButtonStat_18_clicked()
     }
 
     // 📊 Préparer les données
-    QBarSet *set0 = new QBarSet("💉 Vaccinations par année");
+    QBarSet *set0 = new QBarSet("💉 Total creations des vaccinations");
     QFont legendFont;
     legendFont.setBold(true);
     legendFont.setPointSize(12);  // ou 14 pour plus grand
@@ -6531,7 +6705,7 @@ void MainWindow::on_pushButtonStat_18_clicked()
 
     QChart *chart = new QChart();
     chart->addSeries(series);
-   // chart->setTitle("📊 Statistiques de nombre des vaccins par année");
+   // chart->setTitle("📊 Statistiques de nombre de creation de vaccins par année");
     chart->setAnimationOptions(QChart::AllAnimations);
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignTop);
@@ -6566,13 +6740,13 @@ void MainWindow::on_pushButtonStat_18_clicked()
 
 
     // 📝 Titre
-    QLabel *titleLabel = new QLabel("📊 Statistiques de nombre des vaccins par année");
+    QLabel *titleLabel = new QLabel("📊 Statistiques de nombre de creation des vaccins par année");
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setStyleSheet("font-size: 22px; font-weight: bold; color: #b30000; margin-bottom: 10px;");
 
     // 🧾 Résumé
     QLabel *summary = new QLabel("📅 Total années : " + QString::number(categories.size()) +
-                                 " — 💉 Total vaccinations : " + QString::number(totalVaccinations));
+                                 " — 💉 Total creations des vaccinations : " + QString::number(totalVaccinations));
     summary->setAlignment(Qt::AlignCenter);
     summary->setStyleSheet("font-style: italic; color: #2e86c1; font-size: 16px;font-weight: bold;");
 

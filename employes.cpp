@@ -79,8 +79,9 @@ bool Employe::ajouter() {
     }
 
     // Préparation de la requête SQL avec correction pour Oracle
-    query.prepare("INSERT INTO SMARTVACC.EMPLOYES (CIN, ID_EMPLOYE, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, \"TYPE_ABSENCES\") "
-                  "VALUES (:cin, :id, :nom, :prenom, :poste, :sexe, :salaire, :contact, TO_DATE(:date_embauche, 'YYYY-MM-DD'), :disponibilite, :type_absences)");
+    query.prepare("INSERT INTO SMARTVACC.EMPLOYES (CIN, ID_EMPLOYE, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES, RFID_ID) "
+                  "VALUES (:cin, :id, :nom, :prenom, :poste, :sexe, :salaire, :contact, TO_DATE(:date_embauche, 'YYYY-MM-DD'), :disponibilite, :type_absences, :rfid)");
+
 
     // Binding des valeurs
     query.bindValue(":cin", CIN);
@@ -112,7 +113,7 @@ bool Employe::ajouter() {
 
 QSqlQueryModel* Employe::afficher() {
     QSqlQueryModel *model = new QSqlQueryModel();
-    model->setQuery("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES FROM SMARTVACC.EMPLOYES");
+    model->setQuery("SELECT CIN, NOM, PRENOM, POSTE, SEXE, SALAIRE, CONTACT, DATE_EMBAUCHE, DISPONIBILITE, TYPE_ABSENCES,RFID_ID FROM SMARTVACC.EMPLOYES");
 
     if (model->lastError().isValid()) {
         lastError = model->lastError().text();
@@ -196,7 +197,7 @@ bool Employe::modifier(QString cin)
     query.prepare("UPDATE SMARTVACC.EMPLOYES SET "
                   "NOM = :nom, PRENOM = :prenom, POSTE = :poste, SEXE = :sexe, "
                   "SALAIRE = :salaire, CONTACT = :contact, DATE_EMBAUCHE = TO_DATE(:date_embauche, 'YYYY-MM-DD'), "
-                  "DISPONIBILITE = :disponibilite, TYPE_ABSENCES = :type_absences "
+                  "DISPONIBILITE = :disponibilite, TYPE_ABSENCES = :type_absences, RFID_ID = :rfid "
                   "WHERE CIN = :old_cin");
 
     query.bindValue(":old_cin", cin);
@@ -209,6 +210,7 @@ bool Employe::modifier(QString cin)
     query.bindValue(":date_embauche", DATE_EMBAUCHE.toString("yyyy-MM-dd"));
     query.bindValue(":disponibilite", DISPONIBILITE);
     query.bindValue(":type_absences", TYPE_ABSENCES);
+    query.bindValue(":rfid", RFID_ID.isEmpty() ? QVariant(QVariant::String) : RFID_ID); // NULL si vide
 
     if (!query.exec()) {
         qDebug() << "❌ Erreur SQL lors de la modification de l'employé :" << query.lastError().text();
@@ -323,4 +325,12 @@ QSqlQueryModel* Employe::rechercherParDisponibilite(int dispo) {
     query.exec();
     model->setQuery(query);
     return model;
+}
+
+QString Employe::getRFID_ID() const {
+    return RFID_ID;
+}
+
+void Employe::setRFID_ID(const QString &rfid) {
+    RFID_ID = rfid.trimmed();
 }

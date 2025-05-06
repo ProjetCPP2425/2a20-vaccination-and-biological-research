@@ -230,6 +230,7 @@ public:
     ~MainWindow();
     void ontemperatureReceived(float temp);
     void displayTemperature(float temp);
+    int idEmployeOriginal = -1;
 
     //daoussar
 
@@ -239,6 +240,9 @@ public:
 private slots:
       void handleVaccineLock();
     void lireDonneesSerie();
+
+      void afficherRFIDDansLineEdit(const QString &uid);
+
 
     void on_pushButton_supprimer_employe_clicked();
     void on_annuler_clicked();
@@ -317,7 +321,8 @@ private slots:
 
     void on_pushButtonStat_14_clicked();
 
-
+    void chargerEmployesContributeurs();
+    void on_btn_enregistrer_rfid_clicked();
 
     //mayssem
     void on_pushButton_32_clicked();

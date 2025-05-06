@@ -400,8 +400,11 @@ QPushButton:hover {
         <height>801</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string/>
+      </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1265,6 +1268,39 @@ QCheckBox::indicator:checked {
            <string/>
           </property>
          </widget>
+         <widget class="QLabel" name="label_typev_11">
+          <property name="geometry">
+           <rect>
+            <x>610</x>
+            <y>350</y>
+            <width>141</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+    background-color: transparent; /* Fond transparent */
+    color: #000000;                /* Texte noir */
+    border: none;                  /* Pas de bordure */
+    font-weight: bold;             /* Texte en gras */
+    font-size: 18px;               /* Taille de police de 18px */
+}
+</string>
+          </property>
+          <property name="text">
+           <string>RFID_ID</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEdit_RFIDid">
+          <property name="geometry">
+           <rect>
+            <x>760</x>
+            <y>360</y>
+            <width>113</width>
+            <height>26</height>
+           </rect>
+          </property>
+         </widget>
         </widget>
         <widget class="QLabel" name="label_2">
          <property name="geometry">
@@ -1300,9 +1336,9 @@ QCheckBox::indicator:checked {
        <widget class="QComboBox" name="comboBox_tri_3">
         <property name="geometry">
          <rect>
-          <x>160</x>
-          <y>195</y>
-          <width>351</width>
+          <x>100</x>
+          <y>190</y>
+          <width>91</width>
           <height>41</height>
          </rect>
         </property>
@@ -1325,9 +1361,9 @@ QCheckBox::indicator:checked {
        <widget class="QLabel" name="label_tri_3">
         <property name="geometry">
          <rect>
-          <x>90</x>
-          <y>210</y>
-          <width>191</width>
+          <x>10</x>
+          <y>200</y>
+          <width>71</width>
           <height>21</height>
          </rect>
         </property>
@@ -1346,7 +1382,7 @@ QCheckBox::indicator:checked {
        <widget class="QLabel" name="label_recherche_3">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>230</x>
           <y>200</y>
           <width>141</width>
           <height>20</height>
@@ -1367,11 +1403,19 @@ QCheckBox::indicator:checked {
        <widget class="QLineEdit" name="lineEdit_recherche_3">
         <property name="geometry">
          <rect>
-          <x>830</x>
+          <x>490</x>
           <y>190</y>
           <width>121</width>
           <height>41</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+    border: 2px solid red;
+    border-radius: 4px;
+    padding: 2px;
+}
+</string>
         </property>
        </widget>
        <widget class="QWidget" name="widget_2" native="true">
@@ -1458,7 +1502,7 @@ border: 2px solid black; </string>
         <property name="geometry">
          <rect>
           <x>1180</x>
-          <y>630</y>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -1493,8 +1537,8 @@ QPushButton:pressed {
        <widget class="QPushButton" name="pushButton_supprimer_employe">
         <property name="geometry">
          <rect>
-          <x>1120</x>
-          <y>630</y>
+          <x>1110</x>
+          <y>190</y>
           <width>51</width>
           <height>41</height>
          </rect>
@@ -1529,9 +1573,9 @@ QPushButton:pressed {
        <widget class="QTableView" name="tableView">
         <property name="geometry">
          <rect>
-          <x>-10</x>
+          <x>20</x>
           <y>240</y>
-          <width>1281</width>
+          <width>1231</width>
           <height>391</height>
          </rect>
         </property>
@@ -1539,17 +1583,25 @@ QPushButton:pressed {
        <widget class="QLineEdit" name="lineedit_cin_employe_test">
         <property name="geometry">
          <rect>
-          <x>1080</x>
-          <y>580</y>
+          <x>900</x>
+          <y>190</y>
           <width>181</width>
           <height>41</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+    border: 2px solid red;
+    border-radius: 4px;
+    padding: 2px;
+}
+</string>
         </property>
        </widget>
        <widget class="QComboBox" name="comboBox_recherche">
         <property name="geometry">
          <rect>
-          <x>700</x>
+          <x>360</x>
           <y>190</y>
           <width>131</width>
           <height>41</height>
@@ -1574,9 +1626,9 @@ QPushButton:pressed {
        <widget class="QPushButton" name="btn_rechercher">
         <property name="geometry">
          <rect>
-          <x>960</x>
+          <x>620</x>
           <y>200</y>
-          <width>83</width>
+          <width>91</width>
           <height>29</height>
          </rect>
         </property>
@@ -1587,14 +1639,27 @@ QPushButton:pressed {
        <widget class="QPushButton" name="btn_reset_table">
         <property name="geometry">
          <rect>
-          <x>1050</x>
+          <x>720</x>
           <y>200</y>
-          <width>83</width>
+          <width>101</width>
           <height>29</height>
          </rect>
         </property>
         <property name="text">
          <string>reset</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_17">
+        <property name="geometry">
+         <rect>
+          <x>900</x>
+          <y>160</y>
+          <width>221</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Entrer le cin de l'employe:</string>
         </property>
        </widget>
       </widget>
@@ -1607,7 +1672,7 @@ QPushButton:pressed {
          <rect>
           <x>20</x>
           <y>10</y>
-          <width>211</width>
+          <width>251</width>
           <height>29</height>
          </rect>
         </property>
@@ -1631,10 +1696,10 @@ QPushButton:pressed {
        <widget class="QFrame" name="frame_stats">
         <property name="geometry">
          <rect>
-          <x>790</x>
-          <y>80</y>
-          <width>441</width>
-          <height>291</height>
+          <x>570</x>
+          <y>50</y>
+          <width>671</width>
+          <height>361</height>
          </rect>
         </property>
         <property name="frameShape">
@@ -4224,7 +4289,7 @@ QLabel:hover {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -5036,7 +5101,7 @@ QPushButton:pressed {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
@@ -6290,6 +6355,39 @@ QCalendarWidget QTableView {
          <string>Affecter</string>
         </property>
        </widget>
+       <widget class="QTableWidget" name="tableWidget_rfid_contributeurs">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>380</y>
+          <width>251</width>
+          <height>271</height>
+         </rect>
+        </property>
+        <column>
+         <property name="text">
+          <string>Employe</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>code</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QPushButton" name="btn_enregistrer_rfid">
+        <property name="geometry">
+         <rect>
+          <x>490</x>
+          <y>400</y>
+          <width>121</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>AFF_code</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_7">
        <attribute name="title">
@@ -6391,7 +6489,7 @@ QCalendarWidget QTableView {
        </rect>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="ajoutct_10">
        <attribute name="title">
